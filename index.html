@@ -192,7 +192,7 @@
         <div class="flex flex-col items-center gap-6">
             <div class="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
             <div class="text-center">
-                <p id="loader-text" class="font-extrabold text-slate-800 text-lg tracking-tight">Processing Request...</p>
+                <p id="loader-text" class="font-extrabold text-slate-800 text-lg tracking-tight">Memproses Permintaan...</p>
                 <div class="w-64 h-2 bg-slate-100 rounded-full mt-4 overflow-hidden">
                     <div id="loader-progress" class="h-full bg-blue-600 transition-all duration-300" style="width: 0%"></div>
                 </div>
@@ -232,7 +232,7 @@
 
         <div class="p-4 lg:p-12 max-w-7xl mx-auto">
             
-            <!-- HOME -->
+            <!-- HOME SECTION -->
             <section id="home-section" class="animate-fade py-6 lg:py-10">
                 <div class="text-center mb-10 lg:mb-16 space-y-4">
                     <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-blue-50 text-blue-600 rounded-full text-[10px] lg:text-xs font-black uppercase tracking-[0.2em] shadow-sm">Main Hub</div>
@@ -459,16 +459,35 @@
     </main>
 
     <script type="module">
+        // GLOBAL NAVIGATION FUNCTIONS (Didefinisikan di awal agar selalu tersedia)
+        window.showSection = function(id) { 
+            const sections = document.querySelectorAll('main section');
+            sections.forEach(s => s.classList.add('hidden')); 
+            const target = document.getElementById(id);
+            if (target) {
+                target.classList.remove('hidden'); 
+                window.scrollTo({ top: 0, behavior: 'smooth' }); 
+            }
+        };
+
+        window.closeAlarm = function() { 
+            const modal = document.getElementById('alarm-modal');
+            if (modal) modal.style.display = 'none'; 
+        };
+
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getFirestore } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 
-        const firebaseConfig = JSON.parse(__firebase_config);
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const auth = getAuth(app);
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        // Variabel penampung konfigurasi
+        let firebaseConfig = {};
+        try {
+            firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        } catch (e) {
+            console.warn("Firebase config tidak ditemukan.");
+        }
 
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
         const scriptURL = "https://script.google.com/macros/s/AKfycbyR2spJCAxKQ-DViYl8JI8vMrcTqDTHez67DAHWcufvflC8dbNaBAEaxyGxt2sMqCQ1/exec";
         
         const spreadsheetId = '16PmMztvhkA9PnYOXoRF7IyeVmvqkIa-I89CCcT6iElU';
@@ -478,106 +497,34 @@
         let CLEAN_ZERPD_MAP = new Map(); 
         let currentUser = null;
 
-        // --- UI LOGIC FOR CONCISE SELECTS ---
-        function setupConciseSelects() {
-            const selects = document.querySelectorAll('.concise-select');
-            
-            selects.forEach(select => {
-                // Save original descriptive labels
-                Array.from(select.options).forEach(opt => {
-                    if (opt.value && opt.text.includes(' - ')) {
-                        opt.setAttribute('data-full', opt.text);
-                    } else if (opt.value) {
-                        opt.setAttribute('data-full', opt.text);
-                    }
-                });
-
-                const updateToConcise = () => {
-                    Array.from(select.options).forEach(opt => {
-                        if (opt.value) opt.text = opt.value;
-                    });
-                };
-
-                const updateToFull = () => {
-                    Array.from(select.options).forEach(opt => {
-                        const full = opt.getAttribute('data-full');
-                        if (full) opt.text = full;
-                    });
-                };
-
-                // Initial state: Concise
-                updateToConcise();
-
-                // On focus: Show Full descriptions
-                select.addEventListener('focus', updateToFull);
-                
-                // On blur or change: Back to Concise (only showing the commercial code)
-                select.addEventListener('blur', updateToConcise);
-                select.addEventListener('change', updateToConcise);
-            });
-        }
-
-        window.addEventListener('DOMContentLoaded', setupConciseSelects);
-
-        function getCleanPN(pn) {
-            if (!pn) return "";
-            return pn.toString().toUpperCase().replace(/X/g, '').replace(/[^A-Z0-9]/g, ''); 
-        }
-
-        window.updateValuationClass = function() {
-            const type = document.getElementById('create-mat-type').value.trim().toUpperCase();
-            const group = document.getElementById('create-mat-group').value.trim().toUpperCase();
-            const valClassInput = document.getElementById('create-val-class');
-            let valClass = "";
-            if (type === 'SPRT' || type === 'MDLE') valClass = "V001";
-            else if (type === 'FOGC') {
-                if (group === 'F001') valClass = "V002";
-                else if (group === 'F002') valClass = "V003";
-                else if (group === 'F003') valClass = "V004";
-                else if (group === 'F004') valClass = "V005";
-            } else if (type === 'TYRE') valClass = "V006";
-            else if (type === 'CONS') {
-                if (['C001', 'C002', 'C006'].includes(group)) valClass = "V008";
-                else if (group === 'C003') valClass = "V009";
-                else if (group === 'C004') valClass = "V010";
-                else if (group === 'C005') valClass = "V024";
-                else if (group === 'C007') valClass = "V025";
-            } else if (type === 'GENS') valClass = "V011";
-            else if (type === 'SEJA') {
-                if (group === 'J001') valClass = "V012";
-                else if (['J002', 'J005'].includes(group)) valClass = "V013";
-                else if (group === 'J003') valClass = "V014";
-                else if (['J004', 'J010'].includes(group)) valClass = "V015";
-                else if (group === 'J006') valClass = "V016";
-                else if (group === 'J007') valClass = "V017";
-                else if (group === 'J008') valClass = "V018";
-                else if (group === 'J009') valClass = "V019";
-                else if (group === 'J011') valClass = "V020";
-                else if (group === 'J012') valClass = "V021";
-                else if (group === 'J013') valClass = "V022";
-                else if (group === 'J014' || group === 'J015') valClass = "V023";
-            }
-            valClassInput.value = valClass;
-        };
-
-        const initAuth = async () => {
+        /** * Menggunakan deklarasi fungsi (Function Declaration) agar terkena Hoisting 
+         * dan menghindari ReferenceError saat dipanggil di initAppLogic.
+         */
+        async function initAuth(auth) {
             try {
                 if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
                     await signInWithCustomToken(auth, __initial_auth_token);
-                } else { await signInAnonymously(auth); }
-            } catch (err) { console.error("Auth failed:", err); }
-        };
-
-        onAuthStateChanged(auth, (user) => {
-            currentUser = user;
-            if (user) {
-                syncZerpdFromSpreadsheet();
-                document.getElementById('header-date').innerText = new Date().toLocaleDateString('id-ID', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+                } else { 
+                    await signInAnonymously(auth); 
+                }
+            } catch (err) { 
+                console.error("Auth failed:", err); 
             }
-        });
+
+            onAuthStateChanged(auth, (user) => {
+                currentUser = user;
+                syncZerpdFromSpreadsheet();
+                const dateEl = document.getElementById('header-date');
+                if (dateEl) {
+                    dateEl.innerText = new Date().toLocaleDateString('id-ID', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+                }
+            });
+        }
 
         async function syncZerpdFromSpreadsheet() {
             const stat = document.getElementById('zerpd-status-bar');
+            if (!stat) return;
+
             try {
                 const response = await fetch(csvExportUrl);
                 if (!response.ok) throw new Error("Gagal akses spreadsheet");
@@ -612,6 +559,111 @@
             }
         }
 
+        function initAppLogic() {
+            if (Object.keys(firebaseConfig).length > 0) {
+                const app = initializeApp(firebaseConfig);
+                const auth = getAuth(app);
+                initAuth(auth);
+            } else {
+                syncZerpdFromSpreadsheet();
+                const dateEl = document.getElementById('header-date');
+                if (dateEl) {
+                    dateEl.innerText = new Date().toLocaleDateString('id-ID', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+                }
+            }
+        }
+
+        // --- UI LOGIC FOR CONCISE SELECTS ---
+        function setupConciseSelects() {
+            const selects = document.querySelectorAll('.concise-select');
+            
+            selects.forEach(select => {
+                Array.from(select.options).forEach(opt => {
+                    if (opt.value && opt.text.includes(' - ')) {
+                        opt.setAttribute('data-full', opt.text);
+                    } else if (opt.value) {
+                        opt.setAttribute('data-full', opt.text);
+                    }
+                });
+
+                const updateToConcise = () => {
+                    Array.from(select.options).forEach(opt => {
+                        if (opt.value) opt.text = opt.value;
+                    });
+                };
+
+                const updateToFull = () => {
+                    Array.from(select.options).forEach(opt => {
+                        const full = opt.getAttribute('data-full');
+                        if (full) opt.text = full;
+                    });
+                };
+
+                updateToConcise();
+                select.addEventListener('focus', updateToFull);
+                select.addEventListener('blur', updateToConcise);
+                select.addEventListener('change', updateToConcise);
+            });
+        }
+
+        // --- ENTRY POINT ---
+        if (document.readyState === 'loading') {
+            window.addEventListener('DOMContentLoaded', () => {
+                setupConciseSelects();
+                initAppLogic();
+            });
+        } else {
+            setupConciseSelects();
+            initAppLogic();
+        }
+
+        // --- HELPER FUNCTIONS ---
+        function getCleanPN(pn) {
+            if (!pn) return "";
+            return pn.toString().toUpperCase().replace(/X/g, '').replace(/[^A-Z0-9]/g, ''); 
+        }
+
+        window.updateValuationClass = function() {
+            const typeEl = document.getElementById('create-mat-type');
+            const groupEl = document.getElementById('create-mat-group');
+            const valClassInput = document.getElementById('create-val-class');
+            if (!typeEl || !groupEl || !valClassInput) return;
+
+            const type = typeEl.value.trim().toUpperCase();
+            const group = groupEl.value.trim().toUpperCase();
+            let valClass = "";
+
+            if (type === 'SPRT' || type === 'MDLE') valClass = "V001";
+            else if (type === 'FOGC') {
+                if (group === 'F001') valClass = "V002";
+                else if (group === 'F002') valClass = "V003";
+                else if (group === 'F003') valClass = "V004";
+                else if (group === 'F004') valClass = "V005";
+            } else if (type === 'TYRE') valClass = "V006";
+            else if (type === 'CONS') {
+                if (['C001', 'C002', 'C006'].includes(group)) valClass = "V008";
+                else if (group === 'C003') valClass = "V009";
+                else if (group === 'C004') valClass = "V010";
+                else if (group === 'C005') valClass = "V024";
+                else if (group === 'C007') valClass = "V025";
+            } else if (type === 'GENS') valClass = "V011";
+            else if (type === 'SEJA') {
+                if (group === 'J001') valClass = "V012";
+                else if (['J002', 'J005'].includes(group)) valClass = "V013";
+                else if (group === 'J003') valClass = "V014";
+                else if (['J004', 'J010'].includes(group)) valClass = "V015";
+                else if (group === 'J006') valClass = "V016";
+                else if (group === 'J007') valClass = "V017";
+                else if (group === 'J008') valClass = "V018";
+                else if (group === 'J009') valClass = "V019";
+                else if (group === 'J011') valClass = "V020";
+                else if (group === 'J012') valClass = "V021";
+                else if (group === 'J013') valClass = "V022";
+                else if (group === 'J014' || group === 'J015') valClass = "V023";
+            }
+            valClassInput.value = valClass;
+        };
+
         window.handleVerifyPN = function() {
             const rawPN = document.getElementById('c-pn-check').value.trim();
             const cleanInput = getCleanPN(rawPN);
@@ -644,8 +696,13 @@
             try {
                 const response = await fetch(`${scriptURL}?action=lookup&material=${mat}`);
                 const result = await response.json();
-                if (result.status === "success") { document.getElementById('f-desc').value = result.description; notify('Data Ditemukan', `Deskripsi terisi otomatis.`, 'success'); }
-            } catch (e) { console.error(e); } finally {
+                if (result.status === "success") { 
+                    document.getElementById('f-desc').value = result.description; 
+                    notify('Data Ditemukan', `Deskripsi terisi otomatis.`, 'success'); 
+                }
+            } catch (e) { 
+                console.error(e); 
+            } finally {
                 loader.style.display = 'none';
                 document.getElementById('f-mat').value = mat;
                 document.getElementById('maint-verify-card').classList.add('hidden');
@@ -688,12 +745,20 @@
             finally { loader.style.display = 'none'; }
         };
 
-        function openAlarm(msg) { document.getElementById('alarm-msg').innerText = msg; document.getElementById('alarm-modal').style.display = 'flex'; }
-        window.closeAlarm = function() { document.getElementById('alarm-modal').style.display = 'none'; }
-        window.showSection = function(id) { document.querySelectorAll('main section').forEach(s => s.classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); window.scrollTo({ top: 0, behavior: 'smooth' }); };
+        function openAlarm(msg) { 
+            const alarmMsg = document.getElementById('alarm-msg');
+            const modal = document.getElementById('alarm-modal');
+            if (alarmMsg && modal) {
+                alarmMsg.innerText = msg; 
+                modal.style.display = 'flex'; 
+            }
+        }
+
         function notify(title, msg, type) {
             const t = document.getElementById('toast');
             const icon = document.getElementById('toast-icon');
+            if (!t || !icon) return;
+
             document.getElementById('t-title').innerText = title;
             document.getElementById('t-msg').innerText = msg;
             icon.className = type === 'error' ? 'w-10 h-10 rounded-xl flex items-center justify-center bg-red-500 text-white' : 'w-10 h-10 rounded-xl flex items-center justify-center bg-emerald-500 text-white';
@@ -701,7 +766,6 @@
             t.classList.remove('translate-y-40', 'opacity-0');
             setTimeout(() => t.classList.add('translate-y-40', 'opacity-0'), 4000);
         }
-        initAuth();
     </script>
 </body>
 </html>
