@@ -291,7 +291,7 @@
                         </div>
                         <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Storage Bin</label><input type="text" id="m-v-bin" placeholder="INPUT RAK" class="input-field border-2 professional-input"></div>
                     </div>
-                    <button onclick="handleVerifyMaint()" class="w-full bg-slate-900 text-white font-black py-4 rounded-xl hover:bg-blue-600 transition-all uppercase text-xs">Verifikasi & Cari Data</button>
+                    <button id="btn-verify-maint" onclick="handleVerifyMaint()" class="w-full bg-slate-900 text-white font-black py-4 rounded-xl hover:bg-blue-600 transition-all uppercase text-xs">Verifikasi & Cari Data</button>
                 </div>
 
                 <div id="maint-full-form" class="hidden bg-white rounded-[2rem] lg:rounded-[3rem] overflow-hidden shadow-2xl border border-slate-100 max-w-6xl mx-auto">
@@ -303,7 +303,7 @@
                             <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Material</label><input type="text" name="material" id="f-mat" readonly class="input-field input-readonly professional-input text-blue-600"></div>
                             <div class="space-y-1.5 md:col-span-2"><label class="text-[10px] professional-label tracking-widest">Description</label><input type="text" name="description" id="f-desc" required class="input-field border-2 professional-input"></div>
                         </div>
-                        <button type="submit" class="w-full py-5 bg-blue-600 text-white font-black rounded-3xl shadow-2xl hover:bg-blue-700 transition-all uppercase text-lg">SUBMIT PERUBAHAN</button>
+                        <button type="submit" id="btn-submit-maint" class="w-full py-5 bg-blue-600 text-white font-black rounded-3xl shadow-2xl hover:bg-blue-700 transition-all uppercase text-lg">SUBMIT PERUBAHAN</button>
                     </form>
                 </div>
             </section>
@@ -325,9 +325,9 @@
                         <div id="create-zerpd-card" class="bg-orange-50/40 border border-orange-100 p-6 lg:p-10 rounded-[2rem] space-y-8 shadow-inner">
                             <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
                                 <div class="flex gap-4 items-center">
-                                    <div class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-orange-600 text-xl shadow-sm"><i class="fas fa-table"></i></div>
+                                    <div class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-orange-600 text-xl shadow-sm"><i class="fas fa-magnifying-glass"></i></div>
                                     <div>
-                                        <h4 class="professional-label text-lg tracking-tight">Sinkronisasi Database Spreadsheet</h4>
+                                        <h4 class="professional-label text-lg tracking-tight">Duplicate Check (ZERPD)</h4>
                                         <div id="zerpd-status-bar" class="inline-flex items-center gap-2 mt-1 text-[10px] professional-label tracking-widest bg-white px-4 py-1.5 rounded-full border border-orange-100 italic">
                                             <i class="fas fa-circle-notch animate-spin text-blue-600"></i> SEDANG MEMBACA SPREADSHEET...
                                         </div>
@@ -337,7 +337,7 @@
 
                             <div class="pt-6 border-t border-orange-100 flex flex-col md:flex-row gap-4">
                                 <input type="text" id="c-pn-check" placeholder="INPUT PART NUMBER..." class="flex-1 input-field border-2 border-orange-100 py-3 lg:py-5 font-mono professional-input tracking-widest">
-                                <button onclick="handleVerifyPN()" class="bg-slate-900 text-white px-10 py-3 rounded-xl font-black tracking-widest uppercase text-[10px]">
+                                <button id="btn-verify-pn" onclick="handleVerifyPN()" class="bg-slate-900 text-white px-10 py-3 rounded-xl font-black tracking-widest uppercase text-[10px]">
                                     VERIFIKASI SISTEM
                                 </button>
                             </div>
@@ -441,7 +441,7 @@
                                         <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Storage Bin</label><input type="text" name="storage_bin" class="input-field border-2 professional-input"></div>
                                     </div>
                                 </div>
-                                <button type="submit" class="w-full py-5 bg-orange-500 text-white font-black rounded-3xl shadow-2xl hover:bg-orange-600 transition-all uppercase text-lg tracking-tight">DAFTARKAN MATERIAL</button>
+                                <button type="submit" id="btn-submit-create" class="w-full py-5 bg-orange-500 text-white font-black rounded-3xl shadow-2xl hover:bg-orange-600 transition-all uppercase text-lg tracking-tight">DAFTARKAN MATERIAL</button>
                             </form>
                         </div>
                     </div>
@@ -459,10 +459,18 @@
     </main>
 
     <script type="module">
-        // GLOBAL NAVIGATION FUNCTIONS (Didefinisikan di awal agar selalu tersedia)
+        // GLOBAL NAVIGATION FUNCTIONS
         window.showSection = function(id) { 
             const sections = document.querySelectorAll('main section');
             sections.forEach(s => s.classList.add('hidden')); 
+            
+            // RESET STATE SETIAP KALI PINDAH MENU
+            if (id === 'create-section') {
+                resetCreateState();
+            } else if (id === 'maintain-section') {
+                resetMaintainState();
+            }
+
             const target = document.getElementById(id);
             if (target) {
                 target.classList.remove('hidden'); 
@@ -475,11 +483,37 @@
             if (modal) modal.style.display = 'none'; 
         };
 
+        // Fungsi Reset Khusus Create Section
+        function resetCreateState() {
+            const pnInput = document.getElementById('c-pn-check');
+            const resBox = document.getElementById('pn-res');
+            const fullForm = document.getElementById('create-full-form');
+            const mainForm = document.getElementById('form-create-25');
+            
+            if (pnInput) pnInput.value = '';
+            if (resBox) {
+                resBox.classList.add('hidden');
+                resBox.innerHTML = '';
+            }
+            if (fullForm) fullForm.classList.add('hidden');
+            if (mainForm) mainForm.reset();
+        }
+
+        // Fungsi Reset Khusus Maintain Section
+        function resetMaintainState() {
+            const vCard = document.getElementById('maint-verify-card');
+            const fullForm = document.getElementById('maint-full-form');
+            const inputs = vCard?.querySelectorAll('input, select');
+            
+            if (vCard) vCard.classList.remove('hidden');
+            if (fullForm) fullForm.classList.add('hidden');
+            if (inputs) inputs.forEach(i => i.value = '');
+        }
+
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getFirestore } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 
-        // Variabel penampung konfigurasi
         let firebaseConfig = {};
         try {
             firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
@@ -497,9 +531,6 @@
         let CLEAN_ZERPD_MAP = new Map(); 
         let currentUser = null;
 
-        /** * Menggunakan deklarasi fungsi (Function Declaration) agar terkena Hoisting 
-         * dan menghindari ReferenceError saat dipanggil di initAppLogic.
-         */
         async function initAuth(auth) {
             try {
                 if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
@@ -526,6 +557,7 @@
             if (!stat) return;
 
             try {
+                // Fetch CSV Data
                 const response = await fetch(csvExportUrl);
                 if (!response.ok) throw new Error("Gagal akses spreadsheet");
                 
@@ -545,9 +577,31 @@
                     }
                 }
 
-                if (count > 0) {
+                // Fetch Update Status from Apps Script
+                let lastUpdateInfo = "Waiting Update";
+                try {
+                    const statusRes = await fetch(`${scriptURL}?action=check_status`);
+                    const statusData = await statusRes.json();
+                    if (statusData && statusData.last_update) {
+                        lastUpdateInfo = statusData.last_update;
+                    }
+                } catch (statusErr) {
+                    console.warn("Gagal mengambil info update terakhir:", statusErr);
+                }
+
+                // --- VALIDASI TANGGAL BERJALAN ---
+                const today = new Date();
+                const todayStr = `${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`;
+                
+                if (lastUpdateInfo !== todayStr && lastUpdateInfo !== "Waiting Update") {
+                    // NON-AKTIFKAN DB JIKA TANGGAL TIDAK SESUAI
+                    CLEAN_ZERPD_MAP = new Map();
+                    stat.innerHTML = `<i class="fas fa-exclamation-triangle text-red-500"></i> DB NON-AKTIF: DATA EXPIRED (${lastUpdateInfo}) | REMARKS: UPDATE ZERPD`;
+                    stat.className = "inline-flex items-center gap-2 mt-1 text-[10px] professional-label tracking-widest bg-red-50 px-4 py-1.5 rounded-full border border-red-200 italic text-red-700";
+                    openAlarm(`REMINDER ALARM: Update ZERPD! Tanggal update spreadsheet (${lastUpdateInfo}) tidak sesuai dengan tanggal hari ini. Mohon hubungi Team Catalogue untuk pembaharuan data.`);
+                } else if (count > 0) {
                     CLEAN_ZERPD_MAP = cleanMap;
-                    stat.innerHTML = `<i class="fas fa-check-circle text-emerald-500"></i> DB SPREADSHEET AKTIF: ${count} PN TERDETEKSI`;
+                    stat.innerHTML = `<i class="fas fa-check-circle text-emerald-500"></i> DB SPREADSHEET AKTIF: ${count} PN | LAST UPDATE: ${lastUpdateInfo}`;
                     stat.className = "inline-flex items-center gap-2 mt-1 text-[10px] professional-label tracking-widest bg-emerald-50 px-4 py-1.5 rounded-full border border-emerald-100 italic";
                 } else {
                     throw new Error("Data Kosong");
@@ -573,10 +627,8 @@
             }
         }
 
-        // --- UI LOGIC FOR CONCISE SELECTS ---
         function setupConciseSelects() {
             const selects = document.querySelectorAll('.concise-select');
-            
             selects.forEach(select => {
                 Array.from(select.options).forEach(opt => {
                     if (opt.value && opt.text.includes(' - ')) {
@@ -585,20 +637,15 @@
                         opt.setAttribute('data-full', opt.text);
                     }
                 });
-
                 const updateToConcise = () => {
-                    Array.from(select.options).forEach(opt => {
-                        if (opt.value) opt.text = opt.value;
-                    });
+                    Array.from(select.options).forEach(opt => { if (opt.value) opt.text = opt.value; });
                 };
-
                 const updateToFull = () => {
                     Array.from(select.options).forEach(opt => {
                         const full = opt.getAttribute('data-full');
                         if (full) opt.text = full;
                     });
                 };
-
                 updateToConcise();
                 select.addEventListener('focus', updateToFull);
                 select.addEventListener('blur', updateToConcise);
@@ -611,10 +658,24 @@
             window.addEventListener('DOMContentLoaded', () => {
                 setupConciseSelects();
                 initAppLogic();
+                setupPNObserver(); 
             });
         } else {
             setupConciseSelects();
             initAppLogic();
+            setupPNObserver();
+        }
+
+        function setupPNObserver() {
+            const pnInput = document.getElementById('c-pn-check');
+            if (pnInput) {
+                pnInput.addEventListener('input', function() {
+                    if (!this.value.trim()) {
+                        document.getElementById('create-full-form').classList.add('hidden');
+                        document.getElementById('pn-res').classList.add('hidden');
+                    }
+                });
+            }
         }
 
         // --- HELPER FUNCTIONS ---
@@ -670,16 +731,21 @@
             const res = document.getElementById('pn-res');
             
             if (CLEAN_ZERPD_MAP.size === 0) { 
-                openAlarm(`Database ZERPD sedang sinkronisasi atau belum tersedia di Spreadsheet.`); 
+                openAlarm(`Verifikasi Non-Aktif. Mohon hubungi Team Catalogue untuk Update ZERPD (Database Expired atau belum sinkron).`); 
                 return; 
             }
-            if (!rawPN) { notify('Input Kosong', 'Masukkan PN.', 'error'); return; }
+            if (!rawPN) { 
+                notify('Input Kosong', 'Masukkan PN.', 'error'); 
+                document.getElementById('create-full-form').classList.add('hidden');
+                return; 
+            }
             
             res.classList.remove('hidden');
             if (CLEAN_ZERPD_MAP.has(cleanInput)) {
                 const matchOriginal = CLEAN_ZERPD_MAP.get(cleanInput);
                 res.className = "p-6 rounded-[1.5rem] border-4 border-red-100 bg-red-50 text-red-700 animate-fade professional-label";
                 res.innerHTML = `<i class="fas fa-exclamation-circle mr-3"></i> DUPLICATE! Terdeteksi PN yang sama di Spreadsheet: "${matchOriginal}".`;
+                document.getElementById('create-full-form').classList.add('hidden');
             } else {
                 res.className = "p-6 rounded-[1.5rem] border-4 border-emerald-100 bg-emerald-50 text-emerald-800 animate-fade professional-label";
                 res.innerHTML = `<i class="fas fa-check-circle mr-3"></i> VERIFIED! Part Number aman untuk diregistrasi.`;
@@ -691,8 +757,13 @@
         window.handleVerifyMaint = async function() {
             const mat = document.getElementById('m-v-mat').value.trim().toUpperCase();
             if(!mat) { notify('Data Belum Lengkap', 'Masukkan Material ID.', 'error'); return; }
+            
             const loader = document.getElementById('loader');
+            const btn = document.getElementById('btn-verify-maint');
+            
             loader.style.display = 'flex';
+            if (btn) btn.disabled = true;
+
             try {
                 const response = await fetch(`${scriptURL}?action=lookup&material=${mat}`);
                 const result = await response.json();
@@ -704,6 +775,7 @@
                 console.error(e); 
             } finally {
                 loader.style.display = 'none';
+                if (btn) btn.disabled = false;
                 document.getElementById('f-mat').value = mat;
                 document.getElementById('maint-verify-card').classList.add('hidden');
                 document.getElementById('maint-full-form').classList.remove('hidden');
@@ -713,36 +785,55 @@
         window.handleSubmitCreate = async (e) => {
             e.preventDefault();
             const loader = document.getElementById('loader');
+            const btn = document.getElementById('btn-submit-create');
+            
             loader.style.display = 'flex';
+            if (btn) btn.disabled = true;
+
             try {
                 const formData = new FormData(e.target);
                 const data = {};
                 for (let [key, value] of formData.entries()) { data[key] = typeof value === 'string' ? value.toUpperCase() : value; }
                 data.request_type = "Request Create Material";
+                
                 await fetch(scriptURL, { method: 'POST', mode: 'no-cors', cache: 'no-cache', body: JSON.stringify(data) });
+                
                 notify('Sukses!', 'Registrasi Berhasil terkirim.', 'success');
-                showSection('home-section'); e.target.reset();
-                document.getElementById('create-full-form').classList.add('hidden');
-            } catch (err) { notify('Gagal!', 'Tidak dapat mengirim data.', 'error'); } 
-            finally { loader.style.display = 'none'; }
+                resetCreateState(); 
+                showSection('home-section'); 
+            } catch (err) { 
+                notify('Gagal!', 'Tidak dapat mengirim data.', 'error'); 
+            } finally { 
+                loader.style.display = 'none'; 
+                if (btn) btn.disabled = false;
+            }
         };
 
         window.handleSubmitMaint = async (e) => {
             e.preventDefault();
             const loader = document.getElementById('loader');
+            const btn = document.getElementById('btn-submit-maint');
+            
             loader.style.display = 'flex';
+            if (btn) btn.disabled = true;
+
             try {
                 const formData = new FormData(e.target);
                 const data = {};
                 for (let [key, value] of formData.entries()) { data[key] = typeof value === 'string' ? value.toUpperCase() : value; }
                 data.request_type = "Maintenance Request";
+                
                 await fetch(scriptURL, { method: 'POST', mode: 'no-cors', cache: 'no-cache', body: JSON.stringify(data) });
+                
                 notify('Berhasil!', 'Maintenance Request terkirim.', 'success');
-                showSection('home-section'); e.target.reset();
-                document.getElementById('maint-full-form').classList.add('hidden');
-                document.getElementById('maint-verify-card').classList.remove('hidden');
-            } catch (err) { notify('Gagal!', 'Terjadi kesalahan.', 'error'); } 
-            finally { loader.style.display = 'none'; }
+                resetMaintainState();
+                showSection('home-section'); 
+            } catch (err) { 
+                notify('Gagal!', 'Terjadi kesalahan.', 'error'); 
+            } finally { 
+                loader.style.display = 'none'; 
+                if (btn) btn.disabled = false;
+            }
         };
 
         function openAlarm(msg) { 
