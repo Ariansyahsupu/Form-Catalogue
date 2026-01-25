@@ -176,14 +176,25 @@
 
     <!-- Alarm Modal -->
     <div id="alarm-modal" class="modal-alarm">
-        <div class="bg-white rounded-[2.5rem] p-10 max-w-md w-full text-center shadow-2xl border-4 border-red-500 animate-fade">
-            <div class="w-24 h-24 bg-red-100 text-red-600 rounded-full flex items-center justify-center text-5xl mx-auto mb-6">
+        <div class="bg-white rounded-[2.5rem] p-8 lg:p-10 max-w-md w-full text-center shadow-2xl border-4 border-red-500 animate-fade">
+            <div class="w-20 h-20 bg-red-100 text-red-600 rounded-full flex items-center justify-center text-4xl mx-auto mb-6">
                 <i class="fas fa-bell animate-bounce"></i>
             </div>
-            <h3 class="text-2xl professional-label mb-4">Status Database</h3>
-            <p id="alarm-msg" class="text-slate-500 font-medium mb-8 leading-relaxed">Pesan status...</p>
-            <button onclick="closeAlarm()" class="w-full py-4 bg-slate-900 text-white font-black rounded-2xl hover:bg-red-600 transition-all uppercase tracking-widest text-sm">
-                Tutup
+            <h3 class="text-2xl professional-label mb-2 text-slate-900">Status Database</h3>
+            <p id="alarm-msg" class="text-slate-500 font-medium mb-6 leading-relaxed text-sm">Pesan status...</p>
+            
+            <!-- WHATSAPP CONTACT BUTTONS -->
+            <div class="flex flex-col gap-3 mb-6">
+                <a href="https://wa.me/6285212540122" target="_blank" class="flex items-center justify-center gap-3 w-full py-3.5 bg-emerald-500 text-white font-black rounded-2xl hover:bg-emerald-600 transition-all uppercase tracking-widest text-[11px] shadow-lg shadow-emerald-100">
+                    <i class="fab fa-whatsapp text-lg"></i> Hubungi Dharma
+                </a>
+                <a href="https://wa.me/6282353086174" target="_blank" class="flex items-center justify-center gap-3 w-full py-3.5 bg-emerald-500 text-white font-black rounded-2xl hover:bg-emerald-600 transition-all uppercase tracking-widest text-[11px] shadow-lg shadow-emerald-100">
+                    <i class="fab fa-whatsapp text-lg"></i> Hubungi Edo
+                </a>
+            </div>
+
+            <button onclick="closeAlarm()" class="w-full py-3 bg-slate-100 text-slate-500 font-bold rounded-2xl hover:bg-slate-200 transition-all uppercase tracking-widest text-[10px]">
+                Tutup Jendela
             </button>
         </div>
     </div>
@@ -531,6 +542,9 @@
         let CLEAN_ZERPD_MAP = new Map(); 
         let currentUser = null;
 
+        /** * Menggunakan deklarasi fungsi (Function Declaration) agar terkena Hoisting 
+         * dan menghindari ReferenceError saat dipanggil di initAppLogic.
+         */
         async function initAuth(auth) {
             try {
                 if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
@@ -598,7 +612,7 @@
                     CLEAN_ZERPD_MAP = new Map();
                     stat.innerHTML = `<i class="fas fa-exclamation-triangle text-red-500"></i> DB NON-AKTIF: DATA EXPIRED (${lastUpdateInfo}) | REMARKS: UPDATE ZERPD`;
                     stat.className = "inline-flex items-center gap-2 mt-1 text-[10px] professional-label tracking-widest bg-red-50 px-4 py-1.5 rounded-full border border-red-200 italic text-red-700";
-                    openAlarm(`REMINDER ALARM: Update ZERPD! Tanggal update spreadsheet (${lastUpdateInfo}) tidak sesuai dengan tanggal hari ini. Mohon hubungi Team Catalogue untuk pembaharuan data.`);
+                    openAlarm(`REMINDER ALARM: Update ZERPD! Tanggal update Data (${lastUpdateInfo}) tidak sesuai dengan tanggal hari ini. Mohon hubungi Team Catalogue untuk pembaharuan data.`);
                 } else if (count > 0) {
                     CLEAN_ZERPD_MAP = cleanMap;
                     stat.innerHTML = `<i class="fas fa-check-circle text-emerald-500"></i> DB SPREADSHEET AKTIF: ${count} PN | LAST UPDATE: ${lastUpdateInfo}`;
