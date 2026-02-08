@@ -6,7 +6,6 @@
     <title>CatLog Pro - Master Data Management</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
         
@@ -32,6 +31,7 @@
             align-items: center;
             text-align: center;
             cursor: pointer;
+            height: 100%;
         }
 
         .premium-card::before {
@@ -63,10 +63,6 @@
             transition: transform 0.3s ease;
         }
 
-        @media (min-width: 1024px) {
-            .icon-box { width: 100px; height: 100px; font-size: 3rem; margin-bottom: 2rem; }
-        }
-
         .loader-overlay { 
             background: rgba(255,255,255,0.9); 
             backdrop-filter: blur(10px); 
@@ -94,81 +90,111 @@
             font-size: 0.875rem; 
         }
         
-        .input-field:focus { 
-            border-color: #3b82f6; 
-            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1); 
-        }
+        .input-field:focus { border-color: #3b82f6; box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1); }
 
-        .input-readonly { 
-            background-color: #f1f5f9; 
-            color: #64748b; 
-            cursor: not-allowed; 
-            border-color: #e2e8f0;
-        }
+        .input-readonly { background-color: #f1f5f9; color: #64748b; cursor: not-allowed; border-color: #e2e8f0; }
 
         .section-header { 
-            border-bottom: 2px solid #f1f5f9; 
-            padding-bottom: 0.75rem; 
-            margin-bottom: 1.5rem; 
-            font-weight: 800; 
-            color: #1e293b; 
-            display: flex; 
-            align-items: center; 
-            gap: 0.75rem; 
-            letter-spacing: -0.025em;
-            text-transform: uppercase;
-            font-size: 0.85rem;
+            border-bottom: 2px solid #f1f5f9; padding-bottom: 0.75rem; margin-bottom: 1.5rem; 
+            font-weight: 800; color: #1e293b; display: flex; align-items: center; gap: 0.75rem; 
+            text-transform: uppercase; font-size: 0.85rem;
         }
 
         .btn-back {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.6rem 1rem;
+            display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.6rem 1rem;
+            background: white; border: 2px solid #f1f5f9; border-radius: 0.85rem;
+            color: #64748b; font-size: 0.7rem; font-weight: 800; text-transform: uppercase;
+            transition: all 0.3s ease; margin-bottom: 1.5rem;
+        }
+
+        .btn-back:hover { transform: translateX(-5px); color: #0f172a; }
+
+        .modal-alarm {
+            display: none; position: fixed; inset: 0; z-index: 200;
+            background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(8px);
+            align-items: center; justify-content: center; padding: 1.5rem;
+        }
+
+        .professional-input { font-weight: 700 !important; text-transform: uppercase !important; }
+        .professional-label { font-weight: 800 !important; text-transform: uppercase !important; color: #1e293b !important; }
+
+        /* Estetika Monitor Profesional (Warna Diperbarui) */
+        .monitor-container {
             background: white;
-            border: 2px solid #f1f5f9;
-            border-radius: 0.85rem;
-            color: #64748b;
-            font-size: 0.7rem;
+            border-radius: 2.5rem;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .monitor-header {
+            background: #ffffff;
+            padding: 1.5rem 2.5rem;
+            border-bottom: 2px solid #f1f5f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .status-badge {
+            padding: 0.4rem 1rem;
+            border-radius: 12px;
+            font-size: 0.65rem;
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            transition: all 0.3s ease;
-            margin-bottom: 1.5rem;
-        }
-
-        .btn-back:hover {
-            border-color: #e2e8f0;
-            color: #0f172a;
-            transform: translateX(-5px);
-        }
-
-        .modal-alarm {
-            display: none;
-            position: fixed;
-            inset: 0;
-            z-index: 200;
-            background: rgba(15, 23, 42, 0.8);
-            backdrop-filter: blur(8px);
+            display: inline-flex;
             align-items: center;
-            justify-content: center;
-            padding: 1.5rem;
+            gap: 0.5rem;
+            border-width: 1px;
         }
 
-        .professional-input {
-            font-weight: 700 !important;
-            text-transform: uppercase !important;
-            letter-spacing: 0.025em;
-        }
-        .professional-label {
-            font-weight: 800 !important;
-            text-transform: uppercase !important;
-            color: #1e293b !important;
+        .monitor-scroll-area {
+            max-height: 600px;
+            overflow-y: auto;
         }
 
-        select.professional-input option {
-            font-weight: 700;
+        .monitor-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        /* Update Warna Header Tabel: Slate 900 untuk kesan mewah */
+        .monitor-table thead th {
+            position: sticky;
+            top: 0;
+            z-index: 5;
+            background: #0f172a; 
+            color: #ffffff;
+            font-weight: 800;
             text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.15em;
+            padding: 1.5rem 2rem;
+            border-bottom: 2px solid #334155;
+            text-align: left;
+        }
+
+        .monitor-table tbody td {
+            padding: 1.25rem 2rem;
+            border-bottom: 1px solid #f1f5f9;
+            color: #334155;
+            font-size: 0.8rem;
+        }
+
+        .monitor-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .monitor-table tbody tr:hover {
+            background-color: #f8fafc;
+        }
+
+        /* Zebra striping halus untuk estetika */
+        .monitor-table tbody tr:nth-child(even) {
+            background-color: #fafbfc;
         }
     </style>
 </head>
@@ -180,540 +206,612 @@
             <div class="w-20 h-20 bg-red-100 text-red-600 rounded-full flex items-center justify-center text-4xl mx-auto mb-6">
                 <i class="fas fa-bell animate-bounce"></i>
             </div>
-            <h3 class="text-2xl professional-label mb-2 text-slate-900">Status Database</h3>
-            <p id="alarm-msg" class="text-slate-500 font-medium mb-6 leading-relaxed text-sm">Pesan status...</p>
-            
-            <!-- WHATSAPP CONTACT BUTTONS -->
+            <h3 class="text-2xl professional-label mb-2">Status Database</h3>
+            <p id="alarm-msg" class="text-slate-500 font-medium mb-6 text-sm">Pesan status...</p>
             <div class="flex flex-col gap-3 mb-6">
-                <a href="https://wa.me/6285212540122" target="_blank" class="flex items-center justify-center gap-3 w-full py-3.5 bg-emerald-500 text-white font-black rounded-2xl hover:bg-emerald-600 transition-all uppercase tracking-widest text-[11px] shadow-lg shadow-emerald-100">
-                    <i class="fab fa-whatsapp text-lg"></i> Hubungi Dharma
-                </a>
-                <a href="https://wa.me/6282353086174" target="_blank" class="flex items-center justify-center gap-3 w-full py-3.5 bg-emerald-500 text-white font-black rounded-2xl hover:bg-emerald-600 transition-all uppercase tracking-widest text-[11px] shadow-lg shadow-emerald-100">
-                    <i class="fab fa-whatsapp text-lg"></i> Hubungi Edo
-                </a>
+                <a href="https://wa.me/6285212540122" target="_blank" class="w-full py-3.5 bg-emerald-500 text-white font-black rounded-2xl text-center text-[11px] uppercase tracking-widest">Hubungi Dharma</a>
+                <a href="https://wa.me/6282353086174" target="_blank" class="w-full py-3.5 bg-emerald-500 text-white font-black rounded-2xl text-center text-[11px] uppercase tracking-widest">Hubungi Edo</a>
             </div>
-
-            <button onclick="closeAlarm()" class="w-full py-3 bg-slate-100 text-slate-500 font-bold rounded-2xl hover:bg-slate-200 transition-all uppercase tracking-widest text-[10px]">
-                Tutup Jendela
-            </button>
+            <button onclick="closeAlarm()" class="w-full py-3 bg-slate-100 text-slate-500 font-bold rounded-2xl uppercase text-[10px]">Tutup Jendela</button>
         </div>
     </div>
 
     <div id="loader" class="loader-overlay">
         <div class="flex flex-col items-center gap-6">
             <div class="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-            <div class="text-center">
-                <p id="loader-text" class="font-extrabold text-slate-800 text-lg tracking-tight">Memproses Permintaan...</p>
-                <div class="w-64 h-2 bg-slate-100 rounded-full mt-4 overflow-hidden">
-                    <div id="loader-progress" class="h-full bg-blue-600 transition-all duration-300" style="width: 0%"></div>
-                </div>
-            </div>
+            <p class="font-extrabold text-slate-800 text-lg">Memproses Data...</p>
         </div>
     </div>
 
     <main class="h-full overflow-y-auto custom-scrollbar bg-slate-50/30">
         <header class="sticky top-0 z-10 bg-white/80 backdrop-blur-xl border-b border-slate-200/60 px-4 lg:px-12 py-4 flex justify-between items-center">
-            <div class="flex items-center gap-4 lg:gap-6">
-                <div class="flex items-center gap-3 cursor-pointer group" onclick="showSection('home-section')">
-                    <div class="bg-blue-600 p-2 rounded-xl lg:p-2.5 lg:rounded-2xl shadow-lg shadow-blue-900/20 group-hover:scale-110 transition-transform">
-                        <i class="fas fa-cubes text-white text-lg lg:text-xl"></i>
-                    </div>
-                    <div>
-                        <h1 class="font-black text-lg lg:text-xl tracking-tighter text-slate-900">CatLog <span class="text-blue-600">PRO</span></h1>
-                    </div>
+            <div class="flex items-center gap-3 cursor-pointer group" onclick="showSection('home-section')">
+                <div class="bg-blue-600 p-2.5 rounded-2xl shadow-lg group-hover:scale-110 transition-transform">
+                    <i class="fas fa-cubes text-white text-xl"></i>
                 </div>
+                <h1 class="font-black text-xl tracking-tighter text-slate-900">CatLog <span class="text-blue-600">PRO</span></h1>
             </div>
-
-            <div class="flex items-center gap-2 lg:gap-6">
-                <div class="hidden md:flex items-center gap-4 border-r border-slate-200 pr-6">
-                    <div class="flex items-center gap-2 px-4 py-2 bg-emerald-50 text-emerald-600 rounded-full border border-emerald-100">
-                        <span class="relative flex h-2 w-2">
-                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                            <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                        </span>
-                        <span class="text-[9px] font-extrabold tracking-widest uppercase text-emerald-700">Cloud Connected</span>
-                    </div>
-                    <div id="header-date" class="text-[10px] font-bold text-slate-500 bg-slate-100 px-4 py-2 rounded-full uppercase tracking-wide"></div>
-                </div>
-                <button onclick="showSection('home-section')" class="w-10 h-10 rounded-2xl bg-white border-2 border-slate-100 text-slate-400 hover:text-blue-600 transition-all flex items-center justify-center shadow-sm">
-                    <i class="fas fa-home"></i>
-                </button>
+            <div class="flex items-center gap-6">
+                <div id="header-date" class="hidden md:block text-[10px] font-bold text-slate-500 bg-slate-100 px-4 py-2 rounded-full uppercase"></div>
+                <button onclick="showSection('home-section')" class="w-10 h-10 rounded-2xl bg-white border-2 border-slate-100 text-slate-400 flex items-center justify-center"><i class="fas fa-home"></i></button>
             </div>
         </header>
 
         <div class="p-4 lg:p-12 max-w-7xl mx-auto">
-            
             <!-- HOME SECTION -->
-            <section id="home-section" class="animate-fade py-6 lg:py-10">
-                <div class="text-center mb-10 lg:mb-16 space-y-4">
-                    <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-blue-50 text-blue-600 rounded-full text-[10px] lg:text-xs font-black uppercase tracking-[0.2em] shadow-sm">Main Hub</div>
-                    <h1 class="text-3xl lg:text-5xl font-black text-slate-900 tracking-tight px-4">Portal Manajemen Master Data</h1>
+            <section id="home-section" class="animate-fade py-10 space-y-12">
+                <div class="text-center space-y-4">
+                    <div class="inline-flex px-4 py-1.5 bg-blue-50 text-blue-600 rounded-full text-xs font-black uppercase tracking-widest">Main Hub</div>
+                    <h1 class="text-4xl lg:text-5xl font-black text-slate-900 tracking-tight">Portal Manajemen Master Data</h1>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-16 px-4">
-                    <div onclick="showSection('maintain-section')" class="premium-card p-8 lg:p-12 text-blue-600 group">
-                        <div class="icon-box bg-blue-50 text-blue-600 shadow-xl shadow-blue-100/50 border border-blue-100">
-                            <i class="fas fa-screwdriver-wrench"></i>
-                        </div>
-                        <h3 class="text-xl lg:text-2xl professional-label mb-3">Maintain Item</h3>
-                        <p class="text-slate-500 text-xs lg:text-sm mb-6 lg:mb-8 font-medium">Update spesifikasi teknis material terdaftar.</p>
-                        <button class="w-full flex items-center justify-center gap-3 px-6 py-4 bg-blue-600 text-white rounded-2xl font-black text-xs uppercase shadow-2xl">
-                            PILIH MODUL <i class="fas fa-arrow-right text-[10px]"></i>
-                        </button>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+                    <div onclick="showSection('maintain-section')" class="premium-card p-8 text-blue-600">
+                        <div class="icon-box bg-blue-50 text-blue-600 border border-blue-100 shadow-xl shadow-blue-100/50"><i class="fas fa-screwdriver-wrench"></i></div>
+                        <h3 class="text-xl professional-label mb-3">Maintain Item</h3>
+                        <p class="text-slate-500 text-[11px] mb-8">Update spesifikasi teknis material terdaftar.</p>
+                        <button class="w-full py-4 bg-blue-600 text-white rounded-2xl font-black text-xs uppercase shadow-lg shadow-blue-200">Pilih Modul</button>
                     </div>
 
-                    <div onclick="showSection('create-section')" class="premium-card p-8 lg:p-12 text-orange-500 group">
-                        <div class="icon-box bg-orange-50 text-orange-500 shadow-xl shadow-orange-100/50 border border-orange-100">
-                            <i class="fas fa-plus-circle"></i>
-                        </div>
-                        <h3 class="text-xl lg:text-2xl professional-label mb-3">Create Material</h3>
-                        <p class="text-slate-500 text-xs lg:text-sm mb-6 lg:mb-8 font-medium">Registrasi material code baru (Validasi ZERPD).</p>
-                        <button class="w-full flex items-center justify-center gap-3 px-6 py-4 bg-orange-500 text-white rounded-2xl font-black text-xs uppercase shadow-2xl">
-                            REGISTRASI BARU <i class="fas fa-arrow-right text-[10px]"></i>
-                        </button>
+                    <div onclick="showSection('create-section')" class="premium-card p-8 text-orange-500">
+                        <div class="icon-box bg-orange-50 text-orange-500 border border-orange-100 shadow-xl shadow-orange-100/50"><i class="fas fa-plus-circle"></i></div>
+                        <h3 class="text-xl professional-label mb-3">Create Material</h3>
+                        <p class="text-slate-500 text-[11px] mb-8">Registrasi material code baru (Validasi ZERPD).</p>
+                        <button class="w-full py-4 bg-orange-500 text-white rounded-2xl font-black text-xs uppercase shadow-lg shadow-orange-200">Registrasi Baru</button>
+                    </div>
+
+                    <div onclick="showSection('monitor-section')" class="premium-card p-8 text-emerald-600">
+                        <div class="icon-box bg-emerald-50 text-emerald-600 border border-emerald-100 shadow-xl shadow-emerald-100/50"><i class="fas fa-desktop"></i></div>
+                        <h3 class="text-xl professional-label mb-3">Activity Monitor</h3>
+                        <p class="text-slate-500 text-[11px] mb-8">Pantau progress pengajuan secara real-time.</p>
+                        <button class="w-full py-4 bg-emerald-600 text-white rounded-2xl font-black text-xs uppercase shadow-lg shadow-emerald-200">Buka Monitor</button>
                     </div>
                 </div>
             </section>
             
+            <!-- MONITOR SECTION -->
+            <section id="monitor-section" class="hidden animate-fade">
+                <div class="max-w-full mx-auto px-2 lg:px-4">
+                    <button onclick="showSection('home-section')" class="btn-back"><i class="fas fa-chevron-left"></i> Dashboard</button>
+                    
+                    <div class="monitor-container">
+                        <div class="monitor-header">
+                            <div class="flex items-center gap-5">
+                                <div class="w-12 h-12 bg-blue-600 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-blue-100">
+                                    <i class="fas fa-desktop text-xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="professional-label text-[13px] tracking-widest">Request Activity Monitor</h3>
+                                    <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest">Bulan: <span id="monitor-month-label" class="text-slate-600"></span></p>
+                                </div>
+                            </div>
+                            <div id="monitor-sync-stat" class="bg-emerald-50 px-4 py-2 rounded-xl border border-emerald-100 text-emerald-600 text-[10px] font-black uppercase flex items-center gap-3">
+                                <div class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div> SINKRONISASI AKTIF
+                            </div>
+                        </div>
+                        
+                        <div class="monitor-scroll-area custom-scrollbar overflow-x-auto">
+                            <table class="monitor-table">
+                                <thead>
+                                    <tr>
+                                        <th>Tanggal</th>
+                                        <th>Pengaju</th>
+                                        <th>Departemen</th>
+                                        <th>Deskripsi Material</th>
+                                        <th>Progress / Remarks</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="monitor-list">
+                                    <tr>
+                                        <td colspan="5" class="px-8 py-24 text-center text-slate-400 text-[12px] font-bold uppercase tracking-widest">Menyinkronkan Aktivitas Terbaru...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="bg-slate-50/50 p-5 text-center border-t border-slate-100">
+                            <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest italic">Data diperbarui otomatis setiap 2 menit • Tampilan Monitor Diperluas</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             <!-- MAINTAIN SECTION -->
             <section id="maintain-section" class="hidden animate-fade">
                 <div class="max-w-4xl mx-auto">
-                    <button onclick="showSection('home-section')" class="btn-back">
-                        <i class="fas fa-chevron-left"></i> Dashboard
-                    </button>
-                </div>
-                <div id="maint-verify-card" class="bg-white p-6 lg:p-16 rounded-[2rem] lg:rounded-[3rem] text-center max-w-4xl mx-auto shadow-2xl border border-slate-100">
-                    <h3 class="text-2xl lg:text-4xl professional-label mb-8">Verifikasi Master Data</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-left mb-8">
-                        <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Material Code</label><input type="text" id="m-v-mat" placeholder="1000XXXX" class="input-field border-2 professional-input"></div>
-                        <div class="space-y-1.5">
-                            <label class="text-[10px] professional-label tracking-widest">Target Plant</label>
-                            <select id="m-v-plant" class="input-field border-2 bg-white professional-input concise-select">
-                                <option value="">-- PILIH --</option>
-                                <script>for(let i=1;i<=28;i++) { let v=`PL${String(i).padStart(2,'0')}`; document.write(`<option value="${v}">${v}</option>`); }</script>
-                            </select>
+                    <button onclick="showSection('home-section')" class="btn-back"><i class="fas fa-chevron-left"></i> Dashboard</button>
+                    <div id="maint-verify-card" class="bg-white p-10 lg:p-16 rounded-[3rem] text-center shadow-2xl border border-slate-100">
+                        <h3 class="text-3xl professional-label mb-8">Verifikasi Master Data</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-left mb-8">
+                            <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Material Code</label><input type="text" id="m-v-mat" placeholder="1000XXXX" class="input-field border-2 professional-input"></div>
+                            <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Target Plant</label><select id="m-v-plant" class="input-field border-2 bg-white professional-input"></select></div>
+                            <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Target SLoc</label><select id="m-v-sloc" class="input-field border-2 bg-white professional-input"></select></div>
+                            <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Storage Bin</label><input type="text" id="m-v-bin" placeholder="INPUT RAK" class="input-field border-2 professional-input"></div>
                         </div>
-                        <div class="space-y-1.5">
-                            <label class="text-[10px] professional-label tracking-widest">Target SLoc</label>
-                            <select id="m-v-sloc" class="input-field border-2 bg-white professional-input concise-select">
-                                <option value="">-- PILIH --</option>
-                                <script>for(let i=1;i<=15;i++) { let v=`S${String(i).padStart(3,'0')}`; document.write(`<option value="${v}">${v}</option>`); }</script>
-                            </select>
-                        </div>
-                        <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Storage Bin</label><input type="text" id="m-v-bin" placeholder="INPUT RAK" class="input-field border-2 professional-input"></div>
+                        <button id="btn-verify-maint" onclick="handleVerifyMaint()" class="w-full bg-slate-900 text-white font-black py-4 rounded-xl uppercase text-xs">Verifikasi & Cari Data</button>
                     </div>
-                    <button id="btn-verify-maint" onclick="handleVerifyMaint()" class="w-full bg-slate-900 text-white font-black py-4 rounded-xl hover:bg-blue-600 transition-all uppercase text-xs">Verifikasi & Cari Data</button>
-                </div>
 
-                <div id="maint-full-form" class="hidden bg-white rounded-[2rem] lg:rounded-[3rem] overflow-hidden shadow-2xl border border-slate-100 max-w-6xl mx-auto">
-                    <div class="bg-slate-900 p-8 text-white">
-                        <h3 class="text-lg lg:text-2xl professional-label text-white italic">Full Maintenance Form</h3>
+                    <div id="maint-full-form" class="hidden bg-white rounded-[3rem] overflow-hidden shadow-2xl border border-slate-100">
+                        <div class="bg-slate-900 p-8 text-white"><h3 class="text-xl professional-label italic">Full Maintenance Form</h3></div>
+                        <form id="form-maint-25" onsubmit="handleSubmitMaint(event)" class="p-10 space-y-12">
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                                <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Material</label><input type="text" name="material" id="f-mat" readonly class="input-field input-readonly professional-input text-blue-600"></div>
+                                <div class="space-y-1.5 md:col-span-2"><label class="text-[10px] professional-label tracking-widest">Description</label><input type="text" name="description" id="Bird" required class="input-field border-2 professional-input"></div>
+                            </div>
+                            <button type="submit" class="w-full py-5 bg-blue-600 text-white font-black rounded-3xl uppercase text-lg">Submit Perubahan</button>
+                        </form>
                     </div>
-                    <form id="form-maint-25" onsubmit="handleSubmitMaint(event)" class="p-6 lg:p-14 space-y-12">
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-                            <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Material</label><input type="text" name="material" id="f-mat" readonly class="input-field input-readonly professional-input text-blue-600"></div>
-                            <div class="space-y-1.5 md:col-span-2"><label class="text-[10px] professional-label tracking-widest">Description</label><input type="text" name="description" id="f-desc" required class="input-field border-2 professional-input"></div>
-                        </div>
-                        <button type="submit" id="btn-submit-maint" class="w-full py-5 bg-blue-600 text-white font-black rounded-3xl shadow-2xl hover:bg-blue-700 transition-all uppercase text-lg">SUBMIT PERUBAHAN</button>
-                    </form>
                 </div>
             </section>
 
             <!-- CREATE SECTION -->
             <section id="create-section" class="hidden animate-fade">
                 <div class="max-w-5xl mx-auto">
-                    <button onclick="showSection('home-section')" class="btn-back">
-                        <i class="fas fa-chevron-left"></i> Dashboard
-                    </button>
-                </div>
-
-                <div class="bg-white rounded-[2rem] lg:rounded-[3rem] overflow-hidden shadow-2xl border border-slate-100 max-w-5xl mx-auto">
-                    <div class="bg-slate-900 p-8 text-white flex justify-between items-center">
-                        <h2 class="text-xl lg:text-3xl professional-label text-white uppercase tracking-tight">Pendaftaran Material Baru</h2>
-                    </div>
-                    <div class="p-6 lg:p-14 space-y-10">
-                        <!-- ZERPD CARD -->
-                        <div id="create-zerpd-card" class="bg-orange-50/40 border border-orange-100 p-6 lg:p-10 rounded-[2rem] space-y-8 shadow-inner">
-                            <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+                    <button onclick="showSection('home-section')" class="btn-back"><i class="fas fa-chevron-left"></i> Dashboard</button>
+                    <div class="bg-white rounded-[3rem] overflow-hidden shadow-2xl border border-slate-100">
+                        <div class="bg-slate-900 p-8 text-white"><h2 class="text-2xl professional-label">Pendaftaran Material Baru</h2></div>
+                        <div class="p-10 space-y-10">
+                            <div id="create-zerpd-card" class="bg-orange-50/40 border border-orange-100 p-10 rounded-[2rem] space-y-8">
                                 <div class="flex gap-4 items-center">
                                     <div class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-orange-600 text-xl shadow-sm"><i class="fas fa-magnifying-glass"></i></div>
                                     <div>
-                                        <h4 class="professional-label text-lg tracking-tight">Duplicate Check (ZERPD)</h4>
+                                        <h4 class="professional-label text-lg">Duplicate Check (ZERPD)</h4>
                                         <div id="zerpd-status-bar" class="inline-flex items-center gap-2 mt-1 text-[10px] professional-label tracking-widest bg-white px-4 py-1.5 rounded-full border border-orange-100 italic">
-                                            <i class="fas fa-circle-notch animate-spin text-blue-600"></i> SEDANG MEMBACA SPREADSHEET...
+                                            <i class="fas fa-circle-notch animate-spin text-blue-600"></i> Sinkronisasi Database...
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-
-                            <div class="pt-6 border-t border-orange-100 flex flex-col md:flex-row gap-4">
-                                <input type="text" id="c-pn-check" placeholder="INPUT PART NUMBER..." class="flex-1 input-field border-2 border-orange-100 py-3 lg:py-5 font-mono professional-input tracking-widest">
-                                <button id="btn-verify-pn" onclick="handleVerifyPN()" class="bg-slate-900 text-white px-10 py-3 rounded-xl font-black tracking-widest uppercase text-[10px]">
-                                    VERIFIKASI SISTEM
-                                </button>
-                            </div>
-                            <div id="pn-res" class="hidden p-6 rounded-[1.5rem] border-2 animate-fade professional-label text-xs"></div>
-                        </div>
-
-                        <!-- FULL FORM -->
-                        <div id="create-full-form" class="hidden space-y-12 animate-fade pb-6">
-                            <form id="form-create-25" onsubmit="handleSubmitCreate(event)" class="space-y-12">
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-50 p-6 rounded-[2rem] border border-slate-100">
-                                    <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Requester Name</label><input type="text" name="requester_name" required class="input-field border-2 professional-input"></div>
-                                    <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Department</label><input type="text" name="department" required class="input-field border-2 professional-input"></div>
+                                <div class="pt-6 border-t border-orange-100 flex gap-4">
+                                    <input type="text" id="c-pn-check" disabled placeholder="SINKRONISASI DATABASE..." class="flex-1 input-field border-2 border-orange-100 py-4 font-mono professional-input opacity-50 cursor-not-allowed">
+                                    <button id="btn-verify-pn" disabled onclick="handleVerifyPN()" class="bg-slate-400 text-white px-10 rounded-xl font-black uppercase text-[10px] cursor-not-allowed transition-colors">Verifikasi</button>
                                 </div>
-                                
-                                <div class="space-y-8">
-                                    <h4 class="section-header text-orange-600 border-orange-100"><i class="fas fa-layer-group"></i> Master Data Specifications</h4>
-                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-                                        <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Material ID</label><input type="text" name="material" readonly value="NEW-REG" class="input-field input-readonly professional-input"></div>
-                                        <div class="space-y-1.5 md:col-span-2"><label class="text-[10px] professional-label tracking-widest">Description</label><input type="text" name="description" required class="input-field border-2 professional-input"></div>
-                                        
-                                        <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Old Material No.</label><input type="text" name="old_material" readonly value="-" class="input-field input-readonly professional-input"></div>
-                                        
-                                        <!-- Base UoM Dropdown -->
-                                        <div class="space-y-1.5">
-                                            <label class="text-[10px] professional-label tracking-widest">Base UoM</label>
-                                            <select name="base_uom" required class="input-field border-2 professional-input concise-select" data-type="uom">
-                                                <option value="">-- PILIH --</option>
-                                                <option value="AMP">AMP - AMPERE</option><option value="BAG">BAG - BAG</option><option value="BOX">BOX - BOX</option><option value="BT">BT - BOTTLE</option><option value="BTG">BTG - BATANG</option><option value="BUK">BUK - BUKU</option><option value="CAN">CAN - CANISTER</option><option value="CAR">CAR - CARTON</option><option value="CL">CL - CENTILITER</option><option value="CM">CM - CENTIMETER</option><option value="D">D - DAYS</option><option value="DR">DR - DRUM</option><option value="DUS">DUS - DUS</option><option value="EA">EA - EACH</option><option value="G">G - GRAM</option><option value="GAL">GAL - US GALLON</option><option value="KG">KG - KILOGRAM</option><option value="KLG">KLG - KALENG</option><option value="KM">KM - KILOMETER</option><option value="L">L - LITER</option><option value="LB">LB - POUND</option><option value="LBR">LBR - LEMBAR</option><option value="LSN">LSN - LUSIN</option><option value="M">M - METER</option><option value="M2">M2 - SQUARE METER</option><option value="M3">M3 - CUBIC METER</option><option value="MG">MG - MILLIGRAM</option><option value="ML">ML - MILLILITER</option><option value="MM">MM - MILLIMETER</option><option value="OZ">OZ - OUNCE</option><option value="PC">PC - PIECE</option><option value="PCS">PCS - PIECES</option><option value="PKT">PKT - PKT</option><option value="PL">PL - PAIL</option><option value="RIM">RIM - RIM</option><option value="ROL">ROL - ROLL</option><option value="SAK">SAK - SACK</option><option value="SET">SET - SET</option><option value="TAB">TAB - TABLET</option><option value="TBG">TBG - TABUNG</option><option value="TON">TON - US TON</option><option value="TUB">TUB - TUBE</option><option value="UN">UN - UNIT</option><option value="UNT">UNT - UNIT</option>
-                                            </select>
-                                        </div>
+                                <div id="pn-res" class="hidden p-6 rounded-[1.5rem] border-2 animate-fade professional-label text-xs"></div>
+                            </div>
 
-                                        <div class="space-y-1.5">
-                                            <label class="text-[10px] professional-label tracking-widest">Mat Type</label>
-                                            <select id="create-mat-type" name="material_type" required class="input-field border-2 professional-input concise-select" onchange="updateValuationClass()" data-type="type">
-                                                <option value="">-- PILIH --</option>
-                                                <option value="SPRT">SPRT - SPAREPART</option><option value="FOGC">FOGC - FOGC</option><option value="TYRE">TYRE - TYRE</option><option value="CONS">CONS - CONSUMABLE</option><option value="GENS">GENS - GENERAL SUPPLY</option><option value="ASET">ASET - ASSET</option><option value="SEJA">SEJA - SERVICE & JASA</option><option value="MDLE">MDLE - MODULE</option><option value="BOMM">BOMM - BOM MATERIAL</option><option value="FFF">FFF - FFF CLASS</option>
-                                            </select>
-                                        </div>
-                                        
-                                        <div class="space-y-1.5">
-                                            <label class="text-[10px] professional-label tracking-widest">Mat Group</label>
-                                            <select id="create-mat-group" name="material_group" required class="input-field border-2 professional-input concise-select" onchange="updateValuationClass()" data-type="group">
-                                                <option value="">-- PILIH --</option>
-                                                <option value="S001">S001 - SPAREPART</option><option value="S002">S002 - ELECTRICAL SYSTEM</option><option value="S003">S003 - TRANSMISSION</option><option value="S004">S004 - GET</option><option value="S005">S005 - UNDERCARRIAGE</option><option value="S006">S006 - WHEEL</option><option value="F001">F001 - FUEL</option><option value="F002">F002 - OIL</option><option value="F003">F003 - GREASE</option><option value="F004">F004 - COOLANT</option><option value="T001">T001 - TYRE</option><option value="G001">G001 - GENERAL SUPPLY</option><option value="G002">G002 - APD</option><option value="C001">C001 - RAMBU-RAMBU</option><option value="C002">C002 - AKSESORIS</option><option value="C003">C003 - COMMON TOOLS</option><option value="C004">C004 - MEDICINE</option><option value="C005">C005 - ALAT TULIS KANTOR</option><option value="C006">C006 - PERALATAN/PERLENGKAPAN</option><option value="C007">C007 - BEBAN SERAGAM</option><option value="A001">A001 - HARDWARE</option><option value="A002">A002 - SOFTWARE</option><option value="A003">A003 - EQUIPMENT</option><option value="A004">A004 - BUILDING</option><option value="A005">A005 - SPECIAL TOOLS</option><option value="A006">A006 - INVENTARIS</option><option value="J001">J001 - JASA EKSPEDISI</option><option value="J002">J002 - JASA SERTIFIKASI</option><option value="J003">J003 - JASA SURVEY</option><option value="J004">J004 - JASA FABRIKASI</option><option value="J005">J005 - JASA LAB</option><option value="J006">J006 - JASA KONSULTAN</option><option value="J007">J007 - JASA ANGKUT BBM</option><option value="J008">J008 - JASA BLASTING</option><option value="J009">J009 - JASA PEMELIHARAAN BANGUNAN</option><option value="J010">J010 - JASA PEMELIHARAAN MESIN</option><option value="J011">J011 - JASA PEMELIHARAAN ALAT BERAT</option><option value="J012">J012 - JASA PEMELIHARAAN KENDARAAN</option><option value="J013">J013 - JASA PERALATAN</option><option value="J014">J014 - JASA MOBILISASI</option><option value="J015">J015 - JASA SEWA KENDARAAN</option><option value="M001">M001 - MODULE</option>
-                                            </select>
-                                        </div>
-                                        <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Mfg PN</label><input type="text" name="mfg_part" id="create-final-pn" readonly class="input-field input-readonly professional-input text-orange-600"></div>
-                                        <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">MFG Profile</label><input type="text" name="mfg_profile" readonly value="-" class="input-field input-readonly professional-input"></div>
-                                        
-                                        <div class="space-y-1.5">
-                                            <label class="text-[10px] professional-label tracking-widest">Plant</label>
-                                            <select name="plant" required class="input-field border-2 bg-white professional-input concise-select">
-                                                <script>for(let i=1;i<=28;i++) { let v=`PL${String(i).padStart(2,'0')}`; document.write(`<option value="${v}">${v}</option>`); }</script>
-                                            </select>
-                                        </div>
-                                        <div class="space-y-1.5">
-                                            <label class="text-[10px] professional-label tracking-widest">Storage Location</label>
-                                            <select name="storage_location" required class="input-field border-2 bg-white professional-input concise-select">
-                                                <option value="">-- PILIH --</option>
-                                                <script>for(let i=1;i<=15;i++) { let v=`S${String(i).padStart(3,'0')}`; document.write(`<option value="${v}">${v}</option>`); }</script>
-                                            </select>
-                                        </div>
-                                        
-                                        <div class="space-y-1.5">
-                                            <label class="text-[10px] professional-label tracking-widest">Purchasing Group</label>
-                                            <select name="purchasing_group" required class="input-field border-2 professional-input concise-select">
-                                                <option value="">-- PILIH --</option>
-                                                <option value="G01">G01 - SPAREPART</option><option value="G02">G02 - CONSUMABLE / GENERAL SUPPLY</option><option value="G03">G03 - SERVICE / JASA</option><option value="G04">G04 - FUEL</option><option value="G05">G05 - INFRASTRUKTUR</option><option value="G06">G06 - SARANA</option><option value="G07">G07 - AST, MDL & UNT</option>
-                                            </select>
-                                        </div>
-                                        
-                                        <!-- Locked Parameters -->
-                                        <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Automatic PO</label><input type="text" name="auto_po" readonly value="YES" class="input-field input-readonly professional-input text-emerald-600"></div>
-                                        <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">MRP Controller</label><input type="text" name="mrp_controller" readonly value="ND" class="input-field input-readonly professional-input text-blue-600"></div>
-                                        <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Lot Sizing</label><input type="text" name="lot_sizing" readonly value="" class="input-field input-readonly professional-input"></div>
-                                        
-                                        <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Max Stock</label><input type="number" name="max_stock" readonly value="0" class="input-field input-readonly professional-input"></div>
-                                        <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Proc. Type</label><input type="text" name="proc_type" readonly value="F" class="input-field input-readonly professional-input"></div>
-                                        <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Spec Proc</label><input type="text" name="spec_proc" readonly value="40" class="input-field input-readonly professional-input"></div>
-                                        
-                                        <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Delivery Time</label><input type="number" name="delivery_time" readonly value="7" class="input-field input-readonly professional-input"></div>
-                                        <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Safety Stock</label><input type="number" name="safety_stock" readonly value="0" class="input-field input-readonly professional-input"></div>
-                                        
-                                        <div class="space-y-1.5">
-                                            <label class="text-[10px] professional-label tracking-widest">Serial Profile</label>
-                                            <select name="serial_profile" class="input-field border-2 professional-input concise-select">
-                                                <option value="NON SN">NON SN - NON SERIALIZE</option>
-                                                <option value="SNI1">SNI1 - SN FOR TYRE</option>
-                                                <option value="SNI2">SNI2 - SN FOR MODULE COMPONENT</option>
-                                            </select>
-                                        </div>
-                                        
-                                        <div class="space-y-1.5">
-                                            <label class="text-[10px] professional-label tracking-widest">Valuation Category</label>
-                                            <select name="valuation_cat" required class="input-field border-2 professional-input concise-select">
-                                                <option value="S">S - SPAREPART/TYRE/MODULE</option>
-                                                <option value="O">O - OIL</option>
-                                            </select>
-                                        </div>
-                                        <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Val. Class</label><input type="text" id="create-val-class" name="valuation_class" readonly class="input-field input-readonly professional-input text-slate-900"></div>
-                                        <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Storage Bin</label><input type="text" name="storage_bin" class="input-field border-2 professional-input"></div>
+                            <div id="create-full-form" class="hidden space-y-12 animate-fade pb-10">
+                                <form id="form-create-25" onsubmit="handleSubmitCreate(event)" class="space-y-12">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-50 p-8 rounded-[2rem]">
+                                        <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Requester Name</label><input type="text" id="f-req-name" name="requester_name" required class="input-field border-2 professional-input"></div>
+                                        <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Department</label><input type="text" id="f-req-dept" name="department" required class="input-field border-2 professional-input"></div>
                                     </div>
-                                </div>
-                                <button type="submit" id="btn-submit-create" class="w-full py-5 bg-orange-500 text-white font-black rounded-3xl shadow-2xl hover:bg-orange-600 transition-all uppercase text-lg tracking-tight">DAFTARKAN MATERIAL</button>
-                            </form>
+                                    
+                                    <div class="space-y-8">
+                                        <h4 class="section-header text-orange-600 border-orange-100"><i class="fas fa-layer-group"></i> Master Data Specifications</h4>
+                                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                            <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Material ID</label><input type="text" name="material" readonly value="NEW-REG" class="input-field input-readonly professional-input"></div>
+                                            <div class="space-y-1.5 md:col-span-2"><label class="text-[10px] professional-label tracking-widest">Description</label><input type="text" name="description" required class="input-field border-2 professional-input"></div>
+                                            <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Old Material No.</label><input type="text" name="old_material" readonly value="-" class="input-field input-readonly professional-input"></div>
+                                            <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Base UoM</label><select name="base_uom" id="f-uom" required class="input-field border-2 professional-input"></select></div>
+                                            <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Mat Type</label><select name="material_type" id="f-type" required class="input-field border-2 professional-input" onchange="updateValuationClass()"></select></div>
+                                            <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Mat Group</label><select name="material_group" id="f-group" required class="input-field border-2 professional-input" onchange="updateValuationClass()"></select></div>
+                                            <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Mfg PN</label><input type="text" name="mfg_part" id="create-final-pn" readonly class="input-field input-readonly professional-input text-orange-600 font-mono"></div>
+                                            <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">MFG Profile</label><input type="text" name="mfg_profile" readonly value="-" class="input-field input-readonly professional-input"></div>
+                                            <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Plant</label><select name="plant" id="f-plant" required class="input-field border-2 bg-white professional-input"></select></div>
+                                            <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Storage Location</label><select name="storage_location" id="f-sloc" required class="input-field border-2 bg-white professional-input"></select></div>
+                                            <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Purchasing Group</label><select name="purchasing_group" id="f-purch" required class="input-field border-2 professional-input"></select></div>
+                                            <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Automatic PO</label><input type="text" name="auto_po" readonly value="YES" class="input-field input-readonly professional-input text-emerald-600"></div>
+                                            <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">MRP Controller</label><input type="text" name="mrp_controller" readonly value="ND" class="input-field input-readonly professional-input text-blue-600"></div>
+                                            <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Lot Sizing</label><input type="text" name="lot_sizing" readonly value="" class="input-field input-readonly professional-input"></div>
+                                            <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Max Stock</label><input type="number" name="max_stock" readonly value="0" class="input-field input-readonly professional-input"></div>
+                                            <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Proc. Type</label><input type="text" name="proc_type" readonly value="F" class="input-field input-readonly professional-input"></div>
+                                            <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Spec Proc</label><input type="text" name="spec_proc" readonly value="40" class="input-field input-readonly professional-input"></div>
+                                            <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Delivery Time</label><input type="number" name="delivery_time" readonly value="7" class="input-field input-readonly professional-input"></div>
+                                            <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Safety Stock</label><input type="number" name="safety_stock" readonly value="0" class="input-field input-readonly professional-input"></div>
+                                            <div class="space-y-1.5">
+                                                <label class="text-[10px] professional-label tracking-widest">Serial Profile</label>
+                                                <select name="serial_profile" class="input-field border-2 professional-input">
+                                                    <option value="NON SN">NON SN - NON SERIALIZE</option>
+                                                    <option value="SNI1">SNI1 - SN FOR TYRE</option>
+                                                    <option value="SNI2">SNI2 - SN FOR MODULE COMPONENT</option>
+                                                </select>
+                                            </div>
+                                            <div class="space-y-1.5">
+                                                <label class="text-[10px] professional-label tracking-widest">Valuation Category</label>
+                                                <select name="valuation_cat" required class="input-field border-2 professional-input">
+                                                    <option value="S">S - SPAREPART/TYRE/MODULE</option>
+                                                    <option value="O">O - OIL</option>
+                                                </select>
+                                            </div>
+                                            <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Val. Class</label><input type="text" id="create-val-class" name="valuation_class" readonly class="input-field input-readonly professional-input text-slate-900"></div>
+                                            <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Storage Bin</label><input type="text" name="storage_bin" class="input-field border-2 professional-input"></div>
+                                            <div class="space-y-1.5 md:col-span-3"><label class="text-[10px] professional-label tracking-widest">Remarks / Note</label><input type="text" name="remarks" placeholder="CATATAN TAMBAHAN" class="input-field border-2 professional-input"></div>
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="w-full py-5 bg-orange-500 text-white font-black rounded-3xl uppercase text-lg shadow-2xl hover:bg-orange-600 transition-all">DAFTARKAN MATERIAL</button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
             </section>
         </div>
 
-        <div id="toast" class="fixed bottom-6 right-6 lg:bottom-10 lg:right-10 flex items-center gap-6 bg-slate-900 text-white px-8 py-5 rounded-[2rem] shadow-2xl translate-y-40 opacity-0 transition-all z-[99] border border-slate-700">
+        <div id="toast" class="fixed bottom-10 right-10 flex items-center gap-6 bg-slate-900 text-white px-8 py-5 rounded-[2rem] shadow-2xl translate-y-40 opacity-0 transition-all z-[99] border border-slate-700">
             <div id="toast-icon" class="w-10 h-10 rounded-xl flex items-center justify-center text-lg"></div>
             <div>
-                <p id="t-title" class="font-black text-sm tracking-tight"></p>
+                <p id="t-title" class="font-black text-sm"></p>
                 <p id="t-msg" class="text-[10px] text-slate-400 font-medium"></p>
             </div>
         </div>
     </main>
 
     <script type="module">
-        // GLOBAL NAVIGATION FUNCTIONS
-        window.showSection = function(id) { 
-            const sections = document.querySelectorAll('main section');
-            sections.forEach(s => s.classList.add('hidden')); 
-            
-            // RESET STATE SETIAP KALI PINDAH MENU
-            if (id === 'create-section') {
-                resetCreateState();
-            } else if (id === 'maintain-section') {
-                resetMaintainState();
-            }
-
-            const target = document.getElementById(id);
-            if (target) {
-                target.classList.remove('hidden'); 
-                window.scrollTo({ top: 0, behavior: 'smooth' }); 
-            }
-        };
-
-        window.closeAlarm = function() { 
-            const modal = document.getElementById('alarm-modal');
-            if (modal) modal.style.display = 'none'; 
-        };
-
-        // Fungsi Reset Khusus Create Section
-        function resetCreateState() {
-            const pnInput = document.getElementById('c-pn-check');
-            const resBox = document.getElementById('pn-res');
-            const fullForm = document.getElementById('create-full-form');
-            const mainForm = document.getElementById('form-create-25');
-            
-            if (pnInput) pnInput.value = '';
-            if (resBox) {
-                resBox.classList.add('hidden');
-                resBox.innerHTML = '';
-            }
-            if (fullForm) fullForm.classList.add('hidden');
-            if (mainForm) mainForm.reset();
-        }
-
-        // Fungsi Reset Khusus Maintain Section
-        function resetMaintainState() {
-            const vCard = document.getElementById('maint-verify-card');
-            const fullForm = document.getElementById('maint-full-form');
-            const inputs = vCard?.querySelectorAll('input, select');
-            
-            if (vCard) vCard.classList.remove('hidden');
-            if (fullForm) fullForm.classList.add('hidden');
-            if (inputs) inputs.forEach(i => i.value = '');
-        }
-
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getFirestore } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-
-        let firebaseConfig = {};
-        try {
-            firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
-        } catch (e) {
-            console.warn("Firebase config tidak ditemukan.");
-        }
-
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
         const scriptURL = "https://script.google.com/macros/s/AKfycbyR2spJCAxKQ-DViYl8JI8vMrcTqDTHez67DAHWcufvflC8dbNaBAEaxyGxt2sMqCQ1/exec";
+        const csvPubURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQFR3WLBquvFttCMJlrZQOrK2u8TMm3Dhj2yMukhbakAC5LdUAndnaPn6FesXRWUl5R1IHmAuKDRnER/pub?gid=1089770718&single=true&output=csv";
+        const csvAccessURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQf_Og1jqJhzDmiLJYNEaL_NK_jYS7-Y9tpNcFaI1qBaI57ql11fRVHAP42anjct-vwvOKw-CGlikLU/pub?gid=242300721&single=true&output=csv";
         
-        const spreadsheetId = '16PmMztvhkA9PnYOXoRF7IyeVmvqkIa-I89CCcT6iElU';
-        const gid = '602839138';
-        const csvExportUrl = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/export?format=csv&gid=${gid}`;
+        const csvCreateMatURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQf_Og1jqJhzDmiLJYNEaL_NK_jYS7-Y9tpNcFaI1qBaI57ql11fRVHAP42anjct-vwvOKw-CGlikLU/pub?gid=1174357410&single=true&output=csv";
 
-        let CLEAN_ZERPD_MAP = new Map(); 
-        let currentUser = null;
+        let CLEAN_ZERPD_MAP = new Map();
+        let VALID_ACCESS_RECORDS = new Map();
 
-        /** * Menggunakan deklarasi fungsi (Function Declaration) agar terkena Hoisting 
-         * dan menghindari ReferenceError saat dipanggil di initAppLogic.
-         */
-        async function initAuth(auth) {
-            try {
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else { 
-                    await signInAnonymously(auth); 
-                }
-            } catch (err) { 
-                console.error("Auth failed:", err); 
+        window.showSection = function(id) { 
+            document.querySelectorAll('main section').forEach(s => s.classList.add('hidden')); 
+            const target = document.getElementById(id);
+            if (target) target.classList.remove('hidden'); 
+            window.scrollTo({ top: 0, behavior: 'smooth' }); 
+        };
+
+        window.closeAlarm = function() { document.getElementById('alarm-modal').style.display = 'none'; };
+
+        function parseCSVLine(line, delimiter = ',') {
+            const result = [];
+            let current = '';
+            let inQuotes = false;
+            for (let i = 0; i < line.length; i++) {
+                const char = line[i];
+                if (char === '"') inQuotes = !inQuotes;
+                else if (char === delimiter && !inQuotes) {
+                    result.push(current);
+                    current = '';
+                } else current += char;
             }
-
-            onAuthStateChanged(auth, (user) => {
-                currentUser = user;
-                syncZerpdFromSpreadsheet();
-                const dateEl = document.getElementById('header-date');
-                if (dateEl) {
-                    dateEl.innerText = new Date().toLocaleDateString('id-ID', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
-                }
-            });
+            result.push(current);
+            return result;
         }
 
         async function syncZerpdFromSpreadsheet() {
             const stat = document.getElementById('zerpd-status-bar');
-            if (!stat) return;
+            const pnInput = document.getElementById('c-pn-check');
+            const pnBtn = document.getElementById('btn-verify-pn');
 
             try {
-                // Fetch CSV Data
-                const response = await fetch(csvExportUrl);
-                if (!response.ok) throw new Error("Gagal akses spreadsheet");
-                
-                const csvData = await response.text();
-                const lines = csvData.split(/\r?\n/);
+                const response = await fetch(csvPubURL);
+                if (!response.ok) throw new Error();
+                const csvText = await response.text();
+                const lines = csvText.split(/\r?\n/);
                 const cleanMap = new Map();
-                let count = 0;
+                
+                let syncInfo = "Offline";
+                if (lines[0]) {
+                    const headerCols = parseCSVLine(lines[0]);
+                    if (headerCols[9]) syncInfo = headerCols[9].trim();
+                }
 
                 for (let i = 1; i < lines.length; i++) {
-                    const cols = lines[i].split(',');
-                    if (cols.length >= 2) {
-                        const rawPn = cols[1]?.trim().replace(/"/g, ''); 
-                        if (rawPn) {
-                            cleanMap.set(getCleanPN(rawPn), rawPn);
-                            count++;
+                    if (!lines[i].trim()) continue;
+                    const cols = parseCSVLine(lines[i]);
+                    const rawPn = cols[2] ? cols[2].trim() : "";
+                    if (rawPn && rawPn !== '-') {
+                        const cleanKey = getCleanPN(rawPn);
+                        if (!cleanMap.has(cleanKey)) {
+                            cleanMap.set(cleanKey, []);
                         }
+                        cleanMap.get(cleanKey).push({ pn: rawPn, Bird: cols[1], mat: cols[0] });
                     }
                 }
-
-                // Fetch Update Status from Apps Script
-                let lastUpdateInfo = "Waiting Update";
-                try {
-                    const statusRes = await fetch(`${scriptURL}?action=check_status`);
-                    const statusData = await statusRes.json();
-                    if (statusData && statusData.last_update) {
-                        lastUpdateInfo = statusData.last_update;
-                    }
-                } catch (statusErr) {
-                    console.warn("Gagal mengambil info update terakhir:", statusErr);
-                }
-
-                // --- VALIDASI TANGGAL BERJALAN ---
-                const today = new Date();
-                const todayStr = `${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`;
                 
-                if (lastUpdateInfo !== todayStr && lastUpdateInfo !== "Waiting Update") {
-                    // NON-AKTIFKAN DB JIKA TANGGAL TIDAK SESUAI
-                    CLEAN_ZERPD_MAP = new Map();
-                    stat.innerHTML = `<i class="fas fa-exclamation-triangle text-red-500"></i> DB NON-AKTIF: DATA EXPIRED (${lastUpdateInfo}) | REMARKS: UPDATE ZERPD`;
-                    stat.className = "inline-flex items-center gap-2 mt-1 text-[10px] professional-label tracking-widest bg-red-50 px-4 py-1.5 rounded-full border border-red-200 italic text-red-700";
-                    openAlarm(`REMINDER ALARM: Update ZERPD! Tanggal update Data (${lastUpdateInfo}) tidak sesuai dengan tanggal hari ini. Mohon hubungi Team Catalogue untuk pembaharuan data.`);
-                } else if (count > 0) {
-                    CLEAN_ZERPD_MAP = cleanMap;
-                    stat.innerHTML = `<i class="fas fa-check-circle text-emerald-500"></i> DB SPREADSHEET AKTIF: ${count} PN | LAST UPDATE: ${lastUpdateInfo}`;
-                    stat.className = "inline-flex items-center gap-2 mt-1 text-[10px] professional-label tracking-widest bg-emerald-50 px-4 py-1.5 rounded-full border border-emerald-100 italic";
-                } else {
-                    throw new Error("Data Kosong");
-                }
+                CLEAN_ZERPD_MAP = cleanMap;
+                stat.innerHTML = `<i class="fas fa-check-circle text-emerald-500"></i> DB AKTIF: ${CLEAN_ZERPD_MAP.size} KELOMPOK PN | ${syncInfo}`;
+                stat.className = "inline-flex items-center gap-2 mt-1 text-[10px] professional-label tracking-widest bg-emerald-50 px-4 py-1.5 rounded-full border border-emerald-100 italic";
+                
+                pnInput.disabled = false;
+                pnInput.placeholder = "INPUT PART NUMBER...";
+                pnInput.classList.remove('opacity-50', 'cursor-not-allowed');
+                pnBtn.disabled = false;
+                pnBtn.classList.remove('bg-slate-400', 'cursor-not-allowed');
+                pnBtn.classList.add('bg-slate-900');
             } catch (error) {
-                console.error("Sync Error:", error);
-                stat.innerHTML = `<i class="fas fa-clock text-orange-500"></i> Waiting Update ZERPD Hub Team Catalogue`;
-                stat.className = "inline-flex items-center gap-2 mt-1 text-[10px] professional-label tracking-widest bg-orange-50 px-4 py-1.5 rounded-full border border-orange-200 italic text-orange-700";
+                stat.innerHTML = `<i class="fas fa-exclamation-triangle text-orange-500"></i> Database Offline`;
             }
         }
 
-        function initAppLogic() {
-            if (Object.keys(firebaseConfig).length > 0) {
-                const app = initializeApp(firebaseConfig);
-                const auth = getAuth(app);
-                initAuth(auth);
-            } else {
-                syncZerpdFromSpreadsheet();
-                const dateEl = document.getElementById('header-date');
-                if (dateEl) {
-                    dateEl.innerText = new Date().toLocaleDateString('id-ID', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+        async function syncMonitoringData() {
+            const monitorList = document.getElementById('monitor-list');
+            const monthLabel = document.getElementById('monitor-month-label');
+            const now = new Date();
+            const currentMonth = now.getMonth();
+            const currentYear = now.getFullYear();
+            
+            monthLabel.innerText = now.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' }).toUpperCase();
+
+            try {
+                const response = await fetch(csvCreateMatURL);
+                if (!response.ok) throw new Error();
+                const csvText = await response.text();
+                const lines = csvText.split(/\r?\n/);
+                
+                let html = "";
+                for (let i = lines.length - 1; i >= 1; i--) {
+                    if (!lines[i].trim()) continue;
+                    const cols = parseCSVLine(lines[i]);
+                    if (!cols[0]) continue;
+                    
+                    const parts = cols[0].split(' ')[0].split('/');
+                    let tsDate;
+                    if (parts.length === 3) {
+                        tsDate = new Date(parts[2], parts[1] - 1, parts[0]);
+                    } else {
+                        tsDate = new Date(cols[0]);
+                    }
+                    
+                    if (!isNaN(tsDate.getTime()) && tsDate.getMonth() === currentMonth && tsDate.getFullYear() === currentYear) {
+                        const name = cols[26] || "-";
+                        const dept = cols[27] || "-";
+                        const desc = cols[2] || "-";
+                        const remarks = cols[28] || "DALAM PROSES";
+                        
+                        let badgeStyle = "background-color: #eff6ff; color: #2563eb; border-color: #dbeafe;"; 
+                        let icon = '<i class="fas fa-circle-notch animate-spin text-[8px]"></i>';
+                        
+                        const isNumeric = /^\d+$/.test(remarks.trim());
+
+                        if (remarks.toUpperCase().includes("REJECT")) {
+                            badgeStyle = "background-color: #fff1f2; color: #e11d48; border-color: #ffe4e6;";
+                            icon = '<i class="fas fa-times-circle text-[10px]"></i>';
+                        } else if (remarks.toUpperCase().includes("SELESAI") || remarks.toUpperCase().includes("DONE") || isNumeric) {
+                            badgeStyle = "background-color: #ecfdf5; color: #059669; border-color: #d1fae5;";
+                            icon = '<i class="fas fa-check-circle text-[10px]"></i>';
+                        }
+
+                        html += `
+                            <tr>
+                                <td class="font-mono font-bold text-slate-500">${tsDate.toLocaleDateString('id-ID')}</td>
+                                <td class="font-black uppercase tracking-wide text-slate-800">${name}</td>
+                                <td class="font-extrabold uppercase text-slate-500">${dept}</td>
+                                <td class="font-medium italic leading-relaxed text-slate-700 max-w-sm">${desc}</td>
+                                <td>
+                                    <span class="status-badge" style="${badgeStyle}">${icon} ${isNumeric ? 'SELESAI (' + remarks + ')' : remarks}</span>
+                                </td>
+                            </tr>
+                        `;
+                    }
                 }
+                monitorList.innerHTML = html || `<tr><td colspan="5" class="px-8 py-24 text-center text-slate-400 text-[12px] font-black uppercase tracking-[0.2em]">Belum ada pengajuan di bulan ini</td></tr>`;
+            } catch (e) {
+                monitorList.innerHTML = `<tr><td colspan="5" class="px-8 py-24 text-center text-red-400 text-[12px] font-black uppercase tracking-widest">Gagal Memuat Data Monitor</td></tr>`;
             }
         }
 
-        function setupConciseSelects() {
-            const selects = document.querySelectorAll('.concise-select');
-            selects.forEach(select => {
-                Array.from(select.options).forEach(opt => {
-                    if (opt.value && opt.text.includes(' - ')) {
-                        opt.setAttribute('data-full', opt.text);
-                    } else if (opt.value) {
-                        opt.setAttribute('data-full', opt.text);
+        async function syncAccessCodes() {
+            try {
+                const response = await fetch(csvAccessURL);
+                if (!response.ok) return;
+                const csvText = await response.text();
+                const lines = csvText.split(/\r?\n/);
+                const records = new Map();
+                for (let i = 1; i < lines.length; i++) {
+                    const cols = parseCSVLine(lines[i]);
+                    if (cols[2]) {
+                        records.set(cols[2].trim(), {
+                            timestamp: cols[0] ? new Date(cols[0]) : null,
+                            requester: cols[1] ? cols[1].trim().toUpperCase() : ""
+                        });
                     }
-                });
-                const updateToConcise = () => {
-                    Array.from(select.options).forEach(opt => { if (opt.value) opt.text = opt.value; });
-                };
-                const updateToFull = () => {
-                    Array.from(select.options).forEach(opt => {
-                        const full = opt.getAttribute('data-full');
-                        if (full) opt.text = full;
-                    });
-                };
-                updateToConcise();
-                select.addEventListener('focus', updateToFull);
-                select.addEventListener('blur', updateToConcise);
-                select.addEventListener('change', updateToConcise);
-            });
+                }
+                VALID_ACCESS_RECORDS = records;
+            } catch (e) {}
         }
 
-        // --- ENTRY POINT ---
-        if (document.readyState === 'loading') {
-            window.addEventListener('DOMContentLoaded', () => {
-                setupConciseSelects();
-                initAppLogic();
-                setupPNObserver(); 
-            });
-        } else {
-            setupConciseSelects();
-            initAppLogic();
-            setupPNObserver();
-        }
-
-        function setupPNObserver() {
-            const pnInput = document.getElementById('c-pn-check');
-            if (pnInput) {
-                pnInput.addEventListener('input', function() {
-                    if (!this.value.trim()) {
-                        document.getElementById('create-full-form').classList.add('hidden');
-                        document.getElementById('pn-res').classList.add('hidden');
-                    }
+        window.handleVerifyPN = function() {
+            const rawPN = document.getElementById('c-pn-check').value.trim();
+            const cleanInput = getCleanPN(rawPN);
+            const res = document.getElementById('pn-res');
+            if (!rawPN) return notify('Input Kosong', 'Masukkan PN.', 'error');
+            
+            res.classList.remove('hidden');
+            if (CLEAN_ZERPD_MAP.has(cleanInput)) {
+                const matches = CLEAN_ZERPD_MAP.get(cleanInput);
+                res.className = "p-6 rounded-[1.5rem] border-4 border-red-100 bg-red-50 text-red-700 space-y-3 text-left";
+                let html = `<div class="font-black mb-2 flex items-center gap-2"><i class="fas fa-exclamation-circle text-red-600"></i> <span>DUPLIKAT TERDETEKSI!</span></div>`;
+                matches.forEach((match, index) => {
+                    html += `<div class="bg-white p-4 rounded-xl border border-red-100 shadow-sm">
+                        <div class="text-sm font-black text-slate-900">${match.pn}</div>
+                        <div class="text-[10px] font-extrabold text-blue-600">MAT: ${match.mat || "N/A"}</div>
+                        <div class="text-[11px] font-bold text-slate-500">${match.Bird}</div>
+                    </div>`;
                 });
+                
+                html += `
+                    <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+                        <div class="space-y-1">
+                            <label class="text-[9px] font-black text-slate-400 uppercase">Nama Pengaju</label>
+                            <input type="text" id="access-req-name" placeholder="INPUT NAMA" class="input-field border-2 professional-input py-2">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[9px] font-black text-slate-400 uppercase">Departemen</label>
+                            <input type="text" id="access-req-dept" placeholder="DEPT" class="input-field border-2 professional-input py-2">
+                        </div>
+                    </div>
+                    <div id="access-code-area">
+                        <button onclick="showAccessInput()" class="w-full py-3 bg-red-600 text-white font-black rounded-xl text-[10px] uppercase tracking-widest shadow-lg">Daftarkan sebagai Interchange/Pabrikasi</button>
+                    </div>
+                `;
+                res.innerHTML = html;
+                document.getElementById('create-full-form').classList.add('hidden');
+            } else {
+                res.className = "p-6 rounded-[1.5rem] border-4 border-emerald-100 bg-emerald-50 text-emerald-800";
+                res.innerHTML = `<i class="fas fa-check-circle mr-3"></i> <b>VERIFIED!</b> PN aman digunakan.`;
+                document.getElementById('create-full-form').classList.remove('hidden');
+                document.getElementById('create-final-pn').value = rawPN.toUpperCase();
             }
+        };
+
+        window.showAccessInput = function() {
+            const area = document.getElementById('access-code-area');
+            area.innerHTML = `
+                <div class="bg-white p-5 rounded-2xl border-2 border-slate-100 shadow-inner animate-fade">
+                    <label class="text-[9px] font-black text-slate-400 uppercase block mb-2">Masukkan Kode Akses Khusus</label>
+                    <input type="text" id="access-code-input" placeholder="KODE-XXXX" class="input-field border-2 mb-3 text-center font-black tracking-[0.3em]">
+                    <div class="grid grid-cols-2 gap-3">
+                        <button onclick="handleVerifyAccess()" class="py-3 bg-blue-600 text-white font-black rounded-xl text-[9px] uppercase">Verifikasi Kode</button>
+                        <button onclick="requestNewCode()" class="py-3 bg-emerald-500 text-white font-black rounded-xl text-[9px] uppercase flex items-center justify-center gap-2">
+                             <i class="fas fa-key text-[8px]"></i> Minta Kode Akses
+                        </button>
+                    </div>
+                    <div id="generated-code-display" class="hidden mt-4 p-3 bg-emerald-50 border border-emerald-100 rounded-xl text-center">
+                        <p class="text-[9px] font-black text-emerald-700 uppercase">PERMINTAAN TERKIRIM!</p>
+                        <p class="text-[10px] font-bold text-emerald-600 my-2 tracking-tight">KODE ANDA SEDANG DIPROSES</p>
+                        <p class="text-[8px] text-emerald-500 italic leading-tight">Kode tidak ditampilkan di sini demi keamanan. Silakan hubungi Catalogue Team via WA untuk mendapatkan kode tersebut.</p>
+                    </div>
+                </div>
+            `;
+        };
+
+        window.requestNewCode = async function() {
+            const reqName = document.getElementById('access-req-name')?.value.trim();
+            const reqDept = document.getElementById('access-req-dept')?.value.trim();
+
+            if(!reqName || !reqDept) {
+                notify('Data Belum Lengkap', 'Silakan isi Nama Pengaju & Departemen di atas terlebih dahulu.', 'error');
+                return;
+            }
+
+            const now = new Date();
+            const tanggalStr = now.toLocaleString('id-ID');
+
+            document.getElementById('loader').style.display = 'flex';
+            try {
+                const res = await fetch(`${scriptURL}?action=generate_access_code&requester=${encodeURIComponent(reqName)}&dept=${encodeURIComponent(reqDept)}&tanggal=${encodeURIComponent(tanggalStr)}`);
+                const result = await res.json();
+
+                if(result.status === "success") {
+                    document.getElementById('generated-code-display').classList.remove('hidden');
+                    notify('Request Sukses', 'Permintaan kode terkirim ke sistem.', 'success');
+                    if(document.getElementById('f-req-name')) document.getElementById('f-req-name').value = reqName;
+                    if(document.getElementById('f-req-dept')) document.getElementById('f-req-dept').value = reqDept;
+                } else {
+                    notify('Gagal', 'Terjadi kesalahan saat membuat kode.', 'error');
+                }
+            } catch (e) {
+                notify('Error', 'Gagal menghubungi server.', 'error');
+            } finally {
+                document.getElementById('loader').style.display = 'none';
+            }
+        };
+
+        window.handleVerifyAccess = async function() {
+            const inputCode = document.getElementById('access-code-input').value.trim();
+            const inputName = document.getElementById('access-req-name')?.value.trim().toUpperCase();
+
+            if(!inputCode) return notify('Input Kosong', 'Masukkan kode akses.', 'error');
+            if(!inputName) return notify('Nama Kosong', 'Pastikan Nama Pengaju terisi.', 'error');
+
+            await syncAccessCodes();
+            
+            if(VALID_ACCESS_RECORDS.has(inputCode)) {
+                const record = VALID_ACCESS_RECORDS.get(inputCode);
+                const now = new Date();
+                
+                // Verifikasi Nama
+                if (record.requester !== inputName) {
+                    return notify('Verifikasi Gagal', 'Kode ini bukan milik Anda.', 'error');
+                }
+
+                // Verifikasi Waktu (Expired setelah 15 menit)
+                if (record.timestamp) {
+                    const diffMs = now - record.timestamp;
+                    const diffMins = Math.floor(diffMs / 60000);
+                    
+                    if (diffMins >= 15) {
+                        return notify('Code Expired', `Kode sudah kedaluwarsa (${diffMins} menit lalu).`, 'error');
+                    }
+                }
+
+                notify('Akses Terbuka', 'Silakan isi formulir.', 'success');
+                document.getElementById('create-full-form').classList.remove('hidden');
+                document.getElementById('pn-res').classList.add('hidden');
+            } else {
+                notify('Gagal', 'Kode akses tidak ditemukan.', 'error');
+            }
+        };
+
+        window.handleVerifyMaint = async function() {
+            const mat = document.getElementById('m-v-mat').value.trim().toUpperCase();
+            if(!mat) return notify('Input Kosong', 'Masukkan Material ID.', 'error');
+            document.getElementById('loader').style.display = 'flex';
+            try {
+                const res = await fetch(`${scriptURL}?action=lookup&material=${mat}`);
+                const result = await res.json();
+                if (result.status === "success") {
+                    document.getElementById('Bird').value = result.description;
+                    document.getElementById('f-mat').value = mat;
+                    document.getElementById('maint-verify-card').classList.add('hidden');
+                    document.getElementById('maint-full-form').classList.remove('hidden');
+                } else { notify('Tidak Ditemukan', 'Material ID salah.', 'error'); }
+            } catch (e) { notify('Error', 'Gagal verifikasi.', 'error'); }
+            finally { document.getElementById('loader').style.display = 'none'; }
         }
 
-        // --- HELPER FUNCTIONS ---
-        function getCleanPN(pn) {
-            if (!pn) return "";
-            return pn.toString().toUpperCase().replace(/X/g, '').replace(/[^A-Z0-9]/g, ''); 
+        function getCleanPN(pn) { return pn.toString().toUpperCase().replace(/[^A-Z0-9]/g, ''); }
+
+        function setupVisualSwap(id, options) {
+            const sel = document.getElementById(id);
+            if (!sel) return;
+            sel.innerHTML = '<option value="">-- PILIH --</option>';
+            options.forEach(item => {
+                const opt = document.createElement('option');
+                opt.value = item.code;
+                opt.text = item.display;
+                opt.dataset.long = item.display;
+                opt.dataset.short = item.code;
+                sel.appendChild(opt);
+            });
+            const showShort = () => {
+                const opt = sel.options[sel.selectedIndex];
+                if (opt && opt.value) opt.text = opt.dataset.short;
+            };
+            const showLong = () => {
+                Array.from(sel.options).forEach(o => { if (o.dataset.long) o.text = o.dataset.long; });
+            };
+            sel.addEventListener('mousedown', showLong);
+            sel.addEventListener('change', () => { showShort(); sel.blur(); });
+            sel.addEventListener('blur', showShort);
+        }
+
+        function populateSelects() {
+            const plantSel = document.getElementById('f-plant');
+            const mvPlantSel = document.getElementById('m-v-plant');
+            for(let i=1;i<=28;i++) {
+                let v = `PL${i.toString().padStart(2,'0')}`;
+                plantSel.innerHTML += `<option value="${v}">${v}</option>`;
+                mvPlantSel.innerHTML += `<option value="${v}">${v}</option>`;
+            }
+            const slocSel = document.getElementById('f-sloc');
+            const mvSlocSel = document.getElementById('m-v-sloc');
+            for(let i=1;i<=15;i++) {
+                let v = `S${i.toString().padStart(3,'0')}`;
+                slocSel.innerHTML += `<option value="${v}">${v}</option>`;
+                mvSlocSel.innerHTML += `<option value="${v}">${v}</option>`;
+            }
+            
+            setupVisualSwap('f-uom', [{code:"AMP",display:"AMP - AMPERE"},{code:"BAG",display:"BAG - BAG"},{code:"BOX",display:"BOX - BOX"},{code:"BT",display:"BT - BOTTLE"},{code:"BTG",display:"BTG - BATANG"},{code:"BUK",display:"BUK - BUKU"},{code:"CAN",display:"CAN - CANISTER"},{code:"CAR",display:"CAR - CARTON"},{code:"CL",display:"CL - CENTILITER"},{code:"CM",display:"CM - CENTIMETER"},{code:"D",display:"D - DAYS"},{code:"DR",display:"DR - DRUM"},{code:"DUS",display:"DUS - DUS"},{code:"EA",display:"EA - EACH"},{code:"G",display:"G - GRAM"},{code:"GAL",display:"GAL - US GALLON"},{code:"KG",display:"KG - KILOGRAM"},{code:"KLG",display:"KLG - KALENG"},{code:"KM",display:"KM - KILOMETER"},{code:"L",display:"L"},{code:"LB",display:"LB - POUND"},{code:"LBR",display:"LBR - LEMBAR"},{code:"LSN",display:"LSN - LUSIN"},{code:"M",display:"M - METER"},{code:"M2",display:"M2 - SQUARE METER"},{code:"M3",display:"M3 - CUBIC METER"},{code:"MG",display:"MG - MILLIGRAM"},{code:"ML",display:"ML - MILLILITER"},{code:"MM",display:"MM - MILLIMETER"},{code:"OZ",display:"OZ - OUNCE"},{code:"PC",display:"PC - PIECE"},{code:"PCS",display:"PCS - PIECES"},{code:"PKT",display:"PKT - PKT"},{code:"PL",display:"PL - PAIL"},{code:"RIM",display:"RIM - RIM"},{code:"ROL",display:"ROL - ROLL"},{code:"SAK",display:"SAK - SACK"},{code:"SET",display:"SET - SET"},{code:"TAB",display:"TAB - TABLET"},{code:"TBG",display:"TBG - TABUNG"},{code:"TON",display:"TON - US TON"},{code:"TUB",display:"TUB - TUBE"},{code:"UN",display:"UN - UNIT"},{code:"UNT",display:"UNT - UNIT"}]);
+            setupVisualSwap('f-type', [{code:"SPRT",display:"SPRT - SPAREPART"},{code:"FOGC",display:"FOGC - FOGC"},{code:"TYRE",display:"TYRE - TYRE"},{code:"CONS",display:"CONS - CONSUMABLE"},{code:"GENS",display:"GENS - GENERAL SUPPLY"},{code:"ASET",display:"ASET - ASSET"},{code:"SEJA",display:"SEJA - SERVICE & JASA"},{code:"MDLE",display:"MDLE - MODULE"},{code:"BOMM",display:"BOMM - BOM MATERIAL"},{code:"FFF",display:"FFF - FFF CLASS"}]);
+            setupVisualSwap('f-group', [{code:"S001",display:"S001 - SPAREPART"},{code:"S002",display:"S002 - ELECTRICAL SYSTEM"},{code:"S003",display:"S003 - TRANSMISSION"},{code:"S004",display:"S004 - GET"},{code:"S005",display:"S005 - UNDERCARRIAGE"},{code:"S006",display:"S006 - WHEEL"},{code:"F001",display:"F001 - FUEL"},{code:"F002",display:"F002 - OIL"},{code:"F003",display:"F003 - GREASE"},{code:"F004",display:"F004 - COOLANT"},{code:"T001",display:"T001 - TYRE"},{code:"G001",display:"G001 - GENERAL SUPPLY"},{code:"G002",display:"G002 - APD"},{code:"C001",display:"C001 - RAMBU-RAMBU"},{code:"C002",display:"C002 - AKSESORIS"},{code:"C003",display:"C003 - COMMON TOOLS"},{code:"C004",display:"C004 - MEDICINE"},{code:"C005",display:"C005 - ALAT TULIS KANTOR"},{code:"C006",display:"C006 - PERALATAN/PERLENGKAPAN"},{code:"C007",display:"C007 - BEBAN SERAGAM"},{code:"A001",display:"A001 - HARDWARE"},{code:"A002",display:"A002 - SOFTWARE"},{code:"A003",display:"A003 - EQUIPMENT"},{code:"A004",display:"A004 - BUILDING"},{code:"A005",display:"A005 - SPECIAL TOOLS"},{code:"A006",display:"A006 - INVENTARIS"},{code:"J001",display:"J001 - JASA EKSPEDISI"},{code:"J002",display:"J002 - JASA SERTIFIKASI"},{code:"J003",display:"J003 - JASA SURVEY"},{code:"J004",display:"J004 - JASA FABRIKASI"},{code:"J005",display:"J005 - JASA LAB"},{code:"J006",display:"J006 - JASA KONSULTAN"},{code:"J007",display:"J007 - JASA ANGKUT BBM"},{code:"J008",display:"J008 - JASA BLASTING"},{code:"J009",display:"J009 - JASA PEMELIHARAAN BANGUNAN"},{code:"J010",display:"J010 - JASA PEMELIHARAAN MESIN"},{code:"J011",display:"J011 - JASA PEMELIHARAAN ALAT BERAT"},{code:"J012",display:"J012 - JASA PEMELIHARAAN KENDARAAN"},{code:"J013",display:"J013 - JASA PERALATAN"},{code:"J014",display:"J014 - JASA MOBILISASI"},{code:"J015",display:"J015 - JASA SEWA KENDARAAN"},{code:"M001",display:"M001 - MODULE"}]);
+            setupVisualSwap('f-purch', [{code:"G01",display:"G01 - SPAREPART"},{code:"G02",display:"G02 - CONSUMABLE / GENERAL SUPPLY"},{code:"G03",display:"G03 - SERVICE / JASA"},{code:"G04",display:"G04 - FUEL"},{code:"G05",display:"G05 - INFRASTRUKTUR"},{code:"G06",display:"G06 - SARANA"},{code:"G07",display:"G07 - AST, MDL & UNT"}]);
         }
 
         window.updateValuationClass = function() {
-            const typeEl = document.getElementById('create-mat-type');
-            const groupEl = document.getElementById('create-mat-group');
+            const type = document.getElementById('f-type').value;
+            const group = document.getElementById('f-group').value;
             const valClassInput = document.getElementById('create-val-class');
-            if (!typeEl || !groupEl || !valClassInput) return;
-
-            const type = typeEl.value.trim().toUpperCase();
-            const group = groupEl.value.trim().toUpperCase();
-            let valClass = "";
-
+            let valClass = "V001";
             if (type === 'SPRT' || type === 'MDLE') valClass = "V001";
             else if (type === 'FOGC') {
                 if (group === 'F001') valClass = "V002";
                 else if (group === 'F002') valClass = "V003";
                 else if (group === 'F003') valClass = "V004";
-                else if (group === 'F004') valClass = "V005";
+                else if (group === 'F004') valClass = "V005"; 
             } else if (type === 'TYRE') valClass = "V006";
             else if (type === 'CONS') {
                 if (['C001', 'C002', 'C006'].includes(group)) valClass = "V008";
@@ -722,155 +820,64 @@
                 else if (group === 'C005') valClass = "V024";
                 else if (group === 'C007') valClass = "V025";
             } else if (type === 'GENS') valClass = "V011";
-            else if (type === 'SEJA') {
-                if (group === 'J001') valClass = "V012";
-                else if (['J002', 'J005'].includes(group)) valClass = "V013";
-                else if (group === 'J003') valClass = "V014";
-                else if (['J004', 'J010'].includes(group)) valClass = "V015";
-                else if (group === 'J006') valClass = "V016";
-                else if (group === 'J007') valClass = "V017";
-                else if (group === 'J008') valClass = "V018";
-                else if (group === 'J009') valClass = "V019";
-                else if (group === 'J011') valClass = "V020";
-                else if (group === 'J012') valClass = "V021";
-                else if (group === 'J013') valClass = "V022";
-                else if (group === 'J014' || group === 'J015') valClass = "V023";
-            }
+            else if (type === 'SEJA') valClass = "V012";
             valClassInput.value = valClass;
         };
 
-        window.handleVerifyPN = function() {
-            const rawPN = document.getElementById('c-pn-check').value.trim();
-            const cleanInput = getCleanPN(rawPN);
-            const res = document.getElementById('pn-res');
-            
-            if (CLEAN_ZERPD_MAP.size === 0) { 
-                openAlarm(`Verifikasi Non-Aktif. Mohon hubungi Team Catalogue untuk Update ZERPD (Database Expired atau belum sinkron).`); 
-                return; 
-            }
-            if (!rawPN) { 
-                notify('Input Kosong', 'Masukkan PN.', 'error'); 
-                document.getElementById('create-full-form').classList.add('hidden');
-                return; 
-            }
-            
-            res.classList.remove('hidden');
-            if (CLEAN_ZERPD_MAP.has(cleanInput)) {
-                const matchOriginal = CLEAN_ZERPD_MAP.get(cleanInput);
-                res.className = "p-6 rounded-[1.5rem] border-4 border-red-100 bg-red-50 text-red-700 animate-fade professional-label";
-                res.innerHTML = `<i class="fas fa-exclamation-circle mr-3"></i> DUPLICATE! Terdeteksi PN yang sama di Spreadsheet: "${matchOriginal}".`;
-                document.getElementById('create-full-form').classList.add('hidden');
-            } else {
-                res.className = "p-6 rounded-[1.5rem] border-4 border-emerald-100 bg-emerald-50 text-emerald-800 animate-fade professional-label";
-                res.innerHTML = `<i class="fas fa-check-circle mr-3"></i> VERIFIED! Part Number aman untuk diregistrasi.`;
-                document.getElementById('create-full-form').classList.remove('hidden');
-                document.getElementById('create-final-pn').value = rawPN.toUpperCase();
-            }
-        };
-
-        window.handleVerifyMaint = async function() {
-            const mat = document.getElementById('m-v-mat').value.trim().toUpperCase();
-            if(!mat) { notify('Data Belum Lengkap', 'Masukkan Material ID.', 'error'); return; }
-            
-            const loader = document.getElementById('loader');
-            const btn = document.getElementById('btn-verify-maint');
-            
-            loader.style.display = 'flex';
-            if (btn) btn.disabled = true;
-
-            try {
-                const response = await fetch(`${scriptURL}?action=lookup&material=${mat}`);
-                const result = await response.json();
-                if (result.status === "success") { 
-                    document.getElementById('f-desc').value = result.description; 
-                    notify('Data Ditemukan', `Deskripsi terisi otomatis.`, 'success'); 
-                }
-            } catch (e) { 
-                console.error(e); 
-            } finally {
-                loader.style.display = 'none';
-                if (btn) btn.disabled = false;
-                document.getElementById('f-mat').value = mat;
-                document.getElementById('maint-verify-card').classList.add('hidden');
-                document.getElementById('maint-full-form').classList.remove('hidden');
-            }
-        }
-
         window.handleSubmitCreate = async (e) => {
             e.preventDefault();
-            const loader = document.getElementById('loader');
-            const btn = document.getElementById('btn-submit-create');
-            
-            loader.style.display = 'flex';
-            if (btn) btn.disabled = true;
-
+            document.getElementById('loader').style.display = 'flex';
             try {
-                const formData = new FormData(e.target);
-                const data = {};
-                for (let [key, value] of formData.entries()) { data[key] = typeof value === 'string' ? value.toUpperCase() : value; }
+                const data = Object.fromEntries(new FormData(e.target));
                 data.request_type = "Request Create Material";
-                
-                await fetch(scriptURL, { method: 'POST', mode: 'no-cors', cache: 'no-cache', body: JSON.stringify(data) });
-                
-                notify('Sukses!', 'Registrasi Berhasil terkirim.', 'success');
-                resetCreateState(); 
-                showSection('home-section'); 
-            } catch (err) { 
-                notify('Gagal!', 'Tidak dapat mengirim data.', 'error'); 
-            } finally { 
-                loader.style.display = 'none'; 
-                if (btn) btn.disabled = false;
-            }
+                data.auto_po = "YES";
+                data.mrp_controller = "ND";
+                data.proc_type = "F";
+                data.spec_proc = "40";
+                await fetch(scriptURL, { method: 'POST', body: JSON.stringify(data) });
+                e.target.reset();
+                document.getElementById('create-full-form').classList.add('hidden');
+                notify('Sukses!', 'Data terkirim.', 'success');
+                syncMonitoringData();
+                showSection('home-section');
+            } catch (e) { notify('Gagal', 'Error kirim data.', 'error'); }
+            finally { document.getElementById('loader').style.display = 'none'; }
         };
 
         window.handleSubmitMaint = async (e) => {
             e.preventDefault();
-            const loader = document.getElementById('loader');
-            const btn = document.getElementById('btn-submit-maint');
-            
-            loader.style.display = 'flex';
-            if (btn) btn.disabled = true;
-
+            document.getElementById('loader').style.display = 'flex';
             try {
-                const formData = new FormData(e.target);
-                const data = {};
-                for (let [key, value] of formData.entries()) { data[key] = typeof value === 'string' ? value.toUpperCase() : value; }
+                const data = Object.fromEntries(new FormData(e.target));
                 data.request_type = "Maintenance Request";
-                
-                await fetch(scriptURL, { method: 'POST', mode: 'no-cors', cache: 'no-cache', body: JSON.stringify(data) });
-                
-                notify('Berhasil!', 'Maintenance Request terkirim.', 'success');
-                resetMaintainState();
-                showSection('home-section'); 
-            } catch (err) { 
-                notify('Gagal!', 'Terjadi kesalahan.', 'error'); 
-            } finally { 
-                loader.style.display = 'none'; 
-                if (btn) btn.disabled = false;
-            }
+                await fetch(scriptURL, { method: 'POST', body: JSON.stringify(data) });
+                e.target.reset();
+                document.getElementById('maint-full-form').classList.add('hidden');
+                notify('Berhasil', 'Data terkirim.', 'success');
+                showSection('home-section');
+            } catch (e) { notify('Gagal', 'Error kirim data.', 'error'); }
+            finally { document.getElementById('loader').style.display = 'none'; }
         };
-
-        function openAlarm(msg) { 
-            const alarmMsg = document.getElementById('alarm-msg');
-            const modal = document.getElementById('alarm-modal');
-            if (alarmMsg && modal) {
-                alarmMsg.innerText = msg; 
-                modal.style.display = 'flex'; 
-            }
-        }
 
         function notify(title, msg, type) {
             const t = document.getElementById('toast');
-            const icon = document.getElementById('toast-icon');
-            if (!t || !icon) return;
-
             document.getElementById('t-title').innerText = title;
             document.getElementById('t-msg').innerText = msg;
-            icon.className = type === 'error' ? 'w-10 h-10 rounded-xl flex items-center justify-center bg-red-500 text-white' : 'w-10 h-10 rounded-xl flex items-center justify-center bg-emerald-500 text-white';
+            const icon = document.getElementById('toast-icon');
             icon.innerHTML = type === 'error' ? '<i class="fas fa-times"></i>' : '<i class="fas fa-check"></i>';
+            icon.className = `w-10 h-10 rounded-xl flex items-center justify-center ${type === 'error' ? 'bg-red-500' : 'bg-emerald-500'}`;
             t.classList.remove('translate-y-40', 'opacity-0');
-            setTimeout(() => t.classList.add('translate-y-40', 'opacity-0'), 4000);
+            setTimeout(() => t.classList.add('translate-y-40', 'opacity-0'), 3000);
         }
+
+        window.onload = () => {
+            document.getElementById('header-date').innerText = new Date().toLocaleDateString('id-ID', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+            populateSelects();
+            syncZerpdFromSpreadsheet();
+            syncAccessCodes();
+            syncMonitoringData();
+            setInterval(syncMonitoringData, 120000);
+        };
     </script>
 </body>
 </html>
