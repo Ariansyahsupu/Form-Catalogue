@@ -267,6 +267,28 @@
                         <button class="w-full py-4 bg-emerald-600 text-white rounded-2xl font-black text-xs uppercase shadow-lg shadow-emerald-200">Buka Monitor</button>
                     </div>
                 </div>
+
+                <!-- LINK DATA INFORMASI -->
+                <div class="flex flex-col md:flex-row justify-center items-center gap-4 mt-8">
+                    <a href="https://docs.google.com/spreadsheets/d/1Bu4_lnZJe-NAezO0Jyw2AkqQk0bdVFTU8VrIlSn3eJY/edit?usp=sharing" target="_blank" class="flex items-center gap-3 bg-white border border-slate-100 px-6 py-3.5 rounded-2xl shadow-sm hover:shadow-md transition-all group">
+                        <div class="w-8 h-8 bg-emerald-50 text-emerald-600 rounded-lg flex items-center justify-center text-sm group-hover:scale-110 transition-transform">
+                            <i class="fas fa-file-excel"></i>
+                        </div>
+                        <div class="text-left">
+                            <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Informasi Data</p>
+                            <p class="text-[10px] font-bold text-slate-700">Database Request Log</p>
+                        </div>
+                    </a>
+                    <a href="https://docs.google.com/spreadsheets/d/16PmMztvhkA9PnYOXoRF7IyeVmvqkIa-I89CCcT6iElU/edit?usp=sharing" target="_blank" class="flex items-center gap-3 bg-white border border-slate-100 px-6 py-3.5 rounded-2xl shadow-sm hover:shadow-md transition-all group">
+                        <div class="w-8 h-8 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center text-sm group-hover:scale-110 transition-transform">
+                            <i class="fas fa-database"></i>
+                        </div>
+                        <div class="text-left">
+                            <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Informasi Data</p>
+                            <p class="text-[10px] font-bold text-slate-700">Master Material Data</p>
+                        </div>
+                    </a>
+                </div>
             </section>
             
             <!-- MONITOR SECTION -->
@@ -569,7 +591,7 @@
                                 <td class="font-mono font-bold text-slate-500">${tsDate.toLocaleDateString('id-ID')}</td>
                                 <td class="font-black uppercase tracking-wide text-slate-800">${name}</td>
                                 <td class="font-extrabold uppercase text-slate-500">${dept}</td>
-                                <td class="font-medium italic leading-relaxed text-slate-700 max-w-sm">${desc}</td>
+                                <td class="font-medium italic leading-relaxed text-slate-700 max-sm">${desc}</td>
                                 <td>
                                     <span class="status-badge" style="${badgeStyle}">${icon} ${isNumeric ? 'SELESAI (' + remarks + ')' : remarks}</span>
                                 </td>
