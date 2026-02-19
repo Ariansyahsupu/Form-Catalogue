@@ -118,7 +118,6 @@
         .professional-input { font-weight: 700 !important; text-transform: uppercase !important; }
         .professional-label { font-weight: 800 !important; text-transform: uppercase !important; color: #1e293b !important; }
 
-        /* Estetika Monitor Profesional (Warna Diperbarui) */
         .monitor-container {
             background: white;
             border-radius: 2.5rem;
@@ -161,7 +160,6 @@
             border-spacing: 0;
         }
 
-        /* Update Warna Header Tabel: Slate 900 untuk kesan mewah */
         .monitor-table thead th {
             position: sticky;
             top: 0;
@@ -192,13 +190,45 @@
             background-color: #f8fafc;
         }
 
-        /* Zebra striping halus untuk estetika */
         .monitor-table tbody tr:nth-child(even) {
             background-color: #fafbfc;
+        }
+
+        .nav-item-btn {
+            width: 100%;
+            text-align: left;
+            padding: 1rem;
+            border-radius: 1rem;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+            margin-bottom: 0.5rem;
+        }
+        .nav-item-btn.active {
+            background: #fff7ed;
+            border-color: #f97316;
+            color: #c2410c;
         }
     </style>
 </head>
 <body class="h-screen overflow-hidden">
+
+    <!-- Password Verification Modal -->
+    <div id="password-modal" class="modal-alarm">
+        <div class="bg-white rounded-[2.5rem] p-8 lg:p-10 max-w-sm w-full text-center shadow-2xl animate-fade">
+            <div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-6">
+                <i class="fas fa-lock"></i>
+            </div>
+            <h3 class="text-xl professional-label mb-2">Verifikasi Akses</h3>
+            <p class="text-slate-400 font-bold uppercase text-[9px] tracking-widest mb-6">Masukkan kata sandi untuk melihat data</p>
+            
+            <input type="password" id="access-password-input" placeholder="••••••••" class="input-field border-2 text-center text-lg tracking-[0.5em] mb-6 professional-input">
+            
+            <div class="flex flex-col gap-3">
+                <button onclick="verifyAccessPassword()" class="w-full py-4 bg-slate-900 text-white font-black rounded-2xl uppercase text-[10px] tracking-widest shadow-lg">Verifikasi Kata Sandi</button>
+                <button onclick="closePasswordModal()" class="w-full py-3 bg-slate-100 text-slate-400 font-bold rounded-2xl uppercase text-[9px]">Batal</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Alarm Modal -->
     <div id="alarm-modal" class="modal-alarm">
@@ -268,9 +298,8 @@
                     </div>
                 </div>
 
-                <!-- LINK DATA INFORMASI -->
                 <div class="flex flex-col md:flex-row justify-center items-center gap-4 mt-8">
-                    <a href="https://docs.google.com/spreadsheets/d/1Bu4_lnZJe-NAezO0Jyw2AkqQk0bdVFTU8VrIlSn3eJY/edit?usp=sharing" target="_blank" class="flex items-center gap-3 bg-white border border-slate-100 px-6 py-3.5 rounded-2xl shadow-sm hover:shadow-md transition-all group">
+                    <div onclick="requestProtectedLink('https://docs.google.com/spreadsheets/d/1Bu4_lnZJe-NAezO0Jyw2AkqQk0bdVFTU8VrIlSn3eJY/edit?usp=sharing')" class="cursor-pointer flex items-center gap-3 bg-white border border-slate-100 px-6 py-3.5 rounded-2xl shadow-sm hover:shadow-md transition-all group">
                         <div class="w-8 h-8 bg-emerald-50 text-emerald-600 rounded-lg flex items-center justify-center text-sm group-hover:scale-110 transition-transform">
                             <i class="fas fa-file-excel"></i>
                         </div>
@@ -278,8 +307,8 @@
                             <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Informasi Data</p>
                             <p class="text-[10px] font-bold text-slate-700">Database Request Log</p>
                         </div>
-                    </a>
-                    <a href="https://docs.google.com/spreadsheets/d/16PmMztvhkA9PnYOXoRF7IyeVmvqkIa-I89CCcT6iElU/edit?usp=sharing" target="_blank" class="flex items-center gap-3 bg-white border border-slate-100 px-6 py-3.5 rounded-2xl shadow-sm hover:shadow-md transition-all group">
+                    </div>
+                    <div onclick="requestProtectedLink('https://docs.google.com/spreadsheets/d/16PmMztvhkA9PnYOXoRF7IyeVmvqkIa-I89CCcT6iElU/edit?usp=sharing')" class="cursor-pointer flex items-center gap-3 bg-white border border-slate-100 px-6 py-3.5 rounded-2xl shadow-sm hover:shadow-md transition-all group">
                         <div class="w-8 h-8 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center text-sm group-hover:scale-110 transition-transform">
                             <i class="fas fa-database"></i>
                         </div>
@@ -287,7 +316,7 @@
                             <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Informasi Data</p>
                             <p class="text-[10px] font-bold text-slate-700">Master Material Data</p>
                         </div>
-                    </a>
+                    </div>
                 </div>
             </section>
             
@@ -368,7 +397,7 @@
 
             <!-- CREATE SECTION -->
             <section id="create-section" class="hidden animate-fade">
-                <div class="max-w-5xl mx-auto">
+                <div class="max-w-6xl mx-auto">
                     <button onclick="showSection('home-section')" class="btn-back"><i class="fas fa-chevron-left"></i> Dashboard</button>
                     <div class="bg-white rounded-[3rem] overflow-hidden shadow-2xl border border-slate-100">
                         <div class="bg-slate-900 p-8 text-white"><h2 class="text-2xl professional-label">Pendaftaran Material Baru</h2></div>
@@ -377,70 +406,80 @@
                                 <div class="flex gap-4 items-center">
                                     <div class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-orange-600 text-xl shadow-sm"><i class="fas fa-magnifying-glass"></i></div>
                                     <div>
-                                        <h4 class="professional-label text-lg">Duplicate Check (ZERPD)</h4>
+                                        <h4 class="professional-label text-lg">Batch Duplicate Check (ZERPD)</h4>
                                         <div id="zerpd-status-bar" class="inline-flex items-center gap-2 mt-1 text-[10px] professional-label tracking-widest bg-white px-4 py-1.5 rounded-full border border-orange-100 italic">
                                             <i class="fas fa-circle-notch animate-spin text-blue-600"></i> Sinkronisasi Database...
                                         </div>
                                     </div>
                                 </div>
-                                <div class="pt-6 border-t border-orange-100 flex gap-4">
-                                    <input type="text" id="c-pn-check" disabled placeholder="SINKRONISASI DATABASE..." class="flex-1 input-field border-2 border-orange-100 py-4 font-mono professional-input opacity-50 cursor-not-allowed">
-                                    <button id="btn-verify-pn" disabled onclick="handleVerifyPN()" class="bg-slate-400 text-white px-10 rounded-xl font-black uppercase text-[10px] cursor-not-allowed transition-colors">Verifikasi</button>
+                                <div class="pt-6 border-t border-orange-100 flex flex-col gap-4">
+                                    <label class="text-[10px] professional-label text-slate-500 tracking-widest uppercase">Input PN (Bisa Multi-line/Paste Banyak PN)</label>
+                                    <textarea id="c-pn-check" disabled placeholder="SINKRONISASI DATABASE..." class="w-full input-field border-2 border-orange-100 py-4 font-mono professional-input opacity-50 cursor-not-allowed h-32 resize-none"></textarea>
+                                    <button id="btn-verify-pn" disabled onclick="handleVerifyPN()" class="bg-slate-400 text-white px-10 py-4 rounded-xl font-black uppercase text-[12px] cursor-not-allowed transition-colors w-full">Verifikasi Daftar PN</button>
                                 </div>
                                 <div id="pn-res" class="hidden p-6 rounded-[1.5rem] border-2 animate-fade professional-label text-xs"></div>
                             </div>
 
-                            <div id="create-full-form" class="hidden space-y-12 animate-fade pb-10">
-                                <form id="form-create-25" onsubmit="handleSubmitCreate(event)" class="space-y-12">
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-50 p-8 rounded-[2rem]">
-                                        <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Requester Name</label><input type="text" id="f-req-name" name="requester_name" required class="input-field border-2 professional-input"></div>
-                                        <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Department</label><input type="text" id="f-req-dept" name="department" required class="input-field border-2 professional-input"></div>
+                            <div id="create-full-form" class="hidden animate-fade pb-10">
+                                <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+                                    <div class="lg:col-span-1 border-r border-slate-100 pr-4">
+                                        <h4 class="text-[10px] professional-label text-orange-500 mb-4 tracking-widest uppercase">Daftar Pengajuan</h4>
+                                        <div id="multi-form-nav" class="space-y-2 max-h-[600px] overflow-y-auto custom-scrollbar"></div>
                                     </div>
-                                    
-                                    <div class="space-y-8">
-                                        <h4 class="section-header text-orange-600 border-orange-100"><i class="fas fa-layer-group"></i> Master Data Specifications</h4>
-                                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                            <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Material ID</label><input type="text" name="material" readonly value="NEW-REG" class="input-field input-readonly professional-input"></div>
-                                            <div class="space-y-1.5 md:col-span-2"><label class="text-[10px] professional-label tracking-widest">Description</label><input type="text" name="description" required class="input-field border-2 professional-input"></div>
-                                            <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Old Material No.</label><input type="text" name="old_material" readonly value="-" class="input-field input-readonly professional-input"></div>
-                                            <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Base UoM</label><select name="base_uom" id="f-uom" required class="input-field border-2 professional-input"></select></div>
-                                            <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Mat Type</label><select name="material_type" id="f-type" required class="input-field border-2 professional-input" onchange="updateValuationClass()"></select></div>
-                                            <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Mat Group</label><select name="material_group" id="f-group" required class="input-field border-2 professional-input" onchange="updateValuationClass()"></select></div>
-                                            <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Mfg PN</label><input type="text" name="mfg_part" id="create-final-pn" readonly class="input-field input-readonly professional-input text-orange-600 font-mono"></div>
-                                            <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">MFG Profile</label><input type="text" name="mfg_profile" readonly value="-" class="input-field input-readonly professional-input"></div>
-                                            <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Plant</label><select name="plant" id="f-plant" required class="input-field border-2 bg-white professional-input"></select></div>
-                                            <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Storage Location</label><select name="storage_location" id="f-sloc" required class="input-field border-2 bg-white professional-input"></select></div>
-                                            <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Purchasing Group</label><select name="purchasing_group" id="f-purch" required class="input-field border-2 professional-input"></select></div>
-                                            <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Automatic PO</label><input type="text" name="auto_po" readonly value="YES" class="input-field input-readonly professional-input text-emerald-600"></div>
-                                            <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">MRP Controller</label><input type="text" name="mrp_controller" readonly value="ND" class="input-field input-readonly professional-input text-blue-600"></div>
-                                            <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Lot Sizing</label><input type="text" name="lot_sizing" readonly value="" class="input-field input-readonly professional-input"></div>
-                                            <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Max Stock</label><input type="number" name="max_stock" readonly value="0" class="input-field input-readonly professional-input"></div>
-                                            <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Proc. Type</label><input type="text" name="proc_type" readonly value="F" class="input-field input-readonly professional-input"></div>
-                                            <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Spec Proc</label><input type="text" name="spec_proc" readonly value="40" class="input-field input-readonly professional-input"></div>
-                                            <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Delivery Time</label><input type="number" name="delivery_time" readonly value="7" class="input-field input-readonly professional-input"></div>
-                                            <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Safety Stock</label><input type="number" name="safety_stock" readonly value="0" class="input-field input-readonly professional-input"></div>
-                                            <div class="space-y-1.5">
-                                                <label class="text-[10px] professional-label tracking-widest">Serial Profile</label>
-                                                <select name="serial_profile" class="input-field border-2 professional-input">
-                                                    <option value="NON SN">NON SN - NON SERIALIZE</option>
-                                                    <option value="SNI1">SNI1 - SN FOR TYRE</option>
-                                                    <option value="SNI2">SNI2 - SN FOR MODULE COMPONENT</option>
-                                                </select>
+
+                                    <div class="lg:col-span-3">
+                                        <form id="form-create-25" class="space-y-12">
+                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-50 p-8 rounded-[2rem]">
+                                                <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Requester Name</label><input type="text" id="f-req-name" name="requester_name" required class="input-field border-2 professional-input"></div>
+                                                <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Department</label><input type="text" id="f-req-dept" name="department" required class="input-field border-2 professional-input"></div>
                                             </div>
-                                            <div class="space-y-1.5">
-                                                <label class="text-[10px] professional-label tracking-widest">Valuation Category</label>
-                                                <select name="valuation_cat" required class="input-field border-2 professional-input">
-                                                    <option value="S">S - SPAREPART/TYRE/MODULE</option>
-                                                    <option value="O">O - OIL</option>
-                                                </select>
+                                            
+                                            <div class="space-y-8">
+                                                <h4 id="form-subtitle" class="section-header text-orange-600 border-orange-100 uppercase tracking-widest"><i class="fas fa-layer-group"></i> Material Detail</h4>
+                                                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                                    <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Material ID</label><input type="text" name="material" readonly value="NEW-REG" class="input-field input-readonly professional-input"></div>
+                                                    <div class="space-y-1.5 md:col-span-2"><label class="text-[10px] professional-label tracking-widest">Description</label><input type="text" name="description" id="f-desc" required class="input-field border-2 professional-input"></div>
+                                                    <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Old Material No.</label><input type="text" name="old_material" readonly value="-" class="input-field input-readonly professional-input"></div>
+                                                    <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Base UoM</label><select name="base_uom" id="f-uom" required class="input-field border-2 professional-input"></select></div>
+                                                    <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Mat Type</label><select name="material_type" id="f-type" required class="input-field border-2 professional-input" onchange="updateValuationClass()"></select></div>
+                                                    <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Mat Group</label><select name="material_group" id="f-group" required class="input-field border-2 professional-input" onchange="updateValuationClass()"></select></div>
+                                                    <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Mfg PN</label><input type="text" name="mfg_part" id="f-final-pn" readonly class="input-field input-readonly professional-input text-orange-600 font-mono"></div>
+                                                    <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">MFG Profile</label><input type="text" name="mfg_profile" readonly value="-" class="input-field input-readonly professional-input"></div>
+                                                    <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Plant</label><select name="plant" id="f-plant" required class="input-field border-2 bg-white professional-input"></select></div>
+                                                    <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Storage Location</label><select name="storage_location" id="f-sloc" required class="input-field border-2 bg-white professional-input"></select></div>
+                                                    <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Purchasing Group</label><select name="purchasing_group" id="f-purch" required class="input-field border-2 professional-input"></select></div>
+                                                    <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Automatic PO</label><input type="text" name="auto_po" readonly value="YES" class="input-field input-readonly professional-input text-emerald-600"></div>
+                                                    <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">MRP Controller</label><input type="text" name="mrp_controller" readonly value="ND" class="input-field input-readonly professional-input text-blue-600"></div>
+                                                    <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Lot Sizing</label><input type="text" name="lot_sizing" readonly value="" class="input-field input-readonly professional-input"></div>
+                                                    <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Max Stock</label><input type="number" name="max_stock" readonly value="0" class="input-field input-readonly professional-input"></div>
+                                                    <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Proc. Type</label><input type="text" name="proc_type" readonly value="F" class="input-field input-readonly professional-input"></div>
+                                                    <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Spec Proc</label><input type="text" name="spec_proc" readonly value="40" class="input-field input-readonly professional-input"></div>
+                                                    <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Delivery Time</label><input type="number" name="delivery_time" readonly value="7" class="input-field input-readonly professional-input"></div>
+                                                    <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Safety Stock</label><input type="number" name="safety_stock" readonly value="0" class="input-field input-readonly professional-input"></div>
+                                                    <div class="space-y-1.5">
+                                                        <label class="text-[10px] professional-label tracking-widest">Serial Profile</label>
+                                                        <select name="serial_profile" id="f-serial" class="input-field border-2 professional-input">
+                                                            <option value="NON SN">NON SN - NON SERIALIZE</option>
+                                                            <option value="SNI1">SNI1 - SN FOR TYRE</option>
+                                                            <option value="SNI2">SNI2 - SN FOR MODULE COMPONENT</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="space-y-1.5">
+                                                        <label class="text-[10px] professional-label tracking-widest">Valuation Category</label>
+                                                        <select name="valuation_cat" id="f-val-cat" required class="input-field border-2 professional-input">
+                                                            <option value="S">S - SPAREPART/TYRE/MODULE</option>
+                                                            <option value="O">O - OIL</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Val. Class</label><input type="text" id="create-val-class" name="valuation_class" readonly class="input-field input-readonly professional-input text-slate-900"></div>
+                                                    <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Storage Bin</label><input type="text" name="storage_bin" id="f-bin" class="input-field border-2 professional-input"></div>
+                                                    <div class="space-y-1.5 md:col-span-3"><label class="text-[10px] professional-label tracking-widest">Remarks / Note</label><input type="text" name="remarks" id="f-remarks" placeholder="CATATAN TAMBAHAN" class="input-field border-2 professional-input"></div>
+                                                </div>
                                             </div>
-                                            <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Val. Class</label><input type="text" id="create-val-class" name="valuation_class" readonly class="input-field input-readonly professional-input text-slate-900"></div>
-                                            <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Storage Bin</label><input type="text" name="storage_bin" class="input-field border-2 professional-input"></div>
-                                            <div class="space-y-1.5 md:col-span-3"><label class="text-[10px] professional-label tracking-widest">Remarks / Note</label><input type="text" name="remarks" placeholder="CATATAN TAMBAHAN" class="input-field border-2 professional-input"></div>
-                                        </div>
+                                            <button type="button" onclick="handleBatchSubmit()" class="w-full py-5 bg-orange-500 text-white font-black rounded-3xl uppercase text-lg shadow-2xl hover:bg-orange-600 transition-all">SUBMIT SELURUH PENGAJUAN</button>
+                                        </form>
                                     </div>
-                                    <button type="submit" class="w-full py-5 bg-orange-500 text-white font-black rounded-3xl uppercase text-lg shadow-2xl hover:bg-orange-600 transition-all">DAFTARKAN MATERIAL</button>
-                                </form>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -461,11 +500,43 @@
         const scriptURL = "https://script.google.com/macros/s/AKfycbyR2spJCAxKQ-DViYl8JI8vMrcTqDTHez67DAHWcufvflC8dbNaBAEaxyGxt2sMqCQ1/exec";
         const csvPubURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQFR3WLBquvFttCMJlrZQOrK2u8TMm3Dhj2yMukhbakAC5LdUAndnaPn6FesXRWUl5R1IHmAuKDRnER/pub?gid=1089770718&single=true&output=csv";
         const csvAccessURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQf_Og1jqJhzDmiLJYNEaL_NK_jYS7-Y9tpNcFaI1qBaI57ql11fRVHAP42anjct-vwvOKw-CGlikLU/pub?gid=242300721&single=true&output=csv";
-        
         const csvCreateMatURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQf_Og1jqJhzDmiLJYNEaL_NK_jYS7-Y9tpNcFaI1qBaI57ql11fRVHAP42anjct-vwvOKw-CGlikLU/pub?gid=1174357410&single=true&output=csv";
+
+        // --- GLOBAL UTILITIES ---
+        window.notify = function(title, msg, type) {
+            const t = document.getElementById('toast');
+            if (!t) return;
+            document.getElementById('t-title').innerText = title;
+            document.getElementById('t-msg').innerText = msg;
+            const icon = document.getElementById('toast-icon');
+            icon.innerHTML = type === 'error' ? '<i class="fas fa-times"></i>' : '<i class="fas fa-check"></i>';
+            icon.className = `w-10 h-10 rounded-xl flex items-center justify-center ${type === 'error' ? 'bg-red-500' : 'bg-emerald-500'}`;
+            t.classList.remove('translate-y-40', 'opacity-0');
+            setTimeout(() => t.classList.add('translate-y-40', 'opacity-0'), 3000);
+        };
+
+        // --- FETCH WITH RETRY UTILITY ---
+        async function fetchWithRetry(url, options = {}, retries = 5, backoff = 1000) {
+            try {
+                const response = await fetch(url, options);
+                if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+                return response;
+            } catch (error) {
+                if (retries > 0) {
+                    await new Promise(resolve => setTimeout(resolve, backoff));
+                    return fetchWithRetry(url, options, retries - 1, backoff * 2);
+                }
+                throw error;
+            }
+        }
 
         let CLEAN_ZERPD_MAP = new Map();
         let VALID_ACCESS_RECORDS = new Map();
+        let pendingProtectedLink = "";
+        
+        let batchMaterials = [];
+        let currentMaterialIdx = 0;
+        let identifiedDuplicates = []; 
 
         window.showSection = function(id) { 
             document.querySelectorAll('main section').forEach(s => s.classList.add('hidden')); 
@@ -476,6 +547,26 @@
 
         window.closeAlarm = function() { document.getElementById('alarm-modal').style.display = 'none'; };
 
+        window.requestProtectedLink = function(url) {
+            pendingProtectedLink = url;
+            document.getElementById('access-password-input').value = "";
+            document.getElementById('password-modal').style.display = 'flex';
+        };
+
+        window.closePasswordModal = function() {
+            document.getElementById('password-modal').style.display = 'none';
+            pendingProtectedLink = "";
+        };
+
+        window.verifyAccessPassword = function() {
+            const input = document.getElementById('access-password-input').value;
+            if (input === "qwerty") {
+                window.open(pendingProtectedLink, '_blank');
+                closePasswordModal();
+                window.notify('Akses Berhasil', 'Membuka spreadsheet...', 'success');
+            } else { window.notify('Akses Ditolak', 'Password salah.', 'error'); }
+        };
+
         function parseCSVLine(line, delimiter = ',') {
             const result = [];
             let current = '';
@@ -483,189 +574,252 @@
             for (let i = 0; i < line.length; i++) {
                 const char = line[i];
                 if (char === '"') inQuotes = !inQuotes;
-                else if (char === delimiter && !inQuotes) {
-                    result.push(current);
-                    current = '';
-                } else current += char;
+                else if (char === delimiter && !inQuotes) { result.push(current); current = ''; } else current += char;
             }
             result.push(current);
             return result;
+        }
+
+        function robustParseDate(dateStr) {
+            if (!dateStr) return null;
+            let dateOnly = dateStr.split(' ')[0];
+            let parts = dateOnly.split(/[\/\-]/);
+            
+            if (parts.length === 3) {
+                let p0 = parseInt(parts[0]);
+                let p1 = parseInt(parts[1]);
+                let p2 = parseInt(parts[2]);
+
+                if (parts[0].length === 4) return new Date(p0, p1 - 1, p2);
+                
+                if (p0 > 12) return new Date(p2, p1 - 1, p0);
+                if (p1 > 12) return new Date(p2, p0 - 1, p1);
+                
+                return new Date(p2, p1 - 1, p0);
+            }
+            let d = new Date(dateStr);
+            return isNaN(d.getTime()) ? null : d;
+        }
+
+        function normalizeDateStr(str) {
+            if (!str) return "";
+            const match = str.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+            if (match) {
+                return `${parseInt(match[1])}/${parseInt(match[2])}/${match[3]}`;
+            }
+            return str;
         }
 
         async function syncZerpdFromSpreadsheet() {
             const stat = document.getElementById('zerpd-status-bar');
             const pnInput = document.getElementById('c-pn-check');
             const pnBtn = document.getElementById('btn-verify-pn');
-
             try {
-                const response = await fetch(csvPubURL);
-                if (!response.ok) throw new Error();
+                const response = await fetchWithRetry(csvPubURL);
                 const csvText = await response.text();
                 const lines = csvText.split(/\r?\n/);
                 const cleanMap = new Map();
-                
                 let syncInfo = "Offline";
                 if (lines[0]) {
                     const headerCols = parseCSVLine(lines[0]);
                     if (headerCols[9]) syncInfo = headerCols[9].trim();
                 }
+                const today = new Date();
+                const dateStrToday = `${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`;
+                const normalizedSyncDate = normalizeDateStr(syncInfo);
+                const normalizedToday = normalizeDateStr(dateStrToday);
 
+                if (!normalizedSyncDate.includes(normalizedToday) && syncInfo !== "Offline") {
+                    stat.innerHTML = `<i class="fas fa-exclamation-triangle text-red-500"></i> ZERPD Belum Terupdate Mohon hubungi Team Catalogue`;
+                    stat.className = "inline-flex items-center gap-2 mt-1 text-[10px] professional-label tracking-widest bg-red-50 px-4 py-1.5 rounded-full border border-red-100 italic text-red-600 font-black";
+                    pnInput.disabled = true;
+                    pnInput.placeholder = "DATABASE EXPIRED - HUBUNGI CATALOGUE TEAM";
+                    pnBtn.disabled = true;
+                    pnBtn.className = "bg-red-400 text-white px-10 py-4 rounded-xl font-black uppercase text-[10px] cursor-not-allowed w-full";
+                    document.getElementById('alarm-msg').innerText = "ZERPD Belum Terupdate untuk tanggal berjalan hari ini. Mohon hubungi Team Catalogue segera.";
+                    document.getElementById('alarm-modal').style.display = 'flex';
+                    return;
+                }
                 for (let i = 1; i < lines.length; i++) {
                     if (!lines[i].trim()) continue;
                     const cols = parseCSVLine(lines[i]);
                     const rawPn = cols[2] ? cols[2].trim() : "";
                     if (rawPn && rawPn !== '-') {
                         const cleanKey = getCleanPN(rawPn);
-                        if (!cleanMap.has(cleanKey)) {
-                            cleanMap.set(cleanKey, []);
-                        }
+                        if (!cleanMap.has(cleanKey)) { cleanMap.set(cleanKey, []); }
                         cleanMap.get(cleanKey).push({ pn: rawPn, Bird: cols[1], mat: cols[0] });
                     }
                 }
-                
                 CLEAN_ZERPD_MAP = cleanMap;
                 stat.innerHTML = `<i class="fas fa-check-circle text-emerald-500"></i> DB AKTIF: ${CLEAN_ZERPD_MAP.size} KELOMPOK PN | ${syncInfo}`;
                 stat.className = "inline-flex items-center gap-2 mt-1 text-[10px] professional-label tracking-widest bg-emerald-50 px-4 py-1.5 rounded-full border border-emerald-100 italic";
-                
-                pnInput.disabled = false;
-                pnInput.placeholder = "INPUT PART NUMBER...";
-                pnInput.classList.remove('opacity-50', 'cursor-not-allowed');
-                pnBtn.disabled = false;
-                pnBtn.classList.remove('bg-slate-400', 'cursor-not-allowed');
-                pnBtn.classList.add('bg-slate-900');
-            } catch (error) {
-                stat.innerHTML = `<i class="fas fa-exclamation-triangle text-orange-500"></i> Database Offline`;
-            }
-        }
-
-        async function syncMonitoringData() {
-            const monitorList = document.getElementById('monitor-list');
-            const monthLabel = document.getElementById('monitor-month-label');
-            const now = new Date();
-            const currentMonth = now.getMonth();
-            const currentYear = now.getFullYear();
-            
-            monthLabel.innerText = now.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' }).toUpperCase();
-
-            try {
-                const response = await fetch(csvCreateMatURL);
-                if (!response.ok) throw new Error();
-                const csvText = await response.text();
-                const lines = csvText.split(/\r?\n/);
-                
-                let html = "";
-                for (let i = lines.length - 1; i >= 1; i--) {
-                    if (!lines[i].trim()) continue;
-                    const cols = parseCSVLine(lines[i]);
-                    if (!cols[0]) continue;
-                    
-                    const parts = cols[0].split(' ')[0].split('/');
-                    let tsDate;
-                    if (parts.length === 3) {
-                        tsDate = new Date(parts[2], parts[1] - 1, parts[0]);
-                    } else {
-                        tsDate = new Date(cols[0]);
-                    }
-                    
-                    if (!isNaN(tsDate.getTime()) && tsDate.getMonth() === currentMonth && tsDate.getFullYear() === currentYear) {
-                        const name = cols[26] || "-";
-                        const dept = cols[27] || "-";
-                        const desc = cols[2] || "-";
-                        const remarks = cols[28] || "DALAM PROSES";
-                        
-                        let badgeStyle = "background-color: #eff6ff; color: #2563eb; border-color: #dbeafe;"; 
-                        let icon = '<i class="fas fa-circle-notch animate-spin text-[8px]"></i>';
-                        
-                        const isNumeric = /^\d+$/.test(remarks.trim());
-
-                        if (remarks.toUpperCase().includes("REJECT")) {
-                            badgeStyle = "background-color: #fff1f2; color: #e11d48; border-color: #ffe4e6;";
-                            icon = '<i class="fas fa-times-circle text-[10px]"></i>';
-                        } else if (remarks.toUpperCase().includes("SELESAI") || remarks.toUpperCase().includes("DONE") || isNumeric) {
-                            badgeStyle = "background-color: #ecfdf5; color: #059669; border-color: #d1fae5;";
-                            icon = '<i class="fas fa-check-circle text-[10px]"></i>';
-                        }
-
-                        html += `
-                            <tr>
-                                <td class="font-mono font-bold text-slate-500">${tsDate.toLocaleDateString('id-ID')}</td>
-                                <td class="font-black uppercase tracking-wide text-slate-800">${name}</td>
-                                <td class="font-extrabold uppercase text-slate-500">${dept}</td>
-                                <td class="font-medium italic leading-relaxed text-slate-700 max-sm">${desc}</td>
-                                <td>
-                                    <span class="status-badge" style="${badgeStyle}">${icon} ${isNumeric ? 'SELESAI (' + remarks + ')' : remarks}</span>
-                                </td>
-                            </tr>
-                        `;
-                    }
-                }
-                monitorList.innerHTML = html || `<tr><td colspan="5" class="px-8 py-24 text-center text-slate-400 text-[12px] font-black uppercase tracking-[0.2em]">Belum ada pengajuan di bulan ini</td></tr>`;
-            } catch (e) {
-                monitorList.innerHTML = `<tr><td colspan="5" class="px-8 py-24 text-center text-red-400 text-[12px] font-black uppercase tracking-widest">Gagal Memuat Data Monitor</td></tr>`;
-            }
-        }
-
-        async function syncAccessCodes() {
-            try {
-                const response = await fetch(csvAccessURL);
-                if (!response.ok) return;
-                const csvText = await response.text();
-                const lines = csvText.split(/\r?\n/);
-                const records = new Map();
-                for (let i = 1; i < lines.length; i++) {
-                    const cols = parseCSVLine(lines[i]);
-                    if (cols[2]) {
-                        records.set(cols[2].trim(), {
-                            timestamp: cols[0] ? new Date(cols[0]) : null,
-                            requester: cols[1] ? cols[1].trim().toUpperCase() : ""
-                        });
-                    }
-                }
-                VALID_ACCESS_RECORDS = records;
-            } catch (e) {}
+                pnInput.disabled = false; pnInput.placeholder = "TEMPELKAN LIST PN DI SINI...";
+                pnBtn.disabled = false; pnBtn.className = "bg-slate-900 text-white px-10 py-4 rounded-xl font-black uppercase text-[12px] w-full";
+            } catch (error) { stat.innerHTML = `<i class="fas fa-exclamation-triangle text-orange-500"></i> Database Offline`; }
         }
 
         window.handleVerifyPN = function() {
-            const rawPN = document.getElementById('c-pn-check').value.trim();
-            const cleanInput = getCleanPN(rawPN);
-            const res = document.getElementById('pn-res');
-            if (!rawPN) return notify('Input Kosong', 'Masukkan PN.', 'error');
+            const rawText = document.getElementById('c-pn-check').value.trim();
+            if (!rawText) return window.notify('Input Kosong', 'Masukkan minimal satu PN.', 'error');
             
+            const uniqueInputList = [...new Set(rawText.split(/[,\n]/).map(pn => pn.trim()).filter(pn => pn !== ""))];
+            const res = document.getElementById('pn-res');
             res.classList.remove('hidden');
-            if (CLEAN_ZERPD_MAP.has(cleanInput)) {
-                const matches = CLEAN_ZERPD_MAP.get(cleanInput);
-                res.className = "p-6 rounded-[1.5rem] border-4 border-red-100 bg-red-50 text-red-700 space-y-3 text-left";
-                let html = `<div class="font-black mb-2 flex items-center gap-2"><i class="fas fa-exclamation-circle text-red-600"></i> <span>DUPLIKAT TERDETEKSI!</span></div>`;
-                matches.forEach((match, index) => {
-                    html += `<div class="bg-white p-4 rounded-xl border border-red-100 shadow-sm">
-                        <div class="text-sm font-black text-slate-900">${match.pn}</div>
-                        <div class="text-[10px] font-extrabold text-blue-600">MAT: ${match.mat || "N/A"}</div>
-                        <div class="text-[11px] font-bold text-slate-500">${match.Bird}</div>
+            
+            identifiedDuplicates = [];
+            let available = [];
+
+            uniqueInputList.forEach(rawPN => {
+                const clean = getCleanPN(rawPN);
+                if (CLEAN_ZERPD_MAP.has(clean)) {
+                    identifiedDuplicates.push({ raw: rawPN, matches: CLEAN_ZERPD_MAP.get(clean) });
+                } else {
+                    available.push(rawPN.toUpperCase());
+                }
+            });
+
+            let html = `<div class="space-y-6">`;
+            if (identifiedDuplicates.length > 0) {
+                html += `<div class="bg-red-50 p-6 rounded-2xl border-2 border-red-100">
+                    <h5 class="font-black text-red-600 mb-4 flex items-center gap-2"><i class="fas fa-times-circle"></i> PN SUDAH TERDAFTAR (DUPLIKAT) (${identifiedDuplicates.length})</h5>
+                    <div class="space-y-3">`;
+                identifiedDuplicates.forEach(d => {
+                    html += `<div class="bg-white p-3 rounded-xl shadow-sm border border-red-100 mb-2">
+                        <p class="font-black text-[11px] text-slate-800 underline decoration-red-300 mb-2">${d.raw}</p>
+                        <div class="space-y-1">
+                            ${d.matches.map(m => `
+                                <div class="text-[9px] border-l-2 border-red-200 pl-2 py-0.5">
+                                    <span class="font-bold text-blue-600">MAT: ${m.mat}</span><br>
+                                    <span class="text-slate-500 font-medium">${m.Bird}</span>
+                                </div>
+                            `).join('')}
+                        </div>
                     </div>`;
                 });
-                
-                html += `
+                html += `</div>
                     <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
-                        <div class="space-y-1">
-                            <label class="text-[9px] font-black text-slate-400 uppercase">Nama Pengaju</label>
-                            <input type="text" id="access-req-name" placeholder="INPUT NAMA" class="input-field border-2 professional-input py-2">
-                        </div>
-                        <div class="space-y-1">
-                            <label class="text-[9px] font-black text-slate-400 uppercase">Departemen</label>
-                            <input type="text" id="access-req-dept" placeholder="DEPT" class="input-field border-2 professional-input py-2">
-                        </div>
+                        <div class="space-y-1"><label class="text-[9px] font-black text-slate-400 uppercase">Nama Pengaju</label><input type="text" id="access-req-name" placeholder="INPUT NAMA" class="input-field border-2 professional-input py-2"></div>
+                        <div class="space-y-1"><label class="text-[9px] font-black text-slate-400 uppercase">Departemen</label><input type="text" id="access-req-dept" placeholder="DEPT" class="input-field border-2 professional-input py-2"></div>
                     </div>
                     <div id="access-code-area">
-                        <button onclick="showAccessInput()" class="w-full py-3 bg-red-600 text-white font-black rounded-xl text-[10px] uppercase tracking-widest shadow-lg">Daftarkan sebagai Interchange/Pabrikasi</button>
+                        <button onclick="showAccessInput()" class="w-full py-3 bg-red-600 text-white font-black rounded-xl text-[10px] uppercase tracking-widest shadow-lg leading-tight">Gunakan Kode Akses untuk PN Terdaftar<br>(Pabrikasi / Interchange)</button>
                     </div>
-                `;
-                res.innerHTML = html;
+                </div>`;
+            }
+
+            if (available.length > 0) {
+                html += `<div class="bg-emerald-50 p-6 rounded-2xl border-2 border-emerald-100">
+                    <h5 class="font-black text-emerald-600 mb-4 flex items-center gap-2"><i class="fas fa-check-circle"></i> PN TERSEDIA (BELUM TERDAFTAR) (${available.length})</h5>
+                    <div class="flex flex-wrap gap-2 mb-6">`;
+                available.forEach(a => { html += `<span class="bg-white px-3 py-1.5 rounded-lg text-[9px] font-black text-emerald-700 border border-emerald-100 shadow-sm">${a}</span>`; });
+                html += `</div>
+                    <button onclick='window.startBatchForm(${JSON.stringify(available)})' class="w-full py-4 bg-emerald-600 text-white font-black rounded-xl text-[11px] uppercase tracking-widest shadow-xl">Lanjutkan Pendaftaran PN Tersedia</button>
+                </div>`;
+            }
+            html += `</div>`;
+            res.innerHTML = html;
+        };
+
+        window.startBatchForm = function(availablePNs) {
+            batchMaterials = availablePNs.map(pn => ({
+                mfg_part: pn, description: "", base_uom: "", material_type: "", material_group: "",
+                plant: "", storage_location: "", purchasing_group: "", valuation_cat: "S",
+                valuation_class: "V001", storage_bin: "", remarks: "", serial_profile: "NON SN"
+            }));
+            currentMaterialIdx = 0;
+            document.getElementById('pn-res').classList.add('hidden');
+            document.getElementById('create-full-form').classList.remove('hidden');
+            renderNav(); loadMaterialToForm(0);
+        };
+
+        function renderNav() {
+            const nav = document.getElementById('multi-form-nav');
+            nav.innerHTML = batchMaterials.map((m, i) => `
+                <button type="button" onclick="switchMaterial(${i})" class="nav-item-btn ${i === currentMaterialIdx ? 'active' : 'bg-white border-slate-100'}">
+                    <p class="text-[8px] font-black opacity-50 uppercase">Item #${i+1}</p>
+                    <p class="text-[10px] font-bold truncate">${m.mfg_part}</p>
+                    <p class="text-[8px] italic opacity-70">${m.description || 'Menunggu Input...'}</p>
+                </button>
+            `).join('');
+        }
+
+        window.switchMaterial = function(idx) {
+            saveCurrentToBatch(); currentMaterialIdx = idx; loadMaterialToForm(idx); renderNav();
+        };
+
+        function saveCurrentToBatch() {
+            const m = batchMaterials[currentMaterialIdx];
+            m.description = document.getElementById('f-desc').value;
+            m.base_uom = document.getElementById('f-uom').value;
+            m.material_type = document.getElementById('f-type').value;
+            m.material_group = document.getElementById('f-group').value;
+            m.plant = document.getElementById('f-plant').value;
+            m.storage_location = document.getElementById('f-sloc').value;
+            m.purchasing_group = document.getElementById('f-purch').value;
+            m.valuation_cat = document.getElementById('f-val-cat').value;
+            m.valuation_class = document.getElementById('create-val-class').value;
+            m.storage_bin = document.getElementById('f-bin').value;
+            m.remarks = document.getElementById('f-remarks').value;
+            m.serial_profile = document.getElementById('f-serial').value;
+        }
+
+        function loadMaterialToForm(idx) {
+            const m = batchMaterials[idx];
+            document.getElementById('form-subtitle').innerHTML = `<i class="fas fa-layer-group"></i> Spesifikasi Material: ${m.mfg_part}`;
+            document.getElementById('f-final-pn').value = m.mfg_part;
+            document.getElementById('f-desc').value = m.description;
+            document.getElementById('f-uom').value = m.base_uom;
+            document.getElementById('f-type').value = m.material_type;
+            document.getElementById('f-group').value = m.material_group;
+            document.getElementById('f-plant').value = m.plant;
+            document.getElementById('f-sloc').value = m.storage_location;
+            document.getElementById('f-purch').value = m.purchasing_group;
+            document.getElementById('f-val-cat').value = m.valuation_cat;
+            document.getElementById('create-val-class').value = m.valuation_class;
+            document.getElementById('f-bin').value = m.storage_bin;
+            document.getElementById('f-remarks').value = m.remarks;
+            document.getElementById('f-serial').value = m.serial_profile || "NON SN";
+        }
+
+        window.handleBatchSubmit = async function() {
+            saveCurrentToBatch();
+            const reqName = document.getElementById('f-req-name').value;
+            const reqDept = document.getElementById('f-req-dept').value;
+            if (!reqName || !reqDept) return window.notify('Data Belum Lengkap', 'Isi Nama & Dept Pengaju.', 'error');
+            const incomplete = batchMaterials.find(m => !m.description || !m.plant || !m.base_uom);
+            if (incomplete) return window.notify('Ada Form Belum Lengkap', `Material ${incomplete.mfg_part} belum lengkap.`, 'error');
+            
+            document.getElementById('loader').style.display = 'flex';
+            
+            try {
+                const now = new Date();
+                const localTimestamp = now.toLocaleString('id-ID', { 
+                    day: '2-digit', month: '2-digit', year: 'numeric', 
+                    hour: '2-digit', minute: '2-digit', second: '2-digit',
+                    hour12: false 
+                }).replace(/\./g, ':');
+
+                for (const material of batchMaterials) {
+                    const data = { 
+                        ...material, 
+                        timestamp: localTimestamp,
+                        requester_name: reqName, department: reqDept, 
+                        request_type: "Request Create Material", 
+                        material: "NEW-REG", auto_po: "YES", mrp_controller: "ND", 
+                        proc_type: "F", spec_proc: "40", delivery_time: 7, 
+                        safety_stock: 0, old_material: "-", mfg_profile: "-" 
+                    };
+                    await fetch(scriptURL, { method: 'POST', body: JSON.stringify(data) });
+                }
+                
+                window.notify('Batch Berhasil!', `${batchMaterials.length} Pengajuan dikirim.`, 'success');
                 document.getElementById('create-full-form').classList.add('hidden');
-            } else {
-                res.className = "p-6 rounded-[1.5rem] border-4 border-emerald-100 bg-emerald-50 text-emerald-800";
-                res.innerHTML = `<i class="fas fa-check-circle mr-3"></i> <b>VERIFIED!</b> PN aman digunakan.`;
-                document.getElementById('create-full-form').classList.remove('hidden');
-                document.getElementById('create-final-pn').value = rawPN.toUpperCase();
+                document.getElementById('c-pn-check').value = "";
+                syncMonitoringData(); showSection('home-section');
+            } catch (e) { 
+                window.notify('Gagal Submit', 'Kesalahan jaringan.', 'error'); 
+            } finally { 
+                document.getElementById('loader').style.display = 'none'; 
             }
         };
 
@@ -676,91 +830,104 @@
                     <label class="text-[9px] font-black text-slate-400 uppercase block mb-2">Masukkan Kode Akses Khusus</label>
                     <input type="text" id="access-code-input" placeholder="KODE-XXXX" class="input-field border-2 mb-3 text-center font-black tracking-[0.3em]">
                     <div class="grid grid-cols-2 gap-3">
-                        <button onclick="handleVerifyAccess()" class="py-3 bg-blue-600 text-white font-black rounded-xl text-[9px] uppercase">Verifikasi Kode</button>
-                        <button onclick="requestNewCode()" class="py-3 bg-emerald-500 text-white font-black rounded-xl text-[9px] uppercase flex items-center justify-center gap-2">
-                             <i class="fas fa-key text-[8px]"></i> Minta Kode Akses
-                        </button>
+                        <button onclick="handleVerifyAccess()" class="py-3 bg-blue-600 text-white font-black rounded-xl text-[9px] uppercase tracking-widest">Verifikasi</button>
+                        <button onclick="window.requestNewCode()" class="py-3 bg-emerald-500 text-white font-black rounded-xl text-[9px] uppercase flex items-center justify-center gap-2 tracking-widest"><i class="fas fa-key text-[8px]"></i> Minta Kode</button>
                     </div>
-                    <div id="generated-code-display" class="hidden mt-4 p-3 bg-emerald-50 border border-emerald-100 rounded-xl text-center">
-                        <p class="text-[9px] font-black text-emerald-700 uppercase">PERMINTAAN TERKIRIM!</p>
-                        <p class="text-[10px] font-bold text-emerald-600 my-2 tracking-tight">KODE ANDA SEDANG DIPROSES</p>
-                        <p class="text-[8px] text-emerald-500 italic leading-tight">Kode tidak ditampilkan di sini demi keamanan. Silakan hubungi Catalogue Team via WA untuk mendapatkan kode tersebut.</p>
-                    </div>
-                </div>
-            `;
+                    <div id="generated-code-display" class="hidden mt-4 p-3 bg-emerald-50 border border-emerald-100 rounded-xl text-center"><p class="text-[10px] font-bold text-emerald-600 my-2">PERMINTAAN TERKIRIM!</p><p class="text-[8px] text-emerald-500 italic leading-tight">Kode tim Catalogue akan menghubungi Anda via WA.</p></div>
+                </div>`;
         };
 
         window.requestNewCode = async function() {
             const reqName = document.getElementById('access-req-name')?.value.trim();
             const reqDept = document.getElementById('access-req-dept')?.value.trim();
-
-            if(!reqName || !reqDept) {
-                notify('Data Belum Lengkap', 'Silakan isi Nama Pengaju & Departemen di atas terlebih dahulu.', 'error');
-                return;
-            }
-
-            const now = new Date();
-            const tanggalStr = now.toLocaleString('id-ID');
-
+            if(!reqName || !reqDept) return window.notify('Data Belum Lengkap', 'Silakan isi Nama & Departemen.', 'error');
             document.getElementById('loader').style.display = 'flex';
             try {
-                const res = await fetch(`${scriptURL}?action=generate_access_code&requester=${encodeURIComponent(reqName)}&dept=${encodeURIComponent(reqDept)}&tanggal=${encodeURIComponent(tanggalStr)}`);
+                const now = new Date();
+                const localTimestamp = now.toLocaleString('id-ID');
+                const res = await fetch(`${scriptURL}?action=generate_access_code&requester=${encodeURIComponent(reqName)}&dept=${encodeURIComponent(reqDept)}&tanggal=${encodeURIComponent(localTimestamp)}`);
                 const result = await res.json();
-
-                if(result.status === "success") {
-                    document.getElementById('generated-code-display').classList.remove('hidden');
-                    notify('Request Sukses', 'Permintaan kode terkirim ke sistem.', 'success');
-                    if(document.getElementById('f-req-name')) document.getElementById('f-req-name').value = reqName;
-                    if(document.getElementById('f-req-dept')) document.getElementById('f-req-dept').value = reqDept;
-                } else {
-                    notify('Gagal', 'Terjadi kesalahan saat membuat kode.', 'error');
-                }
+                if(result.status === "success") { document.getElementById('generated-code-display').classList.remove('hidden'); window.notify('Request Sukses', 'Permintaan kode terkirim.', 'success'); }
             } catch (e) {
-                notify('Error', 'Gagal menghubungi server.', 'error');
-            } finally {
-                document.getElementById('loader').style.display = 'none';
-            }
+                window.notify('Gagal Request', 'Periksa koneksi internet Anda.', 'error');
+            } finally { document.getElementById('loader').style.display = 'none'; }
         };
 
         window.handleVerifyAccess = async function() {
             const inputCode = document.getElementById('access-code-input').value.trim();
             const inputName = document.getElementById('access-req-name')?.value.trim().toUpperCase();
-
-            if(!inputCode) return notify('Input Kosong', 'Masukkan kode akses.', 'error');
-            if(!inputName) return notify('Nama Kosong', 'Pastikan Nama Pengaju terisi.', 'error');
-
+            if(!inputCode || !inputName) return window.notify('Gagal', 'Input tidak lengkap.', 'error');
             await syncAccessCodes();
-            
             if(VALID_ACCESS_RECORDS.has(inputCode)) {
                 const record = VALID_ACCESS_RECORDS.get(inputCode);
-                const now = new Date();
+                if (record.requester !== inputName) return window.notify('Verifikasi Gagal', 'Kode bukan milik Anda.', 'error');
+                // UPDATE: Batas waktu kode akses diperpanjang menjadi 2 jam (120 menit)
+                if (record.timestamp && Math.floor((new Date() - record.timestamp) / 60000) >= 120) return window.notify('Code Expired', 'Kode kedaluwarsa.', 'error');
                 
-                // Verifikasi Nama
-                if (record.requester !== inputName) {
-                    return notify('Verifikasi Gagal', 'Kode ini bukan milik Anda.', 'error');
-                }
+                window.notify('Akses Terbuka', 'PN Duplikat akan didaftarkan sebagai baru.', 'success');
+                const dupsToProcess = identifiedDuplicates.map(d => d.raw.toUpperCase());
+                window.startBatchForm(dupsToProcess);
+            } else { window.notify('Gagal', 'Kode tidak valid.', 'error'); }
+        };
 
-                // Verifikasi Waktu (Expired setelah 15 menit)
-                if (record.timestamp) {
-                    const diffMs = now - record.timestamp;
-                    const diffMins = Math.floor(diffMs / 60000);
-                    
-                    if (diffMins >= 15) {
-                        return notify('Code Expired', `Kode sudah kedaluwarsa (${diffMins} menit lalu).`, 'error');
+        async function syncMonitoringData() {
+            const monitorList = document.getElementById('monitor-list');
+            const monthLabel = document.getElementById('monitor-month-label');
+            const now = new Date();
+            if (monthLabel) monthLabel.innerText = now.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' }).toUpperCase();
+            
+            try {
+                const response = await fetchWithRetry(csvCreateMatURL);
+                const csvText = await response.text();
+                const lines = csvText.split(/\r?\n/);
+                let html = "";
+                for (let i = lines.length - 1; i >= 1; i--) {
+                    if (!lines[i].trim()) continue;
+                    const cols = parseCSVLine(lines[i]);
+                    let tsDate = robustParseDate(cols[0]);
+                    if (tsDate && !isNaN(tsDate.getTime())) {
+                        if (tsDate.getMonth() === now.getMonth() && tsDate.getFullYear() === now.getFullYear()) {
+                            const remarks = cols[28] || "DALAM PROSES";
+                            const isNum = /^\d+$/.test(remarks.trim());
+                            let bS = "background-color: #eff6ff; color: #2563eb; border-color: #dbeafe;";
+                            let iC = '<i class="fas fa-circle-notch animate-spin text-[8px]"></i>';
+                            if (remarks.toUpperCase().includes("REJECT")) { bS = "background-color: #fff1f2; color: #e11d48; border-color: #ffe4e6;"; iC = '<i class="fas fa-times-circle text-[10px]"></i>'; }
+                            else if (remarks.toUpperCase().includes("DONE") || isNum) { bS = "background-color: #ecfdf5; color: #059669; border-color: #d1fae5;"; iC = '<i class="fas fa-check-circle text-[10px]"></i>'; }
+                            
+                            html += `<tr>
+                                <td class="font-mono font-bold text-slate-500">${tsDate.toLocaleDateString('id-ID')}</td>
+                                <td class="font-black uppercase text-slate-800">${cols[26] || "-"}</td>
+                                <td class="font-extrabold uppercase text-slate-500">${cols[27] || "-"}</td>
+                                <td class="max-sm italic leading-relaxed text-slate-700">${cols[2] || "-"}</td>
+                                <td><span class="status-badge" style="${bS}">${iC} ${isNum ? 'SELESAI ('+remarks+')' : remarks}</span></td>
+                            </tr>`;
+                        }
                     }
                 }
-
-                notify('Akses Terbuka', 'Silakan isi formulir.', 'success');
-                document.getElementById('create-full-form').classList.remove('hidden');
-                document.getElementById('pn-res').classList.add('hidden');
-            } else {
-                notify('Gagal', 'Kode akses tidak ditemukan.', 'error');
+                if (monitorList) monitorList.innerHTML = html || `<tr><td colspan="5" class="px-8 py-24 text-center text-slate-400 text-[12px] font-black uppercase tracking-[0.2em]">Belum ada aktivitas di bulan ${now.toLocaleDateString('id-ID', {month:'long'})}</td></tr>`;
+            } catch (e) {
+                console.error("Monitor Sync Error:", e);
+                if (monitorList) monitorList.innerHTML = `<tr><td colspan="5" class="px-8 py-24 text-center text-red-500 font-bold uppercase">Gagal Menyinkronkan Data. Periksa Koneksi Anda.</td></tr>`;
             }
-        };
+        }
+
+        async function syncAccessCodes() {
+            try {
+                const response = await fetchWithRetry(csvAccessURL);
+                const csvText = await response.text();
+                const lines = csvText.split(/\r?\n/);
+                const records = new Map();
+                for (let i = 1; i < lines.length; i++) {
+                    const cols = parseCSVLine(lines[i]);
+                    if (cols[2]) records.set(cols[2].trim(), { timestamp: cols[0] ? robustParseDate(cols[0]) : null, requester: cols[1] ? cols[1].trim().toUpperCase() : "" });
+                }
+                VALID_ACCESS_RECORDS = records;
+            } catch (e) {}
+        }
 
         window.handleVerifyMaint = async function() {
             const mat = document.getElementById('m-v-mat').value.trim().toUpperCase();
-            if(!mat) return notify('Input Kosong', 'Masukkan Material ID.', 'error');
+            if(!mat) return window.notify('Input Kosong', 'Masukkan Material ID.', 'error');
             document.getElementById('loader').style.display = 'flex';
             try {
                 const res = await fetch(`${scriptURL}?action=lookup&material=${mat}`);
@@ -770,9 +937,10 @@
                     document.getElementById('f-mat').value = mat;
                     document.getElementById('maint-verify-card').classList.add('hidden');
                     document.getElementById('maint-full-form').classList.remove('hidden');
-                } else { notify('Tidak Ditemukan', 'Material ID salah.', 'error'); }
-            } catch (e) { notify('Error', 'Gagal verifikasi.', 'error'); }
-            finally { document.getElementById('loader').style.display = 'none'; }
+                } else window.notify('Gagal', 'Material ID tidak ditemukan.', 'error');
+            } catch (e) {
+                window.notify('Kesalahan', 'Gagal menghubungi server.', 'error');
+            } finally { document.getElementById('loader').style.display = 'none'; }
         }
 
         function getCleanPN(pn) { return pn.toString().toUpperCase().replace(/[^A-Z0-9]/g, ''); }
@@ -781,122 +949,39 @@
             const sel = document.getElementById(id);
             if (!sel) return;
             sel.innerHTML = '<option value="">-- PILIH --</option>';
-            options.forEach(item => {
-                const opt = document.createElement('option');
-                opt.value = item.code;
-                opt.text = item.display;
-                opt.dataset.long = item.display;
-                opt.dataset.short = item.code;
-                sel.appendChild(opt);
-            });
-            const showShort = () => {
-                const opt = sel.options[sel.selectedIndex];
-                if (opt && opt.value) opt.text = opt.dataset.short;
-            };
-            const showLong = () => {
-                Array.from(sel.options).forEach(o => { if (o.dataset.long) o.text = o.dataset.long; });
-            };
-            sel.addEventListener('mousedown', showLong);
-            sel.addEventListener('change', () => { showShort(); sel.blur(); });
-            sel.addEventListener('blur', showShort);
+            options.forEach(item => { const opt = document.createElement('option'); opt.value = item.code; opt.text = item.display; opt.dataset.long = item.display; opt.dataset.short = item.code; sel.appendChild(opt); });
+            const showS = () => { const opt = sel.options[sel.selectedIndex]; if (opt && opt.value) opt.text = opt.dataset.short; };
+            const showL = () => { Array.from(sel.options).forEach(o => { if (o.dataset.long) o.text = o.dataset.long; }); };
+            sel.addEventListener('mousedown', showL); sel.addEventListener('change', () => { showS(); sel.blur(); }); sel.addEventListener('blur', showS);
         }
 
         function populateSelects() {
-            const plantSel = document.getElementById('f-plant');
-            const mvPlantSel = document.getElementById('m-v-plant');
-            for(let i=1;i<=28;i++) {
-                let v = `PL${i.toString().padStart(2,'0')}`;
-                plantSel.innerHTML += `<option value="${v}">${v}</option>`;
-                mvPlantSel.innerHTML += `<option value="${v}">${v}</option>`;
-            }
-            const slocSel = document.getElementById('f-sloc');
-            const mvSlocSel = document.getElementById('m-v-sloc');
-            for(let i=1;i<=15;i++) {
-                let v = `S${i.toString().padStart(3,'0')}`;
-                slocSel.innerHTML += `<option value="${v}">${v}</option>`;
-                mvSlocSel.innerHTML += `<option value="${v}">${v}</option>`;
-            }
-            
-            setupVisualSwap('f-uom', [{code:"AMP",display:"AMP - AMPERE"},{code:"BAG",display:"BAG - BAG"},{code:"BOX",display:"BOX - BOX"},{code:"BT",display:"BT - BOTTLE"},{code:"BTG",display:"BTG - BATANG"},{code:"BUK",display:"BUK - BUKU"},{code:"CAN",display:"CAN - CANISTER"},{code:"CAR",display:"CAR - CARTON"},{code:"CL",display:"CL - CENTILITER"},{code:"CM",display:"CM - CENTIMETER"},{code:"D",display:"D - DAYS"},{code:"DR",display:"DR - DRUM"},{code:"DUS",display:"DUS - DUS"},{code:"EA",display:"EA - EACH"},{code:"G",display:"G - GRAM"},{code:"GAL",display:"GAL - US GALLON"},{code:"KG",display:"KG - KILOGRAM"},{code:"KLG",display:"KLG - KALENG"},{code:"KM",display:"KM - KILOMETER"},{code:"L",display:"L"},{code:"LB",display:"LB - POUND"},{code:"LBR",display:"LBR - LEMBAR"},{code:"LSN",display:"LSN - LUSIN"},{code:"M",display:"M - METER"},{code:"M2",display:"M2 - SQUARE METER"},{code:"M3",display:"M3 - CUBIC METER"},{code:"MG",display:"MG - MILLIGRAM"},{code:"ML",display:"ML - MILLILITER"},{code:"MM",display:"MM - MILLIMETER"},{code:"OZ",display:"OZ - OUNCE"},{code:"PC",display:"PC - PIECE"},{code:"PCS",display:"PCS - PIECES"},{code:"PKT",display:"PKT - PKT"},{code:"PL",display:"PL - PAIL"},{code:"RIM",display:"RIM - RIM"},{code:"ROL",display:"ROL - ROLL"},{code:"SAK",display:"SAK - SACK"},{code:"SET",display:"SET - SET"},{code:"TAB",display:"TAB - TABLET"},{code:"TBG",display:"TBG - TABUNG"},{code:"TON",display:"TON - US TON"},{code:"TUB",display:"TUB - TUBE"},{code:"UN",display:"UN - UNIT"},{code:"UNT",display:"UNT - UNIT"}]);
-            setupVisualSwap('f-type', [{code:"SPRT",display:"SPRT - SPAREPART"},{code:"FOGC",display:"FOGC - FOGC"},{code:"TYRE",display:"TYRE - TYRE"},{code:"CONS",display:"CONS - CONSUMABLE"},{code:"GENS",display:"GENS - GENERAL SUPPLY"},{code:"ASET",display:"ASET - ASSET"},{code:"SEJA",display:"SEJA - SERVICE & JASA"},{code:"MDLE",display:"MDLE - MODULE"},{code:"BOMM",display:"BOMM - BOM MATERIAL"},{code:"FFF",display:"FFF - FFF CLASS"}]);
-            setupVisualSwap('f-group', [{code:"S001",display:"S001 - SPAREPART"},{code:"S002",display:"S002 - ELECTRICAL SYSTEM"},{code:"S003",display:"S003 - TRANSMISSION"},{code:"S004",display:"S004 - GET"},{code:"S005",display:"S005 - UNDERCARRIAGE"},{code:"S006",display:"S006 - WHEEL"},{code:"F001",display:"F001 - FUEL"},{code:"F002",display:"F002 - OIL"},{code:"F003",display:"F003 - GREASE"},{code:"F004",display:"F004 - COOLANT"},{code:"T001",display:"T001 - TYRE"},{code:"G001",display:"G001 - GENERAL SUPPLY"},{code:"G002",display:"G002 - APD"},{code:"C001",display:"C001 - RAMBU-RAMBU"},{code:"C002",display:"C002 - AKSESORIS"},{code:"C003",display:"C003 - COMMON TOOLS"},{code:"C004",display:"C004 - MEDICINE"},{code:"C005",display:"C005 - ALAT TULIS KANTOR"},{code:"C006",display:"C006 - PERALATAN/PERLENGKAPAN"},{code:"C007",display:"C007 - BEBAN SERAGAM"},{code:"A001",display:"A001 - HARDWARE"},{code:"A002",display:"A002 - SOFTWARE"},{code:"A003",display:"A003 - EQUIPMENT"},{code:"A004",display:"A004 - BUILDING"},{code:"A005",display:"A005 - SPECIAL TOOLS"},{code:"A006",display:"A006 - INVENTARIS"},{code:"J001",display:"J001 - JASA EKSPEDISI"},{code:"J002",display:"J002 - JASA SERTIFIKASI"},{code:"J003",display:"J003 - JASA SURVEY"},{code:"J004",display:"J004 - JASA FABRIKASI"},{code:"J005",display:"J005 - JASA LAB"},{code:"J006",display:"J006 - JASA KONSULTAN"},{code:"J007",display:"J007 - JASA ANGKUT BBM"},{code:"J008",display:"J008 - JASA BLASTING"},{code:"J009",display:"J009 - JASA PEMELIHARAAN BANGUNAN"},{code:"J010",display:"J010 - JASA PEMELIHARAAN MESIN"},{code:"J011",display:"J011 - JASA PEMELIHARAAN ALAT BERAT"},{code:"J012",display:"J012 - JASA PEMELIHARAAN KENDARAAN"},{code:"J013",display:"J013 - JASA PERALATAN"},{code:"J014",display:"J014 - JASA MOBILISASI"},{code:"J015",display:"J015 - JASA SEWA KENDARAAN"},{code:"M001",display:"M001 - MODULE"}]);
-            setupVisualSwap('f-purch', [{code:"G01",display:"G01 - SPAREPART"},{code:"G02",display:"G02 - CONSUMABLE / GENERAL SUPPLY"},{code:"G03",display:"G03 - SERVICE / JASA"},{code:"G04",display:"G04 - FUEL"},{code:"G05",display:"G05 - INFRASTRUKTUR"},{code:"G06",display:"G06 - SARANA"},{code:"G07",display:"G07 - AST, MDL & UNT"}]);
+            const pS = document.getElementById('f-plant'); const mvpS = document.getElementById('m-v-plant');
+            for(let i=1;i<=28;i++) { let v = `PL${i.toString().padStart(2,'0')}`; if(pS) pS.innerHTML += `<option value="${v}">${v}</option>`; if(mvpS) mvpS.innerHTML += `<option value="${v}">${v}</option>`; }
+            const sS = document.getElementById('f-sloc'); const mvsS = document.getElementById('m-v-sloc');
+            for(let i=1;i<=15;i++) { let v = `S${i.toString().padStart(3,'0')}`; if(sS) sS.innerHTML += `<option value="${v}">${v}</option>`; if(mvsS) mvsS.innerHTML += `<option value="${v}">${v}</option>`; }
+            setupVisualSwap('f-uom', [{code:"EA",display:"EA - EACH"},{code:"PC",display:"PC - PIECE"},{code:"PCS",display:"PCS - PIECES"},{code:"SET",display:"SET - SET"},{code:"UNT",display:"UNT - UNIT"},{code:"ROL",display:"ROL - ROLL"},{code:"M",display:"M - METER"},{code:"KG",display:"KG - KILOGRAM"},{code:"L",display:"L - LITER"},{code:"CAN",display:"CAN - CANISTER"},{code:"DR",display:"DR - DRUM"},{code:"PL",display:"PL - PAIL"}]);
+            setupVisualSwap('f-type', [{code:"SPRT",display:"SPRT - SPAREPART"},{code:"TYRE",display:"TYRE - TYRE"},{code:"MDLE",display:"MDLE - MODULE"},{code:"CONS",display:"CONS - CONSUMABLE"}]);
+            setupVisualSwap('f-group', [{code:"S001",display:"S001 - SPAREPART"},{code:"S002",display:"S002 - ELECTRICAL"},{code:"T001",display:"T001 - TYRE"},{code:"M001",display:"M001 - MODULE"}]);
+            setupVisualSwap('f-purch', [{code:"G01",display:"G01 - SPAREPART"},{code:"G02",display:"G02 - GENERAL SUPPLY"}]);
         }
 
         window.updateValuationClass = function() {
-            const type = document.getElementById('f-type').value;
-            const group = document.getElementById('f-group').value;
-            const valClassInput = document.getElementById('create-val-class');
-            let valClass = "V001";
-            if (type === 'SPRT' || type === 'MDLE') valClass = "V001";
-            else if (type === 'FOGC') {
-                if (group === 'F001') valClass = "V002";
-                else if (group === 'F002') valClass = "V003";
-                else if (group === 'F003') valClass = "V004";
-                else if (group === 'F004') valClass = "V005"; 
-            } else if (type === 'TYRE') valClass = "V006";
-            else if (type === 'CONS') {
-                if (['C001', 'C002', 'C006'].includes(group)) valClass = "V008";
-                else if (group === 'C003') valClass = "V009";
-                else if (group === 'C004') valClass = "V010";
-                else if (group === 'C005') valClass = "V024";
-                else if (group === 'C007') valClass = "V025";
-            } else if (type === 'GENS') valClass = "V011";
-            else if (type === 'SEJA') valClass = "V012";
-            valClassInput.value = valClass;
+            const tEl = document.getElementById('f-type');
+            const vEl = document.getElementById('create-val-class');
+            if (!tEl || !vEl) return;
+            const t = tEl.value;
+            let v = "V001";
+            if (t === 'TYRE') v = "V006"; else if (t === 'CONS') v = "V008"; else if (t === 'MDLE') v = "V001";
+            vEl.value = v;
         };
-
-        window.handleSubmitCreate = async (e) => {
-            e.preventDefault();
-            document.getElementById('loader').style.display = 'flex';
-            try {
-                const data = Object.fromEntries(new FormData(e.target));
-                data.request_type = "Request Create Material";
-                data.auto_po = "YES";
-                data.mrp_controller = "ND";
-                data.proc_type = "F";
-                data.spec_proc = "40";
-                await fetch(scriptURL, { method: 'POST', body: JSON.stringify(data) });
-                e.target.reset();
-                document.getElementById('create-full-form').classList.add('hidden');
-                notify('Sukses!', 'Data terkirim.', 'success');
-                syncMonitoringData();
-                showSection('home-section');
-            } catch (e) { notify('Gagal', 'Error kirim data.', 'error'); }
-            finally { document.getElementById('loader').style.display = 'none'; }
-        };
-
-        window.handleSubmitMaint = async (e) => {
-            e.preventDefault();
-            document.getElementById('loader').style.display = 'flex';
-            try {
-                const data = Object.fromEntries(new FormData(e.target));
-                data.request_type = "Maintenance Request";
-                await fetch(scriptURL, { method: 'POST', body: JSON.stringify(data) });
-                e.target.reset();
-                document.getElementById('maint-full-form').classList.add('hidden');
-                notify('Berhasil', 'Data terkirim.', 'success');
-                showSection('home-section');
-            } catch (e) { notify('Gagal', 'Error kirim data.', 'error'); }
-            finally { document.getElementById('loader').style.display = 'none'; }
-        };
-
-        function notify(title, msg, type) {
-            const t = document.getElementById('toast');
-            document.getElementById('t-title').innerText = title;
-            document.getElementById('t-msg').innerText = msg;
-            const icon = document.getElementById('toast-icon');
-            icon.innerHTML = type === 'error' ? '<i class="fas fa-times"></i>' : '<i class="fas fa-check"></i>';
-            icon.className = `w-10 h-10 rounded-xl flex items-center justify-center ${type === 'error' ? 'bg-red-500' : 'bg-emerald-500'}`;
-            t.classList.remove('translate-y-40', 'opacity-0');
-            setTimeout(() => t.classList.add('translate-y-40', 'opacity-0'), 3000);
-        }
 
         window.onload = () => {
-            document.getElementById('header-date').innerText = new Date().toLocaleDateString('id-ID', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
-            populateSelects();
-            syncZerpdFromSpreadsheet();
-            syncAccessCodes();
+            const headerDate = document.getElementById('header-date');
+            if (headerDate) headerDate.innerText = new Date().toLocaleDateString('id-ID', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+            populateSelects(); 
+            syncZerpdFromSpreadsheet(); 
+            syncAccessCodes(); 
             syncMonitoringData();
             setInterval(syncMonitoringData, 120000);
         };
