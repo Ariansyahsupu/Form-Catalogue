@@ -439,17 +439,22 @@
                                                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                                                     <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Material ID</label><input type="text" name="material" readonly value="NEW-REG" class="input-field input-readonly professional-input"></div>
                                                     <div class="space-y-1.5 md:col-span-2"><label class="text-[10px] professional-label tracking-widest">Description</label><input type="text" name="description" id="f-desc" required class="input-field border-2 professional-input"></div>
-                                                    <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Old Material No.</label><input type="text" name="old_material" readonly value="-" class="input-field input-readonly professional-input"></div>
+                                                    <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Old Material No.</label><input type="text" name="old_material" readonly value="" class="input-field input-readonly professional-input"></div>
                                                     <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Base UoM</label><select name="base_uom" id="f-uom" required class="input-field border-2 professional-input"></select></div>
                                                     <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Mat Type</label><select name="material_type" id="f-type" required class="input-field border-2 professional-input" onchange="updateValuationClass()"></select></div>
                                                     <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Mat Group</label><select name="material_group" id="f-group" required class="input-field border-2 professional-input" onchange="updateValuationClass()"></select></div>
                                                     <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Mfg PN</label><input type="text" name="mfg_part" id="f-final-pn" readonly class="input-field input-readonly professional-input text-orange-600 font-mono"></div>
-                                                    <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">MFG Profile</label><input type="text" name="mfg_profile" readonly value="-" class="input-field input-readonly professional-input"></div>
+                                                    <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">MFG Profile</label><input type="text" name="mfg_profile" readonly value="" class="input-field input-readonly professional-input"></div>
                                                     <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Plant</label><select name="plant" id="f-plant" required class="input-field border-2 bg-white professional-input"></select></div>
                                                     <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Storage Location</label><select name="storage_location" id="f-sloc" required class="input-field border-2 bg-white professional-input"></select></div>
                                                     <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Purchasing Group</label><select name="purchasing_group" id="f-purch" required class="input-field border-2 professional-input"></select></div>
                                                     <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Automatic PO</label><input type="text" name="auto_po" readonly value="YES" class="input-field input-readonly professional-input text-emerald-600"></div>
-                                                    <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">MRP Controller</label><input type="text" name="mrp_controller" readonly value="ND" class="input-field input-readonly professional-input text-blue-600"></div>
+                                                    
+                                                    <!-- MRP SECTION UPDATED AS PER INSTRUCTIONS -->
+                                                    <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">MRP Type</label><input type="text" name="mrp_type" readonly value="ND" class="input-field input-readonly professional-input text-blue-600"></div>
+                                                    <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Reorder Point</label><input type="text" name="reorder_point" readonly value="0" class="input-field input-readonly professional-input text-blue-600"></div>
+                                                    <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">MRP Controller</label><input type="text" name="mrp_controller" readonly value="M01" class="input-field input-readonly professional-input text-blue-600"></div>
+                                                    
                                                     <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Lot Sizing</label><input type="text" name="lot_sizing" readonly value="" class="input-field input-readonly professional-input"></div>
                                                     <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Max Stock</label><input type="number" name="max_stock" readonly value="0" class="input-field input-readonly professional-input"></div>
                                                     <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Proc. Type</label><input type="text" name="proc_type" readonly value="F" class="input-field input-readonly professional-input"></div>
@@ -458,7 +463,8 @@
                                                     <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Safety Stock</label><input type="number" name="safety_stock" readonly value="0" class="input-field input-readonly professional-input"></div>
                                                     <div class="space-y-1.5">
                                                         <label class="text-[10px] professional-label tracking-widest">Serial Profile</label>
-                                                        <select name="serial_profile" id="f-serial" class="input-field border-2 professional-input">
+                                                        <select name="serial_profile" id="f-serial" required class="input-field border-2 professional-input">
+                                                            <option value="">-- PILIH --</option>
                                                             <option value="NON SN">NON SN - NON SERIALIZE</option>
                                                             <option value="SNI1">SNI1 - SN FOR TYRE</option>
                                                             <option value="SNI2">SNI2 - SN FOR MODULE COMPONENT</option>
@@ -467,13 +473,17 @@
                                                     <div class="space-y-1.5">
                                                         <label class="text-[10px] professional-label tracking-widest">Valuation Category</label>
                                                         <select name="valuation_cat" id="f-val-cat" required class="input-field border-2 professional-input">
+                                                            <option value="">-- PILIH --</option>
                                                             <option value="S">S - SPAREPART/TYRE/MODULE</option>
                                                             <option value="O">O - OIL</option>
                                                         </select>
                                                     </div>
                                                     <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Val. Class</label><input type="text" id="create-val-class" name="valuation_class" readonly class="input-field input-readonly professional-input text-slate-900"></div>
                                                     <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Storage Bin</label><input type="text" name="storage_bin" id="f-bin" class="input-field border-2 professional-input"></div>
-                                                    <div class="space-y-1.5 md:col-span-3"><label class="text-[10px] professional-label tracking-widest">Remarks / Note</label><input type="text" name="remarks" id="f-remarks" placeholder="CATATAN TAMBAHAN" class="input-field border-2 professional-input"></div>
+                                                    <div class="space-y-1.5 md:col-span-3">
+                                                        <label class="text-[10px] professional-label tracking-widest">Remarks / Note <span class="text-red-500 font-black">(WAJIB: CCP / LINK PART BOOK)</span></label>
+                                                        <input type="text" name="remarks" id="f-remarks" placeholder="MASUKKAN CCP ATAU LINK PART BOOK" required class="input-field border-2 professional-input border-orange-200">
+                                                    </div>
                                                 </div>
                                             </div>
                                             <button type="button" onclick="handleBatchSubmit()" class="w-full py-5 bg-orange-500 text-white font-black rounded-3xl uppercase text-lg shadow-2xl hover:bg-orange-600 transition-all">SUBMIT SELURUH PENGAJUAN</button>
@@ -582,31 +592,26 @@
 
         function robustParseDate(dateStr) {
             if (!dateStr) return null;
-            let dateOnly = dateStr.split(' ')[0];
-            let parts = dateOnly.split(/[\/\-]/);
-            
-            if (parts.length === 3) {
-                let p0 = parseInt(parts[0]);
-                let p1 = parseInt(parts[1]);
-                let p2 = parseInt(parts[2]);
-
-                if (parts[0].length === 4) return new Date(p0, p1 - 1, p2);
-                
-                if (p0 > 12) return new Date(p2, p1 - 1, p0);
-                if (p1 > 12) return new Date(p2, p0 - 1, p1);
-                
-                return new Date(p2, p1 - 1, p0);
-            }
-            let d = new Date(dateStr);
-            return isNaN(d.getTime()) ? null : d;
+            const parts = dateStr.split(' ');
+            const dPart = parts[0];
+            const tPart = parts[1] || "00:00:00";
+            const d = dPart.split(/[\/\-]/);
+            if (d.length !== 3) return new Date(dateStr);
+            const day = parseInt(d[0]);
+            const month = parseInt(d[1]) - 1;
+            let year = parseInt(d[2]);
+            if (d[0].length === 4) return new Date(dateStr); 
+            const t = tPart.split(':');
+            const hr = parseInt(t[0]) || 0;
+            const min = parseInt(t[1]) || 0;
+            const sec = parseInt(t[2]) || 0;
+            return new Date(year, month, day, hr, min, sec);
         }
 
         function normalizeDateStr(str) {
             if (!str) return "";
             const match = str.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
-            if (match) {
-                return `${parseInt(match[1])}/${parseInt(match[2])}/${match[3]}`;
-            }
+            if (match) return `${parseInt(match[1])}/${parseInt(match[2])}/${match[3]}`;
             return str;
         }
 
@@ -634,6 +639,7 @@
                     stat.className = "inline-flex items-center gap-2 mt-1 text-[10px] professional-label tracking-widest bg-red-50 px-4 py-1.5 rounded-full border border-red-100 italic text-red-600 font-black";
                     pnInput.disabled = true;
                     pnInput.placeholder = "DATABASE EXPIRED - HUBUNGI CATALOGUE TEAM";
+                    pnInput.classList.add('opacity-50', 'cursor-not-allowed');
                     pnBtn.disabled = true;
                     pnBtn.className = "bg-red-400 text-white px-10 py-4 rounded-xl font-black uppercase text-[10px] cursor-not-allowed w-full";
                     document.getElementById('alarm-msg').innerText = "ZERPD Belum Terupdate untuk tanggal berjalan hari ini. Mohon hubungi Team Catalogue segera.";
@@ -646,7 +652,7 @@
                     const rawPn = cols[2] ? cols[2].trim() : "";
                     if (rawPn && rawPn !== '-') {
                         const cleanKey = getCleanPN(rawPn);
-                        if (!cleanMap.has(cleanKey)) { cleanMap.set(cleanKey, []); }
+                        if (!cleanMap.has(cleanKey)) cleanMap.set(cleanKey, []);
                         cleanMap.get(cleanKey).push({ pn: rawPn, Bird: cols[1], mat: cols[0] });
                     }
                 }
@@ -654,30 +660,27 @@
                 stat.innerHTML = `<i class="fas fa-check-circle text-emerald-500"></i> DB AKTIF: ${CLEAN_ZERPD_MAP.size} KELOMPOK PN | ${syncInfo}`;
                 stat.className = "inline-flex items-center gap-2 mt-1 text-[10px] professional-label tracking-widest bg-emerald-50 px-4 py-1.5 rounded-full border border-emerald-100 italic";
                 pnInput.disabled = false; pnInput.placeholder = "TEMPELKAN LIST PN DI SINI...";
+                pnInput.classList.remove('opacity-50', 'cursor-not-allowed');
                 pnBtn.disabled = false; pnBtn.className = "bg-slate-900 text-white px-10 py-4 rounded-xl font-black uppercase text-[12px] w-full";
-            } catch (error) { stat.innerHTML = `<i class="fas fa-exclamation-triangle text-orange-500"></i> Database Offline`; }
+            } catch (error) { 
+                stat.innerHTML = `<i class="fas fa-exclamation-triangle text-orange-500"></i> Database Offline`; 
+                pnInput.classList.add('opacity-50', 'cursor-not-allowed');
+            }
         }
 
         window.handleVerifyPN = function() {
             const rawText = document.getElementById('c-pn-check').value.trim();
             if (!rawText) return window.notify('Input Kosong', 'Masukkan minimal satu PN.', 'error');
-            
             const uniqueInputList = [...new Set(rawText.split(/[,\n]/).map(pn => pn.trim()).filter(pn => pn !== ""))];
             const res = document.getElementById('pn-res');
             res.classList.remove('hidden');
-            
             identifiedDuplicates = [];
             let available = [];
-
             uniqueInputList.forEach(rawPN => {
                 const clean = getCleanPN(rawPN);
-                if (CLEAN_ZERPD_MAP.has(clean)) {
-                    identifiedDuplicates.push({ raw: rawPN, matches: CLEAN_ZERPD_MAP.get(clean) });
-                } else {
-                    available.push(rawPN.toUpperCase());
-                }
+                if (CLEAN_ZERPD_MAP.has(clean)) identifiedDuplicates.push({ raw: rawPN, matches: CLEAN_ZERPD_MAP.get(clean) });
+                else available.push(rawPN.toUpperCase());
             });
-
             let html = `<div class="space-y-6">`;
             if (identifiedDuplicates.length > 0) {
                 html += `<div class="bg-red-50 p-6 rounded-2xl border-2 border-red-100">
@@ -706,7 +709,6 @@
                     </div>
                 </div>`;
             }
-
             if (available.length > 0) {
                 html += `<div class="bg-emerald-50 p-6 rounded-2xl border-2 border-emerald-100">
                     <h5 class="font-black text-emerald-600 mb-4 flex items-center gap-2"><i class="fas fa-check-circle"></i> PN TERSEDIA (BELUM TERDAFTAR) (${available.length})</h5>
@@ -723,8 +725,8 @@
         window.startBatchForm = function(availablePNs) {
             batchMaterials = availablePNs.map(pn => ({
                 mfg_part: pn, description: "", base_uom: "", material_type: "", material_group: "",
-                plant: "", storage_location: "", purchasing_group: "", valuation_cat: "S",
-                valuation_class: "V001", storage_bin: "", remarks: "", serial_profile: "NON SN"
+                plant: "", storage_location: "", purchasing_group: "", valuation_cat: "",
+                valuation_class: "V001", storage_bin: "", remarks: "", serial_profile: ""
             }));
             currentMaterialIdx = 0;
             document.getElementById('pn-res').classList.add('hidden');
@@ -743,13 +745,12 @@
             `).join('');
         }
 
-        window.switchMaterial = function(idx) {
-            saveCurrentToBatch(); currentMaterialIdx = idx; loadMaterialToForm(idx); renderNav();
-        };
+        window.switchMaterial = function(idx) { saveCurrentToBatch(); currentMaterialIdx = idx; loadMaterialToForm(idx); renderNav(); };
 
         function saveCurrentToBatch() {
             const m = batchMaterials[currentMaterialIdx];
-            m.description = document.getElementById('f-desc').value;
+            // Ensure data is capitalized before saving to batch object
+            m.description = document.getElementById('f-desc').value.toUpperCase();
             m.base_uom = document.getElementById('f-uom').value;
             m.material_type = document.getElementById('f-type').value;
             m.material_group = document.getElementById('f-group').value;
@@ -758,9 +759,13 @@
             m.purchasing_group = document.getElementById('f-purch').value;
             m.valuation_cat = document.getElementById('f-val-cat').value;
             m.valuation_class = document.getElementById('create-val-class').value;
-            m.storage_bin = document.getElementById('f-bin').value;
-            m.remarks = document.getElementById('f-remarks').value;
+            m.storage_bin = document.getElementById('f-bin').value.toUpperCase();
+            m.remarks = document.getElementById('f-remarks').value.toUpperCase();
             m.serial_profile = document.getElementById('f-serial').value;
+            // Static MRP Fields
+            m.mrp_type = "ND";
+            m.reorder_point = "0";
+            m.mrp_controller = "M01";
         }
 
         function loadMaterialToForm(idx) {
@@ -778,63 +783,71 @@
             document.getElementById('create-val-class').value = m.valuation_class;
             document.getElementById('f-bin').value = m.storage_bin;
             document.getElementById('f-remarks').value = m.remarks;
-            document.getElementById('f-serial').value = m.serial_profile || "NON SN";
+            document.getElementById('f-serial').value = m.serial_profile;
         }
 
         window.handleBatchSubmit = async function() {
             saveCurrentToBatch();
-            const reqName = document.getElementById('f-req-name').value;
-            const reqDept = document.getElementById('f-req-dept').value;
+            // Ensure requester data is capitalized
+            const reqName = document.getElementById('f-req-name').value.toUpperCase();
+            const reqDept = document.getElementById('f-req-dept').value.toUpperCase();
             if (!reqName || !reqDept) return window.notify('Data Belum Lengkap', 'Isi Nama & Dept Pengaju.', 'error');
-            const incomplete = batchMaterials.find(m => !m.description || !m.plant || !m.base_uom);
-            if (incomplete) return window.notify('Ada Form Belum Lengkap', `Material ${incomplete.mfg_part} belum lengkap.`, 'error');
-            
+            const incomplete = batchMaterials.find(m => 
+                !m.description || !m.base_uom || !m.material_type || !m.material_group || 
+                !m.plant || !m.storage_location || !m.purchasing_group || !m.serial_profile || 
+                !m.valuation_cat || !m.remarks
+            );
+            if (incomplete) {
+                let missingField = "";
+                if (!incomplete.description) missingField = "Description";
+                else if (!incomplete.base_uom) missingField = "Base UoM";
+                else if (!incomplete.material_type) missingField = "Mat Type";
+                else if (!incomplete.material_group) missingField = "Mat Group";
+                else if (!incomplete.plant) missingField = "Plant";
+                else if (!incomplete.storage_location) missingField = "Storage Location";
+                else if (!incomplete.purchasing_group) missingField = "Purchasing Group";
+                else if (!incomplete.serial_profile) missingField = "Serial Profile";
+                else if (!incomplete.valuation_cat) missingField = "Valuation Category";
+                else if (!incomplete.remarks) missingField = "Remarks (CCP atau Link Part Book)";
+                return window.notify('Data Belum Lengkap', `Material ${incomplete.mfg_part} wajib mengisi ${missingField}.`, 'error');
+            }
             document.getElementById('loader').style.display = 'flex';
-            
             try {
                 const now = new Date();
                 const localTimestamp = now.toLocaleString('id-ID', { 
                     day: '2-digit', month: '2-digit', year: 'numeric', 
-                    hour: '2-digit', minute: '2-digit', second: '2-digit',
-                    hour12: false 
+                    hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false 
                 }).replace(/\./g, ':');
-
                 for (const material of batchMaterials) {
                     const data = { 
                         ...material, 
-                        timestamp: localTimestamp,
-                        requester_name: reqName, department: reqDept, 
-                        request_type: "Request Create Material", 
-                        material: "NEW-REG", auto_po: "YES", mrp_controller: "ND", 
-                        proc_type: "F", spec_proc: "40", delivery_time: 7, 
-                        safety_stock: 0, old_material: "-", mfg_profile: "-" 
+                        timestamp: localTimestamp, requester_name: reqName, department: reqDept, 
+                        request_type: "Request Create Material", material: "NEW-REG", auto_po: "YES", 
+                        mrp_type: "ND", reorder_point: "0", mrp_controller: "M01", 
+                        proc_type: "F", spec_proc: "40", delivery_time: 7, safety_stock: 0, 
+                        old_material: "", mfg_profile: "", lot_sizing: "", storage_bin: material.storage_bin || "" 
                     };
                     await fetch(scriptURL, { method: 'POST', body: JSON.stringify(data) });
                 }
-                
                 window.notify('Batch Berhasil!', `${batchMaterials.length} Pengajuan dikirim.`, 'success');
                 document.getElementById('create-full-form').classList.add('hidden');
                 document.getElementById('c-pn-check').value = "";
                 syncMonitoringData(); showSection('home-section');
-            } catch (e) { 
-                window.notify('Gagal Submit', 'Kesalahan jaringan.', 'error'); 
-            } finally { 
-                document.getElementById('loader').style.display = 'none'; 
-            }
+            } catch (e) { window.notify('Gagal Submit', 'Kesalahan jaringan.', 'error'); } 
+            finally { document.getElementById('loader').style.display = 'none'; }
         };
 
         window.showAccessInput = function() {
             const area = document.getElementById('access-code-area');
-            area.innerHTML = `
-                <div class="bg-white p-5 rounded-2xl border-2 border-slate-100 shadow-inner animate-fade">
-                    <label class="text-[9px] font-black text-slate-400 uppercase block mb-2">Masukkan Kode Akses Khusus</label>
-                    <input type="text" id="access-code-input" placeholder="KODE-XXXX" class="input-field border-2 mb-3 text-center font-black tracking-[0.3em]">
-                    <div class="grid grid-cols-2 gap-3">
-                        <button onclick="handleVerifyAccess()" class="py-3 bg-blue-600 text-white font-black rounded-xl text-[9px] uppercase tracking-widest">Verifikasi</button>
-                        <button onclick="window.requestNewCode()" class="py-3 bg-emerald-500 text-white font-black rounded-xl text-[9px] uppercase flex items-center justify-center gap-2 tracking-widest"><i class="fas fa-key text-[8px]"></i> Minta Kode</button>
-                    </div>
-                    <div id="generated-code-display" class="hidden mt-4 p-3 bg-emerald-50 border border-emerald-100 rounded-xl text-center"><p class="text-[10px] font-bold text-emerald-600 my-2">PERMINTAAN TERKIRIM!</p><p class="text-[8px] text-emerald-500 italic leading-tight">Kode tim Catalogue akan menghubungi Anda via WA.</p></div>
-                </div>`;
+            area.innerHTML = `<div class="bg-white p-5 rounded-2xl border-2 border-slate-100 shadow-inner animate-fade">
+                <label class="text-[9px] font-black text-slate-400 uppercase block mb-2">Masukkan Kode Akses Khusus</label>
+                <input type="text" id="access-code-input" placeholder="KODE-XXXX" class="input-field border-2 mb-3 text-center font-black tracking-[0.3em]">
+                <div class="grid grid-cols-2 gap-3">
+                    <button onclick="handleVerifyAccess()" class="py-3 bg-blue-600 text-white font-black rounded-xl text-[9px] uppercase tracking-widest">Verifikasi</button>
+                    <button onclick="window.requestNewCode()" class="py-3 bg-emerald-500 text-white font-black rounded-xl text-[9px] uppercase flex items-center justify-center gap-2 tracking-widest"><i class="fas fa-key text-[8px]"></i> Minta Kode</button>
+                </div>
+                <div id="generated-code-display" class="hidden mt-4 p-3 bg-emerald-50 border border-emerald-100 rounded-xl text-center"><p class="text-[10px] font-bold text-emerald-600 my-2">PERMINTAAN TERKIRIM!</p><p class="text-[8px] text-emerald-500 italic leading-tight">Kode tim Catalogue akan menghubungi Anda via WA.</p></div>
+            </div>`;
         };
 
         window.requestNewCode = async function() {
@@ -844,13 +857,11 @@
             document.getElementById('loader').style.display = 'flex';
             try {
                 const now = new Date();
-                const localTimestamp = now.toLocaleString('id-ID');
-                const res = await fetch(`${scriptURL}?action=generate_access_code&requester=${encodeURIComponent(reqName)}&dept=${encodeURIComponent(reqDept)}&tanggal=${encodeURIComponent(localTimestamp)}`);
+                const res = await fetch(`${scriptURL}?action=generate_access_code&requester=${encodeURIComponent(reqName)}&dept=${encodeURIComponent(reqDept)}&tanggal=${encodeURIComponent(now.toLocaleString('id-ID'))}`);
                 const result = await res.json();
                 if(result.status === "success") { document.getElementById('generated-code-display').classList.remove('hidden'); window.notify('Request Sukses', 'Permintaan kode terkirim.', 'success'); }
-            } catch (e) {
-                window.notify('Gagal Request', 'Periksa koneksi internet Anda.', 'error');
-            } finally { document.getElementById('loader').style.display = 'none'; }
+            } catch (e) { window.notify('Gagal Request', 'Periksa koneksi internet Anda.', 'error'); } 
+            finally { document.getElementById('loader').style.display = 'none'; }
         };
 
         window.handleVerifyAccess = async function() {
@@ -861,21 +872,19 @@
             if(VALID_ACCESS_RECORDS.has(inputCode)) {
                 const record = VALID_ACCESS_RECORDS.get(inputCode);
                 if (record.requester !== inputName) return window.notify('Verifikasi Gagal', 'Kode bukan milik Anda.', 'error');
-                // UPDATE: Batas waktu kode akses diperpanjang menjadi 2 jam (120 menit)
-                if (record.timestamp && Math.floor((new Date() - record.timestamp) / 60000) >= 120) return window.notify('Code Expired', 'Kode kedaluwarsa.', 'error');
-                
+                if (record.timestamp) {
+                    const diffMins = Math.floor(((new Date()) - record.timestamp) / 60000);
+                    if (diffMins >= 120) return window.notify('Code Expired', 'Kode kedaluwarsa.', 'error');
+                }
                 window.notify('Akses Terbuka', 'PN Duplikat akan didaftarkan sebagai baru.', 'success');
-                const dupsToProcess = identifiedDuplicates.map(d => d.raw.toUpperCase());
-                window.startBatchForm(dupsToProcess);
-            } else { window.notify('Gagal', 'Kode tidak valid.', 'error'); }
+                window.startBatchForm(identifiedDuplicates.map(d => d.raw.toUpperCase()));
+            } else window.notify('Gagal', 'Kode tidak valid.', 'error');
         };
 
         async function syncMonitoringData() {
             const monitorList = document.getElementById('monitor-list');
-            const monthLabel = document.getElementById('monitor-month-label');
             const now = new Date();
-            if (monthLabel) monthLabel.innerText = now.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' }).toUpperCase();
-            
+            if (document.getElementById('monitor-month-label')) document.getElementById('monitor-month-label').innerText = now.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' }).toUpperCase();
             try {
                 const response = await fetchWithRetry(csvCreateMatURL);
                 const csvText = await response.text();
@@ -885,30 +894,18 @@
                     if (!lines[i].trim()) continue;
                     const cols = parseCSVLine(lines[i]);
                     let tsDate = robustParseDate(cols[0]);
-                    if (tsDate && !isNaN(tsDate.getTime())) {
-                        if (tsDate.getMonth() === now.getMonth() && tsDate.getFullYear() === now.getFullYear()) {
-                            const remarks = cols[28] || "DALAM PROSES";
-                            const isNum = /^\d+$/.test(remarks.trim());
-                            let bS = "background-color: #eff6ff; color: #2563eb; border-color: #dbeafe;";
-                            let iC = '<i class="fas fa-circle-notch animate-spin text-[8px]"></i>';
-                            if (remarks.toUpperCase().includes("REJECT")) { bS = "background-color: #fff1f2; color: #e11d48; border-color: #ffe4e6;"; iC = '<i class="fas fa-times-circle text-[10px]"></i>'; }
-                            else if (remarks.toUpperCase().includes("DONE") || isNum) { bS = "background-color: #ecfdf5; color: #059669; border-color: #d1fae5;"; iC = '<i class="fas fa-check-circle text-[10px]"></i>'; }
-                            
-                            html += `<tr>
-                                <td class="font-mono font-bold text-slate-500">${tsDate.toLocaleDateString('id-ID')}</td>
-                                <td class="font-black uppercase text-slate-800">${cols[26] || "-"}</td>
-                                <td class="font-extrabold uppercase text-slate-500">${cols[27] || "-"}</td>
-                                <td class="max-sm italic leading-relaxed text-slate-700">${cols[2] || "-"}</td>
-                                <td><span class="status-badge" style="${bS}">${iC} ${isNum ? 'SELESAI ('+remarks+')' : remarks}</span></td>
-                            </tr>`;
-                        }
+                    if (tsDate && !isNaN(tsDate.getTime()) && tsDate.getMonth() === now.getMonth() && tsDate.getFullYear() === now.getFullYear()) {
+                        const remarks = cols[30] || "DALAM PROSES"; // Updated index for remarks (was 28, now 30)
+                        const isNum = /^\d+$/.test(remarks.trim());
+                        let bS = "background-color: #eff6ff; color: #2563eb; border-color: #dbeafe;";
+                        let iC = '<i class="fas fa-circle-notch animate-spin text-[8px]"></i>';
+                        if (remarks.toUpperCase().includes("REJECT")) { bS = "background-color: #fff1f2; color: #e11d48; border-color: #ffe4e6;"; iC = '<i class="fas fa-times-circle text-[10px]"></i>'; }
+                        else if (remarks.toUpperCase().includes("DONE") || isNum) { bS = "background-color: #ecfdf5; color: #059669; border-color: #d1fae5;"; iC = '<i class="fas fa-check-circle text-[10px]"></i>'; }
+                        html += `<tr><td class="font-mono font-bold text-slate-500">${tsDate.toLocaleDateString('id-ID')}</td><td class="font-black uppercase text-slate-800">${cols[28] || "-"}</td><td class="font-extrabold uppercase text-slate-500">${cols[29] || "-"}</td><td class="max-sm italic leading-relaxed text-slate-700">${cols[2] || "-"}</td><td><span class="status-badge" style="${bS}">${iC} ${isNum ? 'SELESAI ('+remarks+')' : remarks}</span></td></tr>`;
                     }
                 }
                 if (monitorList) monitorList.innerHTML = html || `<tr><td colspan="5" class="px-8 py-24 text-center text-slate-400 text-[12px] font-black uppercase tracking-[0.2em]">Belum ada aktivitas di bulan ${now.toLocaleDateString('id-ID', {month:'long'})}</td></tr>`;
-            } catch (e) {
-                console.error("Monitor Sync Error:", e);
-                if (monitorList) monitorList.innerHTML = `<tr><td colspan="5" class="px-8 py-24 text-center text-red-500 font-bold uppercase">Gagal Menyinkronkan Data. Periksa Koneksi Anda.</td></tr>`;
-            }
+            } catch (e) { if (monitorList) monitorList.innerHTML = `<tr><td colspan="5" class="px-8 py-24 text-center text-red-500 font-bold uppercase">Gagal Menyinkronkan Data.</td></tr>`; }
         }
 
         async function syncAccessCodes() {
@@ -938,16 +935,14 @@
                     document.getElementById('maint-verify-card').classList.add('hidden');
                     document.getElementById('maint-full-form').classList.remove('hidden');
                 } else window.notify('Gagal', 'Material ID tidak ditemukan.', 'error');
-            } catch (e) {
-                window.notify('Kesalahan', 'Gagal menghubungi server.', 'error');
-            } finally { document.getElementById('loader').style.display = 'none'; }
+            } catch (e) { window.notify('Kesalahan', 'Gagal menghubungi server.', 'error'); } 
+            finally { document.getElementById('loader').style.display = 'none'; }
         }
 
         function getCleanPN(pn) { return pn.toString().toUpperCase().replace(/[^A-Z0-9]/g, ''); }
 
         function setupVisualSwap(id, options) {
-            const sel = document.getElementById(id);
-            if (!sel) return;
+            const sel = document.getElementById(id); if (!sel) return;
             sel.innerHTML = '<option value="">-- PILIH --</option>';
             options.forEach(item => { const opt = document.createElement('option'); opt.value = item.code; opt.text = item.display; opt.dataset.long = item.display; opt.dataset.short = item.code; sel.appendChild(opt); });
             const showS = () => { const opt = sel.options[sel.selectedIndex]; if (opt && opt.value) opt.text = opt.dataset.short; };
@@ -961,29 +956,21 @@
             const sS = document.getElementById('f-sloc'); const mvsS = document.getElementById('m-v-sloc');
             for(let i=1;i<=15;i++) { let v = `S${i.toString().padStart(3,'0')}`; if(sS) sS.innerHTML += `<option value="${v}">${v}</option>`; if(mvsS) mvsS.innerHTML += `<option value="${v}">${v}</option>`; }
             setupVisualSwap('f-uom', [{code:"EA",display:"EA - EACH"},{code:"PC",display:"PC - PIECE"},{code:"PCS",display:"PCS - PIECES"},{code:"SET",display:"SET - SET"},{code:"UNT",display:"UNT - UNIT"},{code:"ROL",display:"ROL - ROLL"},{code:"M",display:"M - METER"},{code:"KG",display:"KG - KILOGRAM"},{code:"L",display:"L - LITER"},{code:"CAN",display:"CAN - CANISTER"},{code:"DR",display:"DR - DRUM"},{code:"PL",display:"PL - PAIL"}]);
-            setupVisualSwap('f-type', [{code:"SPRT",display:"SPRT - SPAREPART"},{code:"TYRE",display:"TYRE - TYRE"},{code:"MDLE",display:"MDLE - MODULE"},{code:"CONS",display:"CONS - CONSUMABLE"}]);
+            setupVisualSwap('f-type', [{code:"SPRT",display:"SPRT - Sparepart"},{code:"FOGC",display:"FOGC - FOGC"},{code:"TYRE",display:"TYRE - Tyre"},{code:"CONS",display:"CONS - Consumable"},{code:"GENS",display:"GENS - General Supply"},{code:"ASET",display:"ASET - Asset"},{code:"SEJA",display:"SEJA - Service & Jasa"},{code:"MDLE",display:"MDLE - Module"},{code:"BOMM",display:"BOMM - Bom Material"},{code:"FFF",display:"FFF - FFF Class"}]);
             setupVisualSwap('f-group', [{code:"S001",display:"S001 - SPAREPART"},{code:"S002",display:"S002 - ELECTRICAL"},{code:"T001",display:"T001 - TYRE"},{code:"M001",display:"M001 - MODULE"}]);
-            setupVisualSwap('f-purch', [{code:"G01",display:"G01 - SPAREPART"},{code:"G02",display:"G02 - GENERAL SUPPLY"}]);
+            setupVisualSwap('f-purch', [{code:"G01",display:"G01 - SPAREPART"},{code:"G02",display:"G02 - CONSUMABLE / GENERAL SUPPLY"},{code:"G03",display:"G03 - SERVICE / JASA"},{code:"G04",display:"G04 - FUEL"},{code:"G05",display:"G05 - INFRASTRUKTUR"},{code:"G06",display:"G06 - SARANA"},{code:"G07",display:"G07 - AST, MDL & UNT"}]);
         }
 
         window.updateValuationClass = function() {
-            const tEl = document.getElementById('f-type');
-            const vEl = document.getElementById('create-val-class');
-            if (!tEl || !vEl) return;
-            const t = tEl.value;
-            let v = "V001";
+            const tEl = document.getElementById('f-type'); const vEl = document.getElementById('create-val-class'); if (!tEl || !vEl) return;
+            const t = tEl.value; let v = "V001";
             if (t === 'TYRE') v = "V006"; else if (t === 'CONS') v = "V008"; else if (t === 'MDLE') v = "V001";
             vEl.value = v;
         };
 
         window.onload = () => {
-            const headerDate = document.getElementById('header-date');
-            if (headerDate) headerDate.innerText = new Date().toLocaleDateString('id-ID', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
-            populateSelects(); 
-            syncZerpdFromSpreadsheet(); 
-            syncAccessCodes(); 
-            syncMonitoringData();
-            setInterval(syncMonitoringData, 120000);
+            if (document.getElementById('header-date')) document.getElementById('header-date').innerText = new Date().toLocaleDateString('id-ID', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+            populateSelects(); syncZerpdFromSpreadsheet(); syncAccessCodes(); syncMonitoringData(); setInterval(syncMonitoringData, 120000);
         };
     </script>
 </body>
