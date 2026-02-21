@@ -533,16 +533,34 @@
             setTimeout(() => t.classList.add('translate-y-40', 'opacity-0'), 3000);
         };
 
-        // --- FETCH WITH RETRY UTILITY ---
-        async function fetchWithRetry(url, options = {}, retries = 5, backoff = 1000) {
+        // --- FETCH WITH RETRY UTILITY (DIPERKUAT UNTUK CONCURRENCY) ---
+        async function fetchWithRetry(url, options = {}, retries = 7, backoff = 1500) {
             try {
                 const response = await fetch(url, options);
                 if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+                
+                // Cek khusus jika metode POST ke Apps Script ada error internal (misal antrean server penuh)
+                if (options.method === 'POST') {
+                    const clone = response.clone();
+                    try {
+                        const json = await clone.json();
+                        if (json.result === 'error' || json.status === 'error') {
+                            throw new Error(json.error || 'Terjadi antrean di server');
+                        }
+                    } catch (e) {
+                        if (e.message !== 'Unexpected end of JSON input' && !e.message.includes('is not valid JSON')) {
+                            throw e; // Lemparkan error agar ditangkap oleh blok catch di bawah dan di-retry
+                        }
+                    }
+                }
                 return response;
             } catch (error) {
                 if (retries > 0) {
-                    await new Promise(resolve => setTimeout(resolve, backoff));
-                    return fetchWithRetry(url, options, retries - 1, backoff * 2);
+                    // Jitter (waktu acak) untuk mencegah tabrakan hit dari berbagai user di milidetik yang sama
+                    const jitter = Math.floor(Math.random() * 1000);
+                    console.warn(`Antrean penuh / Error jaringan, mencoba lagi dalam ${(backoff + jitter)/1000} detik... (${retries} sisa percobaan)`);
+                    await new Promise(resolve => setTimeout(resolve, backoff + jitter));
+                    return fetchWithRetry(url, options, retries - 1, backoff * 1.5);
                 }
                 throw error;
             }
@@ -892,13 +910,14 @@
                         proc_type: "F", spec_proc: "40", delivery_time: 7, safety_stock: 0, 
                         old_material: "", mfg_profile: "", lot_sizing: "", storage_bin: material.storage_bin || "" 
                     };
-                    await fetch(scriptURL, { method: 'POST', body: JSON.stringify(data) });
+                    // Memastikan request terlindungi dan otomatis di-retry bila antrean Google Apps Script padat
+                    await fetchWithRetry(scriptURL, { method: 'POST', body: JSON.stringify(data) });
                 }
                 window.notify('Batch Berhasil!', `${batchMaterials.length} Pengajuan dikirim.`, 'success');
                 document.getElementById('create-full-form').classList.add('hidden');
                 document.getElementById('c-pn-check').value = "";
                 syncMonitoringData(); showSection('home-section');
-            } catch (e) { window.notify('Gagal Submit', 'Kesalahan jaringan.', 'error'); } 
+            } catch (e) { window.notify('Gagal Submit', 'Kesalahan jaringan atau server penuh.', 'error'); } 
             finally { document.getElementById('loader').style.display = 'none'; }
         };
 
@@ -922,7 +941,8 @@
             document.getElementById('loader').style.display = 'flex';
             try {
                 const now = new Date();
-                const res = await fetch(`${scriptURL}?action=generate_access_code&requester=${encodeURIComponent(reqName)}&dept=${encodeURIComponent(reqDept)}&tanggal=${encodeURIComponent(now.toLocaleString('id-ID'))}`);
+                // Memastikan sinkronisasi pakai fetchWithRetry juga untuk stabilitas ekstra
+                const res = await fetchWithRetry(`${scriptURL}?action=generate_access_code&requester=${encodeURIComponent(reqName)}&dept=${encodeURIComponent(reqDept)}&tanggal=${encodeURIComponent(now.toLocaleString('id-ID'))}`);
                 const result = await res.json();
                 if(result.status === "success") { document.getElementById('generated-code-display').classList.remove('hidden'); window.notify('Request Sukses', 'Permintaan kode terkirim.', 'success'); }
             } catch (e) { window.notify('Gagal Request', 'Periksa koneksi internet Anda.', 'error'); } 
@@ -992,7 +1012,8 @@
             if(!mat) return window.notify('Input Kosong', 'Masukkan Material ID.', 'error');
             document.getElementById('loader').style.display = 'flex';
             try {
-                const res = await fetch(`${scriptURL}?action=lookup&material=${mat}`);
+                // Fetch di sini juga diamankan dari tabrakan request
+                const res = await fetchWithRetry(`${scriptURL}?action=lookup&material=${mat}`);
                 const result = await res.json();
                 if (result.status === "success") {
                     document.getElementById('Bird').value = result.description;
