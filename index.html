@@ -369,7 +369,7 @@
                         </div>
                         
                         <div class="bg-slate-50/50 p-5 text-center border-t border-slate-100">
-                            <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest italic">Data diperbarui otomatis setiap 2 menit • Tampilan Monitor Diperluas</p>
+                            <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest italic">Data diperbarui otomatis setiap 1 detik • Tampilan Monitor Diperluas</p>
                         </div>
                     </div>
                 </div>
@@ -1056,7 +1056,7 @@
 
         window.onload = () => {
             if (document.getElementById('header-date')) document.getElementById('header-date').innerText = new Date().toLocaleDateString('id-ID', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
-            populateSelects(); syncZerpdFromSpreadsheet(); syncAccessCodes(); syncMonitoringData(); setInterval(syncMonitoringData, 120000);
+            populateSelects(); syncZerpdFromSpreadsheet(); syncAccessCodes(); syncMonitoringData(); setInterval(syncMonitoringData, 1000);
             initFormListeners(); // Eksekusi UI indikator saat halaman dimuat
         };
     </script>
