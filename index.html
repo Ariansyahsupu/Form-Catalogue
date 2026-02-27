@@ -355,13 +355,14 @@
                                         <th>Tanggal</th>
                                         <th>Pengaju</th>
                                         <th>Departemen</th>
+                                        <th>Part Number</th>
                                         <th>Deskripsi Material</th>
                                         <th>Progress / Remarks</th>
                                     </tr>
                                 </thead>
                                 <tbody id="monitor-list">
                                     <tr>
-                                        <td colspan="5" class="px-8 py-24 text-center text-slate-400 text-[12px] font-bold uppercase tracking-widest">Menyinkronkan Aktivitas Terbaru...</td>
+                                        <td colspan="6" class="px-8 py-24 text-center text-slate-400 text-[12px] font-bold uppercase tracking-widest">Menyinkronkan Aktivitas Terbaru...</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -1066,6 +1067,15 @@
                 const response = await fetchWithRetry(csvCreateMatURL);
                 const csvText = await response.text();
                 const lines = csvText.split(/\r?\n/);
+                
+                // Secara otomatis mencari kolom Part Number dari header Google Sheet
+                let pnIdx = 7; // Fallback index bawaan
+                if (lines.length > 0) {
+                    const hdrs = parseCSVLine(lines[0]).map(h => h.trim().toLowerCase());
+                    const found = hdrs.findIndex(h => h === 'mfg_part' || h === 'part number' || h.includes('mfg part') || h === 'pn');
+                    if (found !== -1) pnIdx = found;
+                }
+
                 let html = "";
                 for (let i = lines.length - 1; i >= 1; i--) {
                     if (!lines[i].trim()) continue;
@@ -1084,14 +1094,15 @@
                             <td class="font-mono font-bold text-slate-500">${tsDate.toLocaleDateString('id-ID')}</td>
                             <td class="font-black uppercase text-slate-800">${cols[28] || "-"}</td>
                             <td class="font-extrabold uppercase text-slate-500">${cols[29] || "-"}</td>
+                            <td class="font-bold text-blue-600 uppercase tracking-widest">${cols[pnIdx] || "-"}</td>
                             <td class="max-sm italic leading-relaxed text-slate-700">${cols[2] || "-"}</td>
                             <td><span class="status-badge" style="${bS}">${iC} ${isNum ? 'SELESAI ('+remarks+')' : remarks}</span></td>
                         </tr>
                         `;
                     }
                 }
-                if (monitorList) monitorList.innerHTML = html || `<tr><td colspan="5" class="px-8 py-24 text-center text-slate-400 text-[12px] font-black uppercase tracking-[0.2em]">Belum ada aktivitas di bulan ${now.toLocaleDateString('id-ID', {month:'long'})}</td></tr>`;
-            } catch (e) { if (monitorList) monitorList.innerHTML = `<tr><td colspan="5" class="px-8 py-24 text-center text-red-500 font-bold uppercase">Gagal Menyinkronkan Data.</td></tr>`; }
+                if (monitorList) monitorList.innerHTML = html || `<tr><td colspan="6" class="px-8 py-24 text-center text-slate-400 text-[12px] font-black uppercase tracking-[0.2em]">Belum ada aktivitas di bulan ${now.toLocaleDateString('id-ID', {month:'long'})}</td></tr>`;
+            } catch (e) { if (monitorList) monitorList.innerHTML = `<tr><td colspan="6" class="px-8 py-24 text-center text-red-500 font-bold uppercase">Gagal Menyinkronkan Data.</td></tr>`; }
         }
 
         async function syncAccessCodes() {
