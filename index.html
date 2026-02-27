@@ -161,12 +161,13 @@
         .monitor-scroll-area {
             max-height: 600px;
             overflow-y: auto;
+            overflow-x: auto;
         }
 
         .monitor-table {
             width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
+            border-collapse: collapse;
+            min-width: 1100px;
         }
 
         .monitor-table thead th {
@@ -175,20 +176,22 @@
             z-index: 5;
             background: #0f172a; 
             color: #ffffff;
-            font-weight: 800;
+            font-weight: 700;
             text-transform: uppercase;
             font-size: 0.75rem;
-            letter-spacing: 0.15em;
-            padding: 1.5rem 2rem;
-            border-bottom: 2px solid #334155;
+            letter-spacing: 0.05em;
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid #334155;
             text-align: left;
+            white-space: nowrap;
         }
 
         .monitor-table tbody td {
-            padding: 1.25rem 2rem;
-            border-bottom: 1px solid #f1f5f9;
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
             color: #334155;
             font-size: 0.8rem;
+            vertical-align: middle;
         }
 
         .monitor-table tbody tr:last-child td {
@@ -200,7 +203,7 @@
         }
 
         .monitor-table tbody tr:nth-child(even) {
-            background-color: #fafbfc;
+            background-color: #fcfcfd;
         }
 
         .nav-item-btn {
@@ -1122,12 +1125,17 @@
                         
                         html += `
                         <tr>
-                            <td class="font-mono font-bold text-slate-500">${tsDate.toLocaleDateString('id-ID')}</td>
-                            <td class="font-black uppercase text-slate-800">${cols[28] || "-"}</td>
-                            <td class="font-extrabold uppercase text-slate-500">${cols[29] || "-"}</td>
-                            <td class="font-bold text-blue-600 uppercase tracking-widest">${cols[pnIdx] || "-"}</td>
-                            <td class="max-sm italic leading-relaxed text-slate-700">${cols[2] || "-"}</td>
-                            <td><span class="status-badge" style="${bS}">${iC} ${isNum ? 'SELESAI ('+remarks+')' : remarks}</span></td>
+                            <td class="font-mono font-bold text-slate-500 whitespace-nowrap">${tsDate.toLocaleDateString('id-ID')}</td>
+                            <td class="font-black uppercase text-slate-800 whitespace-nowrap">${cols[28] || "-"}</td>
+                            <td class="font-extrabold uppercase text-slate-500 whitespace-nowrap">${cols[29] || "-"}</td>
+                            <td class="font-bold text-blue-600 uppercase tracking-widest whitespace-nowrap">${cols[pnIdx] || "-"}</td>
+                            <td class="min-w-[250px] max-w-md whitespace-normal leading-relaxed text-slate-700 font-medium">${cols[2] || "-"}</td>
+                            <td class="min-w-[200px] max-w-[300px] whitespace-normal">
+                                <div class="status-badge w-full h-auto py-2 !items-start whitespace-normal text-left" style="${bS}">
+                                    <div class="mt-0.5 shrink-0">${iC}</div>
+                                    <div class="break-all leading-relaxed">${isNum ? 'SELESAI ('+remarks+')' : remarks}</div>
+                                </div>
+                            </td>
                         </tr>
                         `;
                     }
