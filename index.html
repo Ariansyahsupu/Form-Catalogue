@@ -6,6 +6,8 @@
     <title>CatLog Pro - Master Data Management</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Tambahan library untuk Export Excel -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
         
@@ -253,6 +255,33 @@
         </div>
     </div>
 
+    <!-- Export Modal -->
+    <div id="export-modal" class="modal-alarm">
+        <div class="bg-white rounded-[2.5rem] p-8 lg:p-10 max-w-sm w-full text-center shadow-2xl animate-fade">
+            <div class="w-16 h-16 bg-slate-900 text-white rounded-2xl flex items-center justify-center text-2xl mx-auto mb-6 shadow-lg shadow-slate-200">
+                <i class="fas fa-file-export"></i>
+            </div>
+            <h3 class="text-xl professional-label mb-2">Export Data</h3>
+            <p class="text-slate-400 font-bold uppercase text-[9px] tracking-widest mb-6">Pilih Rentang Tanggal Aktivitas</p>
+            
+            <div class="text-left space-y-4 mb-8">
+                <div class="space-y-1.5">
+                    <label class="text-[10px] professional-label tracking-widest">Tanggal Awal</label>
+                    <input type="date" id="export-start-date" class="input-field border-2 professional-input">
+                </div>
+                <div class="space-y-1.5">
+                    <label class="text-[10px] professional-label tracking-widest">Tanggal Akhir</label>
+                    <input type="date" id="export-end-date" class="input-field border-2 professional-input">
+                </div>
+            </div>
+            
+            <div class="flex flex-col gap-3">
+                <button onclick="executeExport()" class="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-2xl uppercase text-[10px] tracking-widest shadow-lg transition-all">Download Excel</button>
+                <button onclick="closeExportModal()" class="w-full py-3 bg-slate-100 hover:bg-slate-200 text-slate-500 font-bold rounded-2xl uppercase text-[9px] transition-all">Batal</button>
+            </div>
+        </div>
+    </div>
+
     <div id="loader" class="loader-overlay">
         <div class="flex flex-col items-center gap-6">
             <div class="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
@@ -343,8 +372,13 @@
                                     <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest">Bulan: <span id="monitor-month-label" class="text-slate-600"></span></p>
                                 </div>
                             </div>
-                            <div id="monitor-sync-stat" class="bg-emerald-50 px-4 py-2 rounded-xl border border-emerald-100 text-emerald-600 text-[10px] font-black uppercase flex items-center gap-3">
-                                <div class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div> SINKRONISASI AKTIF
+                            <div class="flex items-center gap-3">
+                                <div id="monitor-sync-stat" class="bg-emerald-50 px-4 py-2.5 rounded-xl border border-emerald-100 text-emerald-600 text-[10px] font-black uppercase flex items-center gap-3">
+                                    <div class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div> SINKRONISASI AKTIF
+                                </div>
+                                <button onclick="showExportModal()" class="bg-slate-900 text-white px-5 py-2.5 rounded-xl text-[10px] font-black uppercase flex items-center gap-2 hover:bg-slate-800 transition-colors shadow-md border border-slate-700">
+                                    <i class="fas fa-file-export"></i> Export
+                                </button>
                             </div>
                         </div>
                         
@@ -569,7 +603,7 @@
         let batchMaterials = [];
         let currentMaterialIdx = 0;
         let identifiedDuplicates = []; 
-        let isBatchIdentical = false; // Variabel penanda mode form
+        let isBatchIdentical = false;
 
         function initFormListeners() {
             const inputs = document.querySelectorAll('#create-full-form .input-field');
@@ -813,7 +847,6 @@
             html += `</div>`;
             res.innerHTML = html;
             
-            // Event listener 2 opsi mode daftar
             const btnSama = document.getElementById('btn-lanjut-sama');
             const btnBeda = document.getElementById('btn-lanjut-beda');
             if(btnSama) btnSama.addEventListener('click', () => window.startBatchForm(available, true));
@@ -914,7 +947,6 @@
             m.reorder_point = "0";
             m.mrp_controller = "M01";
 
-            // Jika Mode Identik, duplikasikan nilai ke seluruh form (kecuali field deskripsi)
             if (isBatchIdentical) {
                 batchMaterials.forEach((item, idx) => {
                     if (idx !== currentMaterialIdx) {
@@ -1068,8 +1100,7 @@
                 const csvText = await response.text();
                 const lines = csvText.split(/\r?\n/);
                 
-                // Secara otomatis mencari kolom Part Number dari header Google Sheet
-                let pnIdx = 7; // Fallback index bawaan
+                let pnIdx = 7;
                 if (lines.length > 0) {
                     const hdrs = parseCSVLine(lines[0]).map(h => h.trim().toLowerCase());
                     const found = hdrs.findIndex(h => h === 'mfg_part' || h === 'part number' || h.includes('mfg part') || h === 'pn');
@@ -1135,6 +1166,85 @@
             } catch (e) { window.notify('Kesalahan', 'Gagal menghubungi server.', 'error'); } 
             finally { document.getElementById('loader').style.display = 'none'; }
         }
+
+        // --- LOGIKA EXPORT EXCEL (.XLSX) ---
+        window.showExportModal = function() {
+            document.getElementById('export-modal').style.display = 'flex';
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('export-start-date').value = today;
+            document.getElementById('export-end-date').value = today;
+        };
+
+        window.closeExportModal = function() {
+            document.getElementById('export-modal').style.display = 'none';
+        };
+
+        window.executeExport = async function() {
+            const startVal = document.getElementById('export-start-date').value;
+            const endVal = document.getElementById('export-end-date').value;
+            
+            if(!startVal || !endVal) return window.notify('Gagal', 'Pilih rentang tanggal.', 'error');
+
+            const startDate = new Date(startVal);
+            startDate.setHours(0, 0, 0, 0);
+            const endDate = new Date(endVal);
+            endDate.setHours(23, 59, 59, 999);
+
+            if (startDate > endDate) return window.notify('Tanggal Tidak Valid', 'Tanggal awal melebihi akhir.', 'error');
+
+            document.getElementById('loader').style.display = 'flex';
+            try {
+                const response = await fetchWithRetry(csvCreateMatURL);
+                const csvText = await response.text();
+                const lines = csvText.split(/\r?\n/);
+                
+                if (lines.length <= 1) throw new Error("Data masih kosong");
+
+                let pnIdx = 7;
+                const hdrs = parseCSVLine(lines[0]).map(h => h.trim().toLowerCase());
+                const found = hdrs.findIndex(h => h === 'mfg_part' || h === 'part number' || h.includes('mfg part') || h === 'pn');
+                if (found !== -1) pnIdx = found;
+
+                // Siapkan data untuk SheetJS
+                const exportRows = [];
+                for (let i = 1; i < lines.length; i++) {
+                    if (!lines[i].trim()) continue;
+                    const cols = parseCSVLine(lines[i]);
+                    let tsDate = robustParseDate(cols[0]);
+                    
+                    if (tsDate && !isNaN(tsDate.getTime()) && tsDate >= startDate && tsDate <= endDate) {
+                        exportRows.push({
+                            "Tanggal": tsDate.toLocaleDateString('id-ID'),
+                            "Pengaju": cols[28] || "-",
+                            "Departemen": cols[29] || "-",
+                            "Part Number": cols[pnIdx] || "-",
+                            "Deskripsi Material": cols[2] || "-",
+                            "Progress / Remarks": cols[30] || "DALAM PROSES"
+                        });
+                    }
+                }
+
+                if (exportRows.length === 0) {
+                    window.notify('Tidak Ada Data', 'Tidak ada riwayat pada tanggal tersebut.', 'error');
+                    return;
+                }
+
+                // Membuat Workbook Excel menggunakan XLSX
+                const worksheet = XLSX.utils.json_to_sheet(exportRows);
+                const workbook = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(workbook, worksheet, "Activity Log");
+
+                // Eksekusi Download sebagai .xlsx
+                XLSX.writeFile(workbook, `Export_CatLog_${startVal}_to_${endVal}.xlsx`);
+
+                closeExportModal();
+                window.notify('Export Sukses', `${exportRows.length} data Excel berhasil diunduh.`, 'success');
+            } catch(e) {
+                window.notify('Export Gagal', 'Terjadi kesalahan saat memproses file Excel.', 'error');
+            } finally {
+                document.getElementById('loader').style.display = 'none';
+            }
+        };
 
         function getCleanPN(pn) { return pn.toString().toUpperCase().replace(/[^A-Z0-9]/g, ''); }
 
