@@ -430,8 +430,9 @@
                             <div id="create-full-form" class="hidden animate-fade pb-10">
                                 <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
                                     <div class="lg:col-span-1 border-r border-slate-100 pr-4">
-                                        <h4 class="text-[10px] professional-label text-orange-500 mb-4 tracking-widest uppercase">Daftar Pengajuan</h4>
-                                        <div id="multi-form-nav" class="space-y-2 max-h-[600px] overflow-y-auto custom-scrollbar"></div>
+                                        <h4 class="text-[10px] professional-label text-orange-500 tracking-widest uppercase mb-1">Daftar Pengajuan</h4>
+                                        <div id="batch-mode-badge"></div>
+                                        <div id="multi-form-nav" class="space-y-2 max-h-[600px] overflow-y-auto custom-scrollbar mt-3"></div>
                                     </div>
 
                                     <div class="lg:col-span-3">
@@ -567,6 +568,7 @@
         let batchMaterials = [];
         let currentMaterialIdx = 0;
         let identifiedDuplicates = []; 
+        let isBatchIdentical = false; // Variabel penanda mode form
 
         function initFormListeners() {
             const inputs = document.querySelectorAll('#create-full-form .input-field');
@@ -793,25 +795,44 @@
                 });
                 html += `
                     </div>
-                    <button id="btn-lanjut-daftar" class="w-full py-4 bg-emerald-600 text-white font-black rounded-xl text-[11px] uppercase tracking-widest shadow-xl">
-                        Lanjutkan Pendaftaran PN Tersedia
-                    </button>
+                    <p class="text-[10px] font-bold text-emerald-800 uppercase text-center mb-3">Pilih Mode Pengisian Form:</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <button id="btn-lanjut-sama" class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-xl text-[10px] uppercase tracking-widest shadow-lg transition-all flex flex-col items-center justify-center gap-1">
+                            <span><i class="fas fa-copy"></i> 1. Spesifikasi Sama</span>
+                            <span class="text-[8px] font-normal normal-case opacity-90">(Hanya isi deskripsi per PN)</span>
+                        </button>
+                        <button id="btn-lanjut-beda" class="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-black rounded-xl text-[10px] uppercase tracking-widest shadow-lg transition-all flex flex-col items-center justify-center gap-1">
+                            <span><i class="fas fa-edit"></i> 2. Spesifikasi Beda</span>
+                            <span class="text-[8px] font-normal normal-case opacity-90">(Isi manual satu per satu)</span>
+                        </button>
+                    </div>
                 </div>
                 `;
             }
             html += `</div>`;
             res.innerHTML = html;
             
-            // Tambahkan event listener secara terpisah agar aman dari error string quotes
-            const btnLanjut = document.getElementById('btn-lanjut-daftar');
-            if(btnLanjut) {
-                btnLanjut.addEventListener('click', () => {
-                    window.startBatchForm(available);
-                });
-            }
+            // Event listener 2 opsi mode daftar
+            const btnSama = document.getElementById('btn-lanjut-sama');
+            const btnBeda = document.getElementById('btn-lanjut-beda');
+            if(btnSama) btnSama.addEventListener('click', () => window.startBatchForm(available, true));
+            if(btnBeda) btnBeda.addEventListener('click', () => window.startBatchForm(available, false));
         };
 
-        window.startBatchForm = function(availablePNs) {
+        window.startBatchForm = function(availablePNs, identicalMode = false) {
+            isBatchIdentical = identicalMode;
+            
+            const badge = document.getElementById('batch-mode-badge');
+            if (badge) {
+                if (isBatchIdentical) {
+                    badge.innerHTML = '<i class="fas fa-copy"></i> MODE: SPESIFIKASI SAMA';
+                    badge.className = 'text-[8px] font-black text-emerald-600 uppercase tracking-widest inline-block bg-emerald-100 px-2 py-1.5 rounded';
+                } else {
+                    badge.innerHTML = '<i class="fas fa-edit"></i> MODE: SPESIFIKASI BEDA';
+                    badge.className = 'text-[8px] font-black text-blue-600 uppercase tracking-widest inline-block bg-blue-100 px-2 py-1.5 rounded';
+                }
+            }
+
             batchMaterials = availablePNs.map(pn => ({
                 mfg_part: pn, description: "", base_uom: "", material_type: "", material_group: "",
                 plant: "", storage_location: "", purchasing_group: "", valuation_cat: "",
@@ -864,20 +885,55 @@
         function saveCurrentToBatch() {
             const m = batchMaterials[currentMaterialIdx];
             m.description = document.getElementById('f-desc').value.toUpperCase();
-            m.base_uom = document.getElementById('f-uom').value;
-            m.material_type = document.getElementById('f-type').value;
-            m.material_group = document.getElementById('f-group').value;
-            m.plant = document.getElementById('f-plant').value;
-            m.storage_location = document.getElementById('f-sloc').value;
-            m.purchasing_group = document.getElementById('f-purch').value;
-            m.valuation_cat = document.getElementById('f-val-cat').value;
-            m.valuation_class = document.getElementById('create-val-class').value;
-            m.storage_bin = document.getElementById('f-bin').value.toUpperCase();
-            m.remarks = document.getElementById('f-remarks').value.toUpperCase();
-            m.serial_profile = document.getElementById('f-serial').value;
+            
+            const base_uom = document.getElementById('f-uom').value;
+            const material_type = document.getElementById('f-type').value;
+            const material_group = document.getElementById('f-group').value;
+            const plant = document.getElementById('f-plant').value;
+            const storage_location = document.getElementById('f-sloc').value;
+            const purchasing_group = document.getElementById('f-purch').value;
+            const valuation_cat = document.getElementById('f-val-cat').value;
+            const valuation_class = document.getElementById('create-val-class').value;
+            const storage_bin = document.getElementById('f-bin').value.toUpperCase();
+            const remarks = document.getElementById('f-remarks').value.toUpperCase();
+            const serial_profile = document.getElementById('f-serial').value;
+
+            m.base_uom = base_uom;
+            m.material_type = material_type;
+            m.material_group = material_group;
+            m.plant = plant;
+            m.storage_location = storage_location;
+            m.purchasing_group = purchasing_group;
+            m.valuation_cat = valuation_cat;
+            m.valuation_class = valuation_class;
+            m.storage_bin = storage_bin;
+            m.remarks = remarks;
+            m.serial_profile = serial_profile;
             m.mrp_type = "ND";
             m.reorder_point = "0";
             m.mrp_controller = "M01";
+
+            // Jika Mode Identik, duplikasikan nilai ke seluruh form (kecuali field deskripsi)
+            if (isBatchIdentical) {
+                batchMaterials.forEach((item, idx) => {
+                    if (idx !== currentMaterialIdx) {
+                        item.base_uom = base_uom;
+                        item.material_type = material_type;
+                        item.material_group = material_group;
+                        item.plant = plant;
+                        item.storage_location = storage_location;
+                        item.purchasing_group = purchasing_group;
+                        item.valuation_cat = valuation_cat;
+                        item.valuation_class = valuation_class;
+                        item.storage_bin = storage_bin;
+                        item.remarks = remarks;
+                        item.serial_profile = serial_profile;
+                        item.mrp_type = "ND";
+                        item.reorder_point = "0";
+                        item.mrp_controller = "M01";
+                    }
+                });
+            }
         }
 
         function loadMaterialToForm(idx) {
@@ -930,7 +986,8 @@
                     day: '2-digit', month: '2-digit', year: 'numeric', 
                     hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false 
                 }).replace(/\./g, ':');
-                for (const material of batchMaterials) {
+                
+                const submitPromises = batchMaterials.map(material => {
                     const data = { 
                         ...material, 
                         timestamp: localTimestamp, requester_name: reqName, department: reqDept, 
@@ -939,8 +996,11 @@
                         proc_type: "F", spec_proc: "40", delivery_time: 7, safety_stock: 0, 
                         old_material: "", mfg_profile: "", lot_sizing: "", storage_bin: material.storage_bin || "" 
                     };
-                    await fetchWithRetry(scriptURL, { method: 'POST', body: JSON.stringify(data) });
-                }
+                    return fetchWithRetry(scriptURL, { method: 'POST', body: JSON.stringify(data) });
+                });
+
+                await Promise.all(submitPromises);
+
                 window.notify('Batch Berhasil!', `${batchMaterials.length} Pengajuan dikirim.`, 'success');
                 document.getElementById('create-full-form').classList.add('hidden');
                 document.getElementById('c-pn-check').value = "";
