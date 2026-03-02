@@ -542,7 +542,7 @@
                                                     <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Storage Bin</label><input type="text" name="storage_bin" id="f-bin" class="input-field border-2 professional-input"></div>
                                                     <div class="space-y-1.5 md:col-span-3">
                                                         <label class="text-[10px] professional-label tracking-widest">Remarks / Note <span class="text-red-500 font-black">(WAJIB: CCP / LINK PART BOOK)</span></label>
-                                                        <input type="text" name="remarks" id="f-remarks" placeholder="MASUKKAN CCP ATAU LINK PART BOOK" required class="input-field border-2 professional-input border-orange-200">
+                                                        <input type="text" name="remarks" id="f-remarks" placeholder="MASUKKAN CCP ATAU LINK PART BOOK" required class="input-field border-2 professional-input border-orange-200" autocomplete="off">
                                                     </div>
                                                 </div>
                                             </div>
@@ -965,7 +965,7 @@
             const valuation_cat = document.getElementById('f-val-cat').value;
             const valuation_class = document.getElementById('create-val-class').value;
             const storage_bin = document.getElementById('f-bin').value.toUpperCase();
-            const remarks = document.getElementById('f-remarks').value.toUpperCase();
+            const remarks = document.getElementById('f-remarks').value.trim();
             const serial_profile = document.getElementById('f-serial').value;
 
             m.base_uom = base_uom;
