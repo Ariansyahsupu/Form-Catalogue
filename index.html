@@ -509,7 +509,7 @@
                                                     <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Plant</label><select name="plant" id="f-plant" required class="input-field border-2 bg-white professional-input"></select></div>
                                                     <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Storage Location</label><select name="storage_location" id="f-sloc" required class="input-field border-2 bg-white professional-input"></select></div>
                                                     <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Purchasing Group</label><select name="purchasing_group" id="f-purch" required class="input-field border-2 professional-input"></select></div>
-                                                    <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Automatic PO</label><input type="text" name="auto_po" readonly value="YES" class="input-field input-readonly professional-input text-emerald-600"></div>
+                                                    <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Automatic PO</label><input type="text" name="auto_po" readonly value="" class="input-field input-readonly professional-input text-emerald-600"></div>
                                                     
                                                     <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">MRP Type</label><input type="text" name="mrp_type" readonly value="ND" class="input-field input-readonly professional-input text-blue-600"></div>
                                                     <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Reorder Point</label><input type="text" name="reorder_point" readonly value="0" class="input-field input-readonly professional-input text-blue-600"></div>
@@ -522,7 +522,7 @@
                                                     <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Delivery Time</label><input type="number" name="delivery_time" readonly value="7" class="input-field input-readonly professional-input"></div>
                                                     <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Safety Stock</label><input type="number" name="safety_stock" readonly value="0" class="input-field input-readonly professional-input"></div>
                                                     <div class="space-y-1.5">
-                                                        <label class="text-[10px] professional-label tracking-widest">Serial Profile</label>
+                                                        <label class="text-[10px] professional-label tracking-widest">SERIAL NUMBER PROFILE</label>
                                                         <select name="serial_profile" id="f-serial" required class="input-field border-2 professional-input">
                                                             <option value="">-- PILIH --</option>
                                                             <option value="NON SN">NON SN - NON SERIALIZE</option>
@@ -633,6 +633,15 @@
                     }
                 };
                 input.addEventListener('input', () => {
+                    if (input.id === 'f-desc') {
+                        let orig = input.value;
+                        let repl = orig.replace(/\s*''|\s*"/g, ' INCH');
+                        if (orig !== repl) {
+                            let start = input.selectionStart;
+                            input.value = repl;
+                            input.setSelectionRange(start + (repl.length - orig.length), start + (repl.length - orig.length));
+                        }
+                    }
                     updateCSS();
                     if (batchMaterials.length > 0) { saveCurrentToBatch(); renderNav(); }
                 });
@@ -641,6 +650,32 @@
                     if (batchMaterials.length > 0) { saveCurrentToBatch(); renderNav(); }
                 });
             });
+
+            const birdInput = document.getElementById('Bird');
+            if (birdInput) {
+                birdInput.addEventListener('input', () => {
+                    let orig = birdInput.value;
+                    let repl = orig.replace(/\s*''|\s*"/g, ' INCH');
+                    if (orig !== repl) {
+                        let start = birdInput.selectionStart;
+                        birdInput.value = repl;
+                        birdInput.setSelectionRange(start + (repl.length - orig.length), start + (repl.length - orig.length));
+                    }
+                });
+            }
+
+            const pnInput = document.getElementById('c-pn-check');
+            if (pnInput) {
+                pnInput.addEventListener('input', () => {
+                    let orig = pnInput.value;
+                    let repl = orig.replace(/\s*''|\s*"/g, ' INCH');
+                    if (orig !== repl) {
+                        let start = pnInput.selectionStart;
+                        pnInput.value = repl;
+                        pnInput.setSelectionRange(start + (repl.length - orig.length), start + (repl.length - orig.length));
+                    }
+                });
+            }
         }
 
         function updateAllFieldsStatus() {
@@ -1021,6 +1056,8 @@
             document.getElementById('f-bin').value = m.storage_bin;
             document.getElementById('f-remarks').value = m.remarks;
             document.getElementById('f-serial').value = m.serial_profile;
+            
+            updateValuationClass(); // Panggil fungsi lock saat load material
             updateAllFieldsStatus();
         }
 
@@ -1043,7 +1080,7 @@
                 else if (!incomplete.plant) missingField = "Plant";
                 else if (!incomplete.storage_location) missingField = "Storage Location";
                 else if (!incomplete.purchasing_group) missingField = "Purchasing Group";
-                else if (!incomplete.serial_profile) missingField = "Serial Profile";
+                else if (!incomplete.serial_profile) missingField = "SERIAL NUMBER PROFILE";
                 else if (!incomplete.valuation_cat) missingField = "Valuation Category";
                 else if (!incomplete.remarks) missingField = "Remarks (CCP atau Link Part Book)";
                 return window.notify('Data Belum Lengkap', `Material ${incomplete.mfg_part} wajib mengisi ${missingField}.`, 'error');
@@ -1060,7 +1097,7 @@
                     const data = { 
                         ...material, 
                         timestamp: localTimestamp, requester_name: reqName, department: reqDept, 
-                        request_type: "Request Create Material", material: "NEW-REG", auto_po: "YES", 
+                        request_type: "Request Create Material", material: "NEW-REG", auto_po: "", 
                         mrp_type: "ND", reorder_point: "0", mrp_controller: "M01", 
                         proc_type: "F", spec_proc: "40", delivery_time: 7, safety_stock: 0, 
                         old_material: "", mfg_profile: "", lot_sizing: "", storage_bin: material.storage_bin || "" 
@@ -1310,10 +1347,39 @@
         }
 
         window.updateValuationClass = function() {
-            const tEl = document.getElementById('f-type'); const vEl = document.getElementById('create-val-class'); if (!tEl || !vEl) return;
-            const t = tEl.value; let v = "V001";
-            if (t === 'TYRE') v = "V006"; else if (t === 'CONS') v = "V008"; else if (t === 'MDLE') v = "V001";
+            const tEl = document.getElementById('f-type'); 
+            const vEl = document.getElementById('create-val-class'); 
+            const valCatEl = document.getElementById('f-val-cat'); 
+            
+            if (!tEl || !vEl) return;
+            
+            const t = tEl.value; 
+            let v = "V001";
+            
+            if (t === 'TYRE') v = "V006"; 
+            else if (t === 'CONS') v = "V008"; 
+            else if (t === 'MDLE') v = "V001";
+            
             vEl.value = v;
+
+            // Logika Auto-Lock Valuation Category
+            if (valCatEl) {
+                if (t === 'SPRT' || t === 'MDLE' || t === 'TYRE') {
+                    valCatEl.value = 'S';
+                    valCatEl.disabled = true;
+                    valCatEl.classList.add('input-readonly');
+                } else {
+                    valCatEl.disabled = false;
+                    valCatEl.classList.remove('input-readonly');
+                }
+                
+                // Trigger update CSS status untuk field
+                if (valCatEl.value.trim() !== '' && !valCatEl.classList.contains('input-readonly')) {
+                    valCatEl.classList.add('field-filled');
+                } else {
+                    valCatEl.classList.remove('field-filled');
+                }
+            }
         };
 
         window.onload = () => {
