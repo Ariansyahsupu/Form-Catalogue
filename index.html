@@ -538,7 +538,7 @@
                                                             <option value="O">O - OIL</option>
                                                         </select>
                                                     </div>
-                                                    <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Val. Class</label><input type="text" id="create-val-class" name="valuation_class" readonly class="input-field input-readonly professional-input text-slate-900"></div>
+                                                    <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Val. Class</label><select id="create-val-class" name="valuation_class" class="input-field input-readonly professional-input text-slate-900" disabled></select></div>
                                                     <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Storage Bin</label><input type="text" name="storage_bin" id="f-bin" class="input-field border-2 professional-input"></div>
                                                     <div class="space-y-1.5 md:col-span-3">
                                                         <label class="text-[10px] professional-label tracking-widest">Remarks / Note <span class="text-red-500 font-black">(WAJIB: CCP / LINK PART BOOK)</span></label>
@@ -1047,17 +1047,30 @@
             document.getElementById('f-desc').value = m.description;
             document.getElementById('f-uom').value = m.base_uom;
             document.getElementById('f-type').value = m.material_type;
-            document.getElementById('f-group').value = m.material_group;
             document.getElementById('f-plant').value = m.plant;
             document.getElementById('f-sloc').value = m.storage_location;
             document.getElementById('f-purch').value = m.purchasing_group;
             document.getElementById('f-val-cat').value = m.valuation_cat;
-            document.getElementById('create-val-class').value = m.valuation_class;
             document.getElementById('f-bin').value = m.storage_bin;
             document.getElementById('f-remarks').value = m.remarks;
             document.getElementById('f-serial').value = m.serial_profile;
             
             updateValuationClass(); // Panggil fungsi lock saat load material
+            
+            const gEl = document.getElementById('f-group');
+            gEl.value = m.material_group;
+            if (gEl.options && gEl.options[gEl.selectedIndex]) {
+                const opt = gEl.options[gEl.selectedIndex];
+                if (opt.dataset && opt.dataset.short) opt.text = opt.dataset.short;
+            }
+            
+            const vEl = document.getElementById('create-val-class');
+            vEl.value = m.valuation_class;
+            if (vEl.options && vEl.options[vEl.selectedIndex]) {
+                const opt = vEl.options[vEl.selectedIndex];
+                if (opt.dataset && opt.dataset.short) opt.text = opt.dataset.short;
+            }
+            
             updateAllFieldsStatus();
         }
 
@@ -1330,9 +1343,13 @@
             const sel = document.getElementById(id); if (!sel) return;
             sel.innerHTML = '<option value="">-- PILIH --</option>';
             options.forEach(item => { const opt = document.createElement('option'); opt.value = item.code; opt.text = item.display; opt.dataset.long = item.display; opt.dataset.short = item.code; sel.appendChild(opt); });
-            const showS = () => { const opt = sel.options[sel.selectedIndex]; if (opt && opt.value) opt.text = opt.dataset.short; };
-            const showL = () => { Array.from(sel.options).forEach(o => { if (o.dataset.long) o.text = o.dataset.long; }); };
-            sel.addEventListener('mousedown', showL); sel.addEventListener('change', () => { showS(); sel.blur(); }); sel.addEventListener('blur', showS);
+            
+            if (!sel.dataset.swapInit) {
+                const showS = () => { const opt = sel.options[sel.selectedIndex]; if (opt && opt.value) opt.text = opt.dataset.short; };
+                const showL = () => { Array.from(sel.options).forEach(o => { if (o.dataset.long) o.text = o.dataset.long; }); };
+                sel.addEventListener('mousedown', showL); sel.addEventListener('change', () => { showS(); sel.blur(); }); sel.addEventListener('blur', showS);
+                sel.dataset.swapInit = 'true';
+            }
         }
 
         function populateSelects() {
@@ -1340,7 +1357,7 @@
             for(let i=1;i<=28;i++) { let v = `PL${i.toString().padStart(2,'0')}`; if(pS) pS.innerHTML += `<option value="${v}">${v}</option>`; if(mvpS) mvpS.innerHTML += `<option value="${v}">${v}</option>`; }
             const sS = document.getElementById('f-sloc'); const mvsS = document.getElementById('m-v-sloc');
             for(let i=1;i<=15;i++) { let v = `S${i.toString().padStart(3,'0')}`; if(sS) sS.innerHTML += `<option value="${v}">${v}</option>`; if(mvsS) mvsS.innerHTML += `<option value="${v}">${v}</option>`; }
-            setupVisualSwap('f-uom', [{code:"EA",display:"EA - EACH"},{code:"PC",display:"PC - PIECE"},{code:"PCS",display:"PCS - PIECES"},{code:"SET",display:"SET - SET"},{code:"UNT",display:"UNT - UNIT"},{code:"ROL",display:"ROL - ROLL"},{code:"M",display:"M - METER"},{code:"KG",display:"KG - KILOGRAM"},{code:"L",display:"L - LITER"},{code:"CAN",display:"CAN - CANISTER"},{code:"DR",display:"DR - DRUM"},{code:"PL",display:"PL - PAIL"}]);
+            setupVisualSwap('f-uom', [{code:"EA",display:"EA - EACH"},{code:"PC",display:"PC - PIECE"},{code:"SET",display:"SET - SET"},{code:"UNT",display:"UNT - UNIT"},{code:"ROL",display:"ROL - ROLL"},{code:"M",display:"M - METER"},{code:"KG",display:"KG - KILOGRAM"},{code:"L",display:"L - LITER"},{code:"CAN",display:"CAN - CANISTER"},{code:"DR",display:"DR - DRUM"},{code:"PL",display:"PL - PAIL"}]);
             setupVisualSwap('f-type', [{code:"SPRT",display:"SPRT - Sparepart"},{code:"FOGC",display:"FOGC - FOGC"},{code:"TYRE",display:"TYRE - Tyre"},{code:"CONS",display:"CONS - Consumable"},{code:"GENS",display:"GENS - General Supply"},{code:"ASET",display:"ASET - Asset"},{code:"SEJA",display:"SEJA - Service & Jasa"},{code:"MDLE",display:"MDLE - Module"},{code:"BOMM",display:"BOMM - Bom Material"},{code:"FFF",display:"FFF - FFF Class"}]);
             setupVisualSwap('f-group', [{code:"S001",display:"S001 - SPAREPART"},{code:"S002",display:"S002 - ELECTRICAL"},{code:"T001",display:"T001 - TYRE"},{code:"M001",display:"M001 - MODULE"}]);
             setupVisualSwap('f-purch', [{code:"G01",display:"G01 - SPAREPART"},{code:"G02",display:"G02 - CONSUMABLE / GENERAL Supply"},{code:"G03",display:"G03 - SERVICE / JASA"},{code:"G04",display:"G04 - FUEL"},{code:"G05",display:"G05 - INFRASTRUKTUR"},{code:"G06",display:"G06 - SARANA"},{code:"G07",display:"G07 - AST, MDL & UNT"}]);
@@ -1350,22 +1367,165 @@
             const tEl = document.getElementById('f-type'); 
             const vEl = document.getElementById('create-val-class'); 
             const valCatEl = document.getElementById('f-val-cat'); 
+            const groupEl = document.getElementById('f-group');
             
             if (!tEl || !vEl) return;
             
             const t = tEl.value; 
-            let v = "V001";
+
+            if (groupEl) {
+                const currentGroupVal = groupEl.value;
+                if (t === 'FOGC') {
+                    setupVisualSwap('f-group', [
+                        {code:"F001", display:"F001 - Fuel"},
+                        {code:"F002", display:"F002 - Oil"},
+                        {code:"F003", display:"F003 - Grease"},
+                        {code:"F004", display:"F004 - Coolant"}
+                    ]);
+                } else if (t === 'SPRT') {
+                    setupVisualSwap('f-group', [
+                        {code:"S001", display:"S001 - Sparepart"},
+                        {code:"S002", display:"S002 - Electrical System"},
+                        {code:"S003", display:"S003 - Transmission"},
+                        {code:"S004", display:"S004 - Get"}
+                    ]);
+                } else if (t === 'CONS') {
+                    setupVisualSwap('f-group', [
+                        {code:"A001", display:"A001 - Hardware"},
+                        {code:"C001", display:"C001 - Rambu-Rambu"},
+                        {code:"C002", display:"C002 - Aksesoris"},
+                        {code:"C003", display:"C003 - Common Tools"},
+                        {code:"C004", display:"C004 - Medicine"},
+                        {code:"C005", display:"C005 - Alat Tulis Kantor (Expense)"},
+                        {code:"C006", display:"C006 - Peralatan/perlengkapan (Expense)"},
+                        {code:"C007", display:"C007 - Beban Seragam (Expense)"}
+                    ]);
+                } else if (t === 'SEJA') {
+                    setupVisualSwap('f-group', [
+                        {code:"J001", display:"J001 - Jasa Pengiriman / Ekspedisi Barang"},
+                        {code:"J002", display:"J002 - Jasa Sertifikasi"},
+                        {code:"J003", display:"J003 - Jasa Survey"},
+                        {code:"J004", display:"J004 - Jasa Fabrikasi"},
+                        {code:"J005", display:"J005 - Jasa Lab dan Analisa Sample"},
+                        {code:"J006", display:"J006 - Jasa Konsultan"},
+                        {code:"J007", display:"J007 - Jasa Angkut BBM"},
+                        {code:"J008", display:"J008 - Jasa Blasting"},
+                        {code:"J009", display:"J009 - Jasa Perbaikan dan pemeliharaan bangunan/prasarana"},
+                        {code:"J010", display:"J010 - Jasa Perbaikan dan pemeliharaan mesin"},
+                        {code:"J011", display:"J011 - Jasa Perbaikan dan pemeliharaan alat berat"},
+                        {code:"J012", display:"J012 - Jasa Perbaikan dan pemeliharaan kendaraan"},
+                        {code:"J013", display:"J013 - Jasa Perbaikan dan pemeliharaan peralatan dan perlengkapan"},
+                        {code:"J014", display:"J014 - Jasa mobilisasi kendaraan/unit"},
+                        {code:"J015", display:"J015 - Jasa sewa kendaraan"}
+                    ]);
+                } else {
+                    setupVisualSwap('f-group', [
+                        {code:"S001",display:"S001 - SPAREPART"},
+                        {code:"S002",display:"S002 - ELECTRICAL"},
+                        {code:"T001",display:"T001 - TYRE"},
+                        {code:"M001",display:"M001 - MODULE"}
+                    ]);
+                }
+                if (currentGroupVal) {
+                    groupEl.value = currentGroupVal;
+                    if (groupEl.options && groupEl.options[groupEl.selectedIndex]) {
+                        const opt = groupEl.options[groupEl.selectedIndex];
+                        if (opt && opt.dataset && opt.dataset.short) opt.text = opt.dataset.short;
+                    }
+                }
+            }
             
-            if (t === 'TYRE') v = "V006"; 
-            else if (t === 'CONS') v = "V008"; 
-            else if (t === 'MDLE') v = "V001";
-            
-            vEl.value = v;
+            if (t === 'FOGC') {
+                const currentVal = vEl.value;
+                vEl.disabled = false;
+                vEl.classList.remove('input-readonly');
+                vEl.classList.add('bg-white');
+                setupVisualSwap('create-val-class', [
+                    {code:"V002", display:"V002 - Fuel"},
+                    {code:"V003", display:"V003 - Oli"},
+                    {code:"V004", display:"V004 - Grease"},
+                    {code:"V005", display:"V005 - Coolant"}
+                ]);
+                if (currentVal) {
+                    vEl.value = currentVal;
+                    const opt = vEl.options[vEl.selectedIndex];
+                    if (opt && opt.dataset.short) opt.text = opt.dataset.short;
+                }
+            } else if (t === 'CONS') {
+                const currentVal = vEl.value;
+                vEl.disabled = false;
+                vEl.classList.remove('input-readonly');
+                vEl.classList.add('bg-white');
+                setupVisualSwap('create-val-class', [
+                    {code:"V006", display:"V006 - Ban & Velg"},
+                    {code:"V007", display:"V007 - Biaya perlengkapan safety"},
+                    {code:"V008", display:"V008 - Beban Peralatan/Perlengkapan"},
+                    {code:"V009", display:"V009 - Pemakaian Tools"},
+                    {code:"V010", display:"V010 - Biaya P3K"},
+                    {code:"V031", display:"V031 - Blasting"}
+                ]);
+                if (currentVal) {
+                    vEl.value = currentVal;
+                    const opt = vEl.options[vEl.selectedIndex];
+                    if (opt && opt.dataset.short) opt.text = opt.dataset.short;
+                }
+            } else if (t === 'SEJA') {
+                const currentVal = vEl.value;
+                vEl.disabled = false;
+                vEl.classList.remove('input-readonly');
+                vEl.classList.add('bg-white');
+                setupVisualSwap('create-val-class', [
+                    {code:"V011", display:"V011 - Consumable (Stock)"},
+                    {code:"V012", display:"V012 - Beban Pengiriman/ Expedisi Barang"},
+                    {code:"V013", display:"V013 - Beban Lab, Analisa Sampel dan Sertifikasi"},
+                    {code:"V014", display:"V014 - Beban Survey"},
+                    {code:"V015", display:"V015 - Beban Perbaikan dan Pemeliharaan Mesin"},
+                    {code:"V016", display:"V016 - Beban Konsultan"},
+                    {code:"V017", display:"V017 - Beban Angkut BBM"},
+                    {code:"V018", display:"V018 - Beban Blasting"},
+                    {code:"V019", display:"V019 - Beban Perbaikan dan Pemeliharaan Bangunan/Prasarana"},
+                    {code:"V020", display:"V020 - Beban Perbaikan dan Pemeliharaan Alat Berat"},
+                    {code:"V021", display:"V021 - Beban Perbaikan dan Pemeliharaan Kendaraan"},
+                    {code:"V022", display:"V022 - Beban Perbaikan dan Pemeliharaan Peralatan & Perlengkapan"},
+                    {code:"V023", display:"V023 - Beban Mobilisasi Kendaraan/Unit"},
+                    {code:"V024", display:"V024 - Beban Alat Tulis Kantor"},
+                    {code:"V025", display:"V025 - Beban Seragam"},
+                    {code:"V026", display:"V026 - Js Lab & Analisa Sample"},
+                    {code:"V027", display:"V027 - Js Sewa Kendaraan"},
+                    {code:"V028", display:"V028 - beban Sewa Bangunan"},
+                    {code:"V029", display:"V029 - Beban Sewa Alat Berat"},
+                    {code:"V030", display:"V030 - Bbn Sw Perltn & perlngkpn"},
+                    {code:"V031", display:"V031 - Blasting"},
+                    {code:"V032", display:"V032 - Beban Perijinan Kendaraan"},
+                    {code:"V033", display:"V033 - Asuransi Dibayar Di Muka"},
+                    {code:"V034", display:"V034 - By Internet"},
+                    {code:"V035", display:"V035 - Jasa Import"}
+                ]);
+                if (currentVal) {
+                    vEl.value = currentVal;
+                    const opt = vEl.options[vEl.selectedIndex];
+                    if (opt && opt.dataset.short) opt.text = opt.dataset.short;
+                }
+            } else {
+                vEl.disabled = true;
+                vEl.classList.add('input-readonly');
+                vEl.classList.remove('bg-white');
+                let v = "V001";
+                if (t === 'TYRE') v = "V006"; 
+                else if (t === 'MDLE') v = "V001";
+                else if (t === 'GENS') v = "V011";
+                vEl.innerHTML = `<option value="${v}">${v}</option>`;
+                vEl.value = v;
+            }
 
             // Logika Auto-Lock Valuation Category
             if (valCatEl) {
                 if (t === 'SPRT' || t === 'MDLE' || t === 'TYRE') {
                     valCatEl.value = 'S';
+                    valCatEl.disabled = true;
+                    valCatEl.classList.add('input-readonly');
+                } else if (t === 'CONS' || t === 'GENS' || t === 'SEJA') {
+                    valCatEl.value = '';
                     valCatEl.disabled = true;
                     valCatEl.classList.add('input-readonly');
                 } else {
