@@ -167,7 +167,6 @@
         .monitor-table {
             width: 100%;
             border-collapse: collapse;
-            min-width: 1100px;
         }
 
         .monitor-table thead th {
@@ -178,20 +177,22 @@
             color: #ffffff;
             font-weight: 700;
             text-transform: uppercase;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             letter-spacing: 0.05em;
-            padding: 1.25rem 1.5rem;
+            padding: 0.75rem 0.5rem;
             border-bottom: 1px solid #334155;
             text-align: left;
-            white-space: nowrap;
+            white-space: normal;
+            line-height: 1.2;
         }
 
         .monitor-table tbody td {
-            padding: 1.25rem 1.5rem;
+            padding: 0.75rem 0.5rem;
             border-bottom: 1px solid #e2e8f0;
             color: #334155;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             vertical-align: middle;
+            word-break: break-word;
         }
 
         .monitor-table tbody tr:last-child td {
@@ -1289,8 +1290,8 @@
                                 let durText = hours > 0 ? `${hours} Jam ${mins} Menit` : `${mins} Menit`;
 
                                 pengerjaanHtml = `
-                                    <div class="font-bold text-slate-700 whitespace-nowrap">${doneDate.toLocaleString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' }).replace(/\./g, ':')}</div>
-                                    <div class="text-[10px] text-emerald-600 font-black mt-1"><i class="fas fa-stopwatch"></i> ${durText}</div>
+                                    <div class="font-bold text-slate-700 whitespace-normal leading-tight">${doneDate.toLocaleString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' }).replace(/\./g, ':')}</div>
+                                    <div class="text-[10px] text-emerald-600 font-black mt-1 whitespace-normal"><i class="fas fa-stopwatch"></i> ${durText}</div>
                                 `;
                             } else {
                                 pengerjaanHtml = `<span class="text-[9px] italic text-slate-400 font-bold uppercase">MENUNGGU TIMESTAMP</span>`;
@@ -1299,18 +1300,18 @@
 
                         html += `
                         <tr>
-                            <td class="font-mono font-bold text-slate-500 whitespace-nowrap">${tsDate.toLocaleString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' }).replace(/\./g, ':')}</td>
-                            <td class="font-black uppercase text-slate-800 whitespace-nowrap">${cols[28] || "-"}</td>
-                            <td class="font-extrabold uppercase text-slate-500 whitespace-nowrap">${cols[29] || "-"}</td>
-                            <td class="font-bold text-blue-600 uppercase tracking-widest whitespace-nowrap">${cols[pnIdx] || "-"}</td>
-                            <td class="min-w-[250px] max-w-md whitespace-normal leading-relaxed text-slate-700 font-medium">${cols[2] || "-"}</td>
-                            <td class="min-w-[200px] max-w-[300px] whitespace-normal">
-                                <div class="status-badge w-full h-auto py-2 !items-start whitespace-normal text-left" style="${bS}">
+                            <td class="font-mono font-bold text-slate-500 whitespace-normal text-[10px] leading-tight">${tsDate.toLocaleString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' }).replace(/\./g, ':')}</td>
+                            <td class="font-black uppercase text-slate-800 whitespace-normal text-[10px] break-words">${cols[28] || "-"}</td>
+                            <td class="font-extrabold uppercase text-slate-500 whitespace-normal text-[10px] break-words">${cols[29] || "-"}</td>
+                            <td class="font-bold text-blue-600 uppercase tracking-widest whitespace-normal text-[10px] break-words">${cols[pnIdx] || "-"}</td>
+                            <td class="whitespace-normal leading-relaxed text-slate-700 font-medium text-[10px] break-words">${cols[2] || "-"}</td>
+                            <td class="whitespace-normal text-[10px]">
+                                <div class="status-badge w-full h-auto py-2 !items-start whitespace-normal text-left break-words" style="${bS}">
                                     <div class="mt-0.5 shrink-0">${iC}</div>
                                     <div class="break-all leading-relaxed">${isNum ? 'SELESAI ('+remarks+')' : remarks}</div>
                                 </div>
                             </td>
-                            <td class="whitespace-nowrap">${pengerjaanHtml}</td>
+                            <td class="whitespace-normal text-[10px] break-words">${pengerjaanHtml}</td>
                         </tr>
                         `;
                     }
