@@ -1482,6 +1482,7 @@
             const groupEl = document.getElementById('f-group');
             const slocEl = document.getElementById('f-sloc');
             const serialEl = document.getElementById('f-serial');
+            const purchEl = document.getElementById('f-purch');
             
             if (!tEl || !vEl) return;
             
@@ -1711,6 +1712,64 @@
                 if (serialEl) {
                     serialEl.disabled = false;
                     serialEl.classList.remove('input-readonly');
+                }
+            }
+
+            // Logika Auto-Lock Purchasing Group
+            if (purchEl) {
+                const currentPurchVal = purchEl.value;
+                if (t === 'MDLE') {
+                    setupVisualSwap('f-purch', [
+                        {code:"G01", display:"G01 - SPAREPART"},
+                        {code:"G07", display:"G07 - AST, MDL & UNT"}
+                    ]);
+                } else {
+                    setupVisualSwap('f-purch', [
+                        {code:"G01",display:"G01 - SPAREPART"},
+                        {code:"G02",display:"G02 - CONSUMABLE / GENERAL Supply"},
+                        {code:"G03",display:"G03 - SERVICE / JASA"},
+                        {code:"G04",display:"G04 - FUEL"},
+                        {code:"G05",display:"G05 - INFRASTRUKTUR"},
+                        {code:"G06",display:"G06 - SARANA"},
+                        {code:"G07",display:"G07 - AST, MDL & UNT"}
+                    ]);
+                }
+                if (currentPurchVal) {
+                    purchEl.value = currentPurchVal;
+                }
+
+                if (t === 'SPRT' || t === 'TYRE') {
+                    purchEl.value = 'G01';
+                    purchEl.disabled = true;
+                    purchEl.classList.add('input-readonly');
+                } else if (t === 'FOGC' || t === 'CONS' || t === 'GENS') {
+                    purchEl.value = 'G02';
+                    purchEl.disabled = true;
+                    purchEl.classList.add('input-readonly');
+                } else if (t === 'ASET') {
+                    purchEl.value = 'G07';
+                    purchEl.disabled = true;
+                    purchEl.classList.add('input-readonly');
+                } else if (t === 'SEJA') {
+                    purchEl.value = 'G03';
+                    purchEl.disabled = true;
+                    purchEl.classList.add('input-readonly');
+                } else {
+                    purchEl.disabled = false;
+                    purchEl.classList.remove('input-readonly');
+                }
+                
+                // Menyingkat tampilan label otomatis
+                if (purchEl.options && purchEl.options[purchEl.selectedIndex]) {
+                    const opt = purchEl.options[purchEl.selectedIndex];
+                    if (opt && opt.dataset && opt.dataset.short) opt.text = opt.dataset.short;
+                }
+                
+                // Trigger CSS Status (Warna border ketika terisi/readonly)
+                if (purchEl.value.trim() !== '' && !purchEl.classList.contains('input-readonly')) {
+                    purchEl.classList.add('field-filled');
+                } else {
+                    purchEl.classList.remove('field-filled');
                 }
             }
         };
