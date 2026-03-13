@@ -951,9 +951,12 @@
         };
 
         function isMaterialComplete(m) {
+            const isAset = m.material_type === 'ASET';
+            const skipSloc = ['CONS', 'SEJA', 'ASET'].includes(m.material_type);
+            const skipValCat = ['CONS', 'GENS', 'SEJA', 'ASET'].includes(m.material_type);
             return m.description && m.base_uom && m.material_type && m.material_group && 
-                   m.plant && m.storage_location && m.purchasing_group && m.serial_profile && 
-                   m.valuation_cat && m.remarks;
+                   m.plant && (m.storage_location || skipSloc) && m.purchasing_group && (m.serial_profile || isAset) && 
+                   (m.valuation_cat || skipValCat) && m.remarks;
         }
 
         function renderNav() {
@@ -1079,11 +1082,14 @@
             const reqName = document.getElementById('f-req-name').value.toUpperCase();
             const reqDept = document.getElementById('f-req-dept').value.toUpperCase();
             if (!reqName || !reqDept) return window.notify('Data Belum Lengkap', 'Isi Nama & Dept Pengaju.', 'error');
-            const incomplete = batchMaterials.find(m => 
-                !m.description || !m.base_uom || !m.material_type || !m.material_group || 
-                !m.plant || !m.storage_location || !m.purchasing_group || !m.serial_profile || 
-                !m.valuation_cat || !m.remarks
-            );
+            const incomplete = batchMaterials.find(m => {
+                const isAset = m.material_type === 'ASET';
+                const skipSloc = ['CONS', 'SEJA', 'ASET'].includes(m.material_type);
+                const skipValCat = ['CONS', 'GENS', 'SEJA', 'ASET'].includes(m.material_type);
+                return !m.description || !m.base_uom || !m.material_type || !m.material_group || 
+                       !m.plant || (!m.storage_location && !skipSloc) || !m.purchasing_group || (!m.serial_profile && !isAset) || 
+                       (!m.valuation_cat && !skipValCat) || !m.remarks;
+            });
             if (incomplete) {
                 let missingField = "";
                 if (!incomplete.description) missingField = "Description";
@@ -1091,10 +1097,10 @@
                 else if (!incomplete.material_type) missingField = "Mat Type";
                 else if (!incomplete.material_group) missingField = "Mat Group";
                 else if (!incomplete.plant) missingField = "Plant";
-                else if (!incomplete.storage_location) missingField = "Storage Location";
+                else if (!incomplete.storage_location && !['CONS', 'SEJA', 'ASET'].includes(incomplete.material_type)) missingField = "Storage Location";
                 else if (!incomplete.purchasing_group) missingField = "Purchasing Group";
-                else if (!incomplete.serial_profile) missingField = "SERIAL NUMBER PROFILE";
-                else if (!incomplete.valuation_cat) missingField = "Valuation Category";
+                else if (!incomplete.serial_profile && incomplete.material_type !== 'ASET') missingField = "SERIAL NUMBER PROFILE";
+                else if (!incomplete.valuation_cat && !['CONS', 'GENS', 'SEJA', 'ASET'].includes(incomplete.material_type)) missingField = "Valuation Category";
                 else if (!incomplete.remarks) missingField = "Remarks (CCP atau Link Part Book)";
                 return window.notify('Data Belum Lengkap', `Material ${incomplete.mfg_part} wajib mengisi ${missingField}.`, 'error');
             }
@@ -1368,6 +1374,8 @@
             const vEl = document.getElementById('create-val-class'); 
             const valCatEl = document.getElementById('f-val-cat'); 
             const groupEl = document.getElementById('f-group');
+            const slocEl = document.getElementById('f-sloc');
+            const serialEl = document.getElementById('f-serial');
             
             if (!tEl || !vEl) return;
             
@@ -1418,6 +1426,24 @@
                         {code:"J014", display:"J014 - Jasa mobilisasi kendaraan/unit"},
                         {code:"J015", display:"J015 - Jasa sewa kendaraan"}
                     ]);
+                } else if (t === 'ASET') {
+                    setupVisualSwap('f-group', [
+                        {code:"A001", display:"A001 - Hardware"},
+                        {code:"A002", display:"A002 - Software"},
+                        {code:"A003", display:"A003 - Equipment"},
+                        {code:"A004", display:"A004 - Building"},
+                        {code:"A005", display:"A005 - Special Tools"},
+                        {code:"A006", display:"A006 - Inventaris"}
+                    ]);
+                } else if (t === 'TYRE') {
+                    setupVisualSwap('f-group', [
+                        {code:"T001", display:"T001 - TYRE"}
+                    ]);
+                } else if (t === 'GENS') {
+                    setupVisualSwap('f-group', [
+                        {code:"G001", display:"G001 - GENERAL SUPPLY"},
+                        {code:"G002", display:"G002 - APD"}
+                    ]);
                 } else {
                     setupVisualSwap('f-group', [
                         {code:"S001",display:"S001 - SPAREPART"},
@@ -1426,11 +1452,24 @@
                         {code:"M001",display:"M001 - MODULE"}
                     ]);
                 }
-                if (currentGroupVal) {
-                    groupEl.value = currentGroupVal;
+                
+                if (t === 'TYRE') {
+                    groupEl.value = 'T001';
+                    groupEl.disabled = true;
+                    groupEl.classList.add('input-readonly');
                     if (groupEl.options && groupEl.options[groupEl.selectedIndex]) {
                         const opt = groupEl.options[groupEl.selectedIndex];
                         if (opt && opt.dataset && opt.dataset.short) opt.text = opt.dataset.short;
+                    }
+                } else {
+                    groupEl.disabled = false;
+                    groupEl.classList.remove('input-readonly');
+                    if (currentGroupVal) {
+                        groupEl.value = currentGroupVal;
+                        if (groupEl.options && groupEl.options[groupEl.selectedIndex]) {
+                            const opt = groupEl.options[groupEl.selectedIndex];
+                            if (opt && opt.dataset && opt.dataset.short) opt.text = opt.dataset.short;
+                        }
                     }
                 }
             }
@@ -1514,6 +1553,7 @@
                 if (t === 'TYRE') v = "V006"; 
                 else if (t === 'MDLE') v = "V001";
                 else if (t === 'GENS') v = "V011";
+                else if (t === 'ASET') v = ""; // Kosongkan Val Class untuk ASET
                 vEl.innerHTML = `<option value="${v}">${v}</option>`;
                 vEl.value = v;
             }
@@ -1524,7 +1564,7 @@
                     valCatEl.value = 'S';
                     valCatEl.disabled = true;
                     valCatEl.classList.add('input-readonly');
-                } else if (t === 'CONS' || t === 'GENS' || t === 'SEJA') {
+                } else if (t === 'CONS' || t === 'GENS' || t === 'SEJA' || t === 'ASET') {
                     valCatEl.value = '';
                     valCatEl.disabled = true;
                     valCatEl.classList.add('input-readonly');
@@ -1538,6 +1578,33 @@
                     valCatEl.classList.add('field-filled');
                 } else {
                     valCatEl.classList.remove('field-filled');
+                }
+            }
+
+            // Logika Auto-Lock SLoc untuk CONS, SEJA, ASET dan Serial Profile untuk ASET
+            if (t === 'CONS' || t === 'SEJA' || t === 'ASET') {
+                if (slocEl) {
+                    slocEl.value = '';
+                    slocEl.disabled = true;
+                    slocEl.classList.add('input-readonly');
+                }
+            } else {
+                if (slocEl) {
+                    slocEl.disabled = false;
+                    slocEl.classList.remove('input-readonly');
+                }
+            }
+
+            if (t === 'ASET') {
+                if (serialEl) {
+                    serialEl.value = '';
+                    serialEl.disabled = true;
+                    serialEl.classList.add('input-readonly');
+                }
+            } else {
+                if (serialEl) {
+                    serialEl.disabled = false;
+                    serialEl.classList.remove('input-readonly');
                 }
             }
         };
