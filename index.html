@@ -222,6 +222,34 @@
             color: #c2410c;
         }
 
+        /* Menyesuaikan proporsi card untuk mode 3 kolom */
+        .premium-card.large-mode {
+            padding: 2.5rem 2rem !important;
+            min-height: 280px;
+            justify-content: flex-start;
+        }
+        .premium-card.large-mode .icon-box {
+            width: 80px !important;
+            height: 80px !important;
+            font-size: 2.5rem !important;
+            border-radius: 1.5rem !important;
+            margin-bottom: 1.5rem !important;
+        }
+        .premium-card.large-mode h3 {
+            font-size: 1.25rem !important;
+            margin-bottom: 0.5rem !important;
+        }
+        .premium-card.large-mode p {
+            font-size: 0.85rem !important;
+            margin-bottom: 2rem !important;
+        }
+        .premium-card.large-mode button {
+            padding: 1rem !important;
+            font-size: 0.85rem !important;
+            border-radius: 1rem !important;
+            margin-top: auto !important;
+        }
+
         /* Login Section Styles */
         #login-section {
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
@@ -255,6 +283,10 @@
                 <div class="space-y-2">
                     <label class="text-[10px] professional-label tracking-widest ml-1">Password</label>
                     <input type="password" id="login-password" placeholder="••••••••" class="input-field border-2 font-bold tracking-widest" oninput="this.value = this.value.toUpperCase()">
+                </div>
+                <div class="space-y-2">
+                    <label class="text-[10px] professional-label tracking-widest ml-1">Plant (Opsional)</label>
+                    <input type="text" id="login-plant" placeholder="PL01, PL08, DLL." class="input-field border-2 font-bold uppercase" oninput="this.value = this.value.toUpperCase()">
                 </div>
                 <button onclick="handleMainLogin()" class="w-full py-5 bg-slate-900 text-white font-black rounded-2xl uppercase text-[11px] tracking-widest shadow-2xl hover:bg-blue-600 transition-all transform active:scale-95">
                     Masuk ke Dashboard
@@ -320,7 +352,7 @@
                     <h1 class="text-2xl lg:text-3xl font-black text-slate-900 tracking-tight">Portal Manajemen Master Data</h1>
                 </div>
 
-                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5 gap-3">
+                <div id="home-card-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5 gap-3">
                     <div onclick="showSection('monitor-section')" class="premium-card p-3 text-emerald-600">
                         <div class="icon-box bg-emerald-50 text-emerald-600 border border-emerald-100 shadow-md shadow-emerald-100/50"><i class="fas fa-desktop"></i></div>
                         <h3 class="text-[11px] professional-label mb-1 leading-tight">Activity Monitor</h3>
@@ -342,28 +374,28 @@
                         <button class="w-full mt-auto py-1.5 bg-orange-500 text-white rounded-lg font-black text-[9px] uppercase shadow-sm shadow-orange-200">Registrasi Baru</button>
                     </div>
 
-                    <div onclick="window.notify('Informasi', 'Modul TRANSAKSI MIGO sedang dalam pengembangan.', 'success')" class="premium-card p-3 text-indigo-600">
+                    <div id="card-migo" onclick="window.notify('Informasi', 'Modul TRANSAKSI MIGO sedang dalam pengembangan.', 'success')" class="premium-card p-3 text-indigo-600">
                         <div class="icon-box bg-indigo-50 text-indigo-600 border border-indigo-100 shadow-md shadow-indigo-100/50"><i class="fas fa-truck-ramp-box"></i></div>
                         <h3 class="text-[11px] professional-label mb-1 leading-tight">TRANSAKSI MIGO</h3>
                         <p class="text-slate-500 text-[9px] mb-2 line-clamp-2 leading-tight">Kelola transaksi Goods Issue, Receipt, & Transfer.</p>
                         <button class="w-full mt-auto py-1.5 bg-indigo-600 text-white rounded-lg font-black text-[9px] uppercase shadow-sm shadow-indigo-200">Buka Modul</button>
                     </div>
 
-                    <div onclick="window.notify('Informasi', 'Modul RELEASE/UNRELEASE PO sedang dalam pengembangan.', 'success')" class="premium-card p-3 text-violet-600">
+                    <div id="card-rel-po" onclick="window.notify('Informasi', 'Modul RELEASE/UNRELEASE PO sedang dalam pengembangan.', 'success')" class="premium-card p-3 text-violet-600">
                         <div class="icon-box bg-violet-50 text-violet-600 border border-violet-100 shadow-md shadow-violet-100/50"><i class="fas fa-file-signature"></i></div>
                         <h3 class="text-[11px] professional-label mb-1 leading-tight">RELEASE/UNRELEASE PO</h3>
                         <p class="text-slate-500 text-[9px] mb-2 line-clamp-2 leading-tight">Otorisasi pelepasan Purchase Order.</p>
                         <button class="w-full mt-auto py-1.5 bg-violet-600 text-white rounded-lg font-black text-[9px] uppercase shadow-sm shadow-violet-200">Buka Modul</button>
                     </div>
 
-                    <div onclick="window.notify('Informasi', 'Modul BLOCK/OPEN BLOCK sedang dalam pengembangan.', 'success')" class="premium-card p-3 text-rose-600">
+                    <div id="card-block" onclick="window.notify('Informasi', 'Modul BLOCK/OPEN BLOCK sedang dalam pengembangan.', 'success')" class="premium-card p-3 text-rose-600">
                         <div class="icon-box bg-rose-50 text-rose-600 border border-rose-100 shadow-md shadow-rose-100/50"><i class="fas fa-ban"></i></div>
                         <h3 class="text-[11px] professional-label mb-1 leading-tight">BLOCK/OPEN BLOCK</h3>
                         <p class="text-slate-500 text-[9px] mb-2 line-clamp-2 leading-tight">Manajemen status blokir item atau vendor.</p>
                         <button class="w-full mt-auto py-1.5 bg-rose-600 text-white rounded-lg font-black text-[9px] uppercase shadow-sm shadow-rose-200">Buka Modul</button>
                     </div>
 
-                    <div onclick="window.notify('Informasi', 'Modul TRANSAKSI PR sedang dalam pengembangan.', 'success')" class="premium-card p-3 text-cyan-600">
+                    <div id="card-pr" onclick="window.notify('Informasi', 'Modul TRANSAKSI PR sedang dalam pengembangan.', 'success')" class="premium-card p-3 text-cyan-600">
                         <div class="icon-box bg-cyan-50 text-cyan-600 border border-cyan-100 shadow-md shadow-cyan-100/50"><i class="fas fa-file-invoice"></i></div>
                         <h3 class="text-[11px] professional-label mb-1 leading-tight">TRANSAKSI PR</h3>
                         <p class="text-slate-500 text-[9px] mb-2 line-clamp-2 leading-tight">Pembuatan dan pelacakan Purchase Requisition.</p>
@@ -377,14 +409,14 @@
                         <button class="w-full mt-auto py-1.5 bg-amber-600 text-white rounded-lg font-black text-[9px] uppercase shadow-sm shadow-amber-200">Buka Modul</button>
                     </div>
 
-                    <div onclick="window.notify('Informasi', 'Modul ADDITIONAL STORAGE LOCATION sedang dalam pengembangan.', 'success')" class="premium-card p-3 text-teal-600">
+                    <div id="card-add-sloc" onclick="window.notify('Informasi', 'Modul ADDITIONAL STORAGE LOCATION sedang dalam pengembangan.', 'success')" class="premium-card p-3 text-teal-600">
                         <div class="icon-box bg-teal-50 text-teal-600 border border-teal-100 shadow-md shadow-teal-100/50"><i class="fas fa-warehouse"></i></div>
                         <h3 class="text-[11px] professional-label mb-1 leading-tight">ADDITIONAL STORAGE</h3>
                         <p class="text-slate-500 text-[9px] mb-2 line-clamp-2 leading-tight">Penambahan lokasi gudang penyimpanan.</p>
                         <button class="w-full mt-auto py-1.5 bg-teal-600 text-white rounded-lg font-black text-[9px] uppercase shadow-sm shadow-teal-200">Buka Modul</button>
                     </div>
 
-                    <div onclick="window.notify('Informasi', 'Modul USER ROLE ACCESS sedang dalam pengembangan.', 'success')" class="premium-card p-3 text-slate-600">
+                    <div id="card-role" onclick="window.notify('Informasi', 'Modul USER ROLE ACCESS sedang dalam pengembangan.', 'success')" class="premium-card p-3 text-slate-600">
                         <div class="icon-box bg-slate-50 text-slate-600 border border-slate-100 shadow-md shadow-slate-100/50"><i class="fas fa-user-shield"></i></div>
                         <h3 class="text-[11px] professional-label mb-1 leading-tight">USER ROLE ACCESS</h3>
                         <p class="text-slate-500 text-[9px] mb-2 line-clamp-2 leading-tight">Pengaturan hak akses dan peran pengguna.</p>
@@ -405,21 +437,21 @@
                         <button class="w-full mt-auto py-1.5 bg-orange-600 text-white rounded-lg font-black text-[9px] uppercase shadow-sm shadow-orange-200">Buka Modul</button>
                     </div>
 
-                    <div onclick="window.notify('Informasi', 'Modul SETTING INTRANSIT PO sedang dalam pengembangan.', 'success')" class="premium-card p-3 text-emerald-500">
+                    <div id="card-intransit" onclick="window.notify('Informasi', 'Modul SETTING INTRANSIT PO sedang dalam pengembangan.', 'success')" class="premium-card p-3 text-emerald-500">
                         <div class="icon-box bg-emerald-50 text-emerald-500 border border-emerald-100 shadow-md shadow-emerald-100/50"><i class="fas fa-clock-rotate-left"></i></div>
                         <h3 class="text-[11px] professional-label mb-1 leading-tight">SETTING INTRANSIT PO</h3>
                         <p class="text-slate-500 text-[9px] mb-2 line-clamp-2 leading-tight">Monitoring dan pengaturan stok dalam perjalanan.</p>
                         <button class="w-full mt-auto py-1.5 bg-emerald-500 text-white rounded-lg font-black text-[9px] uppercase shadow-sm shadow-emerald-200">Buka Modul</button>
                     </div>
 
-                    <div onclick="requestProtectedLink('https://docs.google.com/spreadsheets/d/1Bu4_lnZJe-NAezO0Jyw2AkqQk0bdVFTU8VrIlSn3eJY/edit?usp=sharing')" class="premium-card p-3 text-emerald-600">
+                    <div id="card-db-req" onclick="requestProtectedLink('https://docs.google.com/spreadsheets/d/1Bu4_lnZJe-NAezO0Jyw2AkqQk0bdVFTU8VrIlSn3eJY/edit?usp=sharing')" class="premium-card p-3 text-emerald-600">
                         <div class="icon-box bg-emerald-50 text-emerald-600 border border-emerald-100 shadow-md shadow-emerald-100/50"><i class="fas fa-file-excel"></i></div>
                         <h3 class="text-[11px] professional-label mb-1 leading-tight">DATABASE REQUEST</h3>
                         <p class="text-slate-500 text-[9px] mb-2 line-clamp-2 leading-tight">Informasi Data Database Request Log.</p>
                         <button class="w-full mt-auto py-1.5 bg-emerald-600 text-white rounded-lg font-black text-[9px] uppercase shadow-sm shadow-emerald-200">Buka Data</button>
                     </div>
 
-                    <div onclick="requestProtectedLink('https://docs.google.com/spreadsheets/d/16PmMztvhkA9PnYOXoRF7IyeVmvqkIa-I89CCcT6iElU/edit?usp=sharing')" class="premium-card p-3 text-blue-600">
+                    <div id="card-master" onclick="requestProtectedLink('https://docs.google.com/spreadsheets/d/16PmMztvhkA9PnYOXoRF7IyeVmvqkIa-I89CCcT6iElU/edit?usp=sharing')" class="premium-card p-3 text-blue-600">
                         <div class="icon-box bg-blue-50 text-blue-600 border border-blue-100 shadow-md shadow-blue-100/50"><i class="fas fa-database"></i></div>
                         <h3 class="text-[11px] professional-label mb-1 leading-tight">MASTER MATERIAL</h3>
                         <p class="text-slate-500 text-[9px] mb-2 line-clamp-2 leading-tight">Informasi Data Master Material Data.</p>
@@ -696,6 +728,7 @@
 
         // Global State & User Config
         let currentUserDept = "";
+        let currentUserPlant = "";
         const USER_CREDENTIALS = {
             "PLANT": { password: "PLANT1234", dept: "PLANT" },
             "IT": { password: "IT1234", dept: "IT" },
@@ -704,7 +737,12 @@
             "IA": { password: "IA1234", dept: "IA" },
             "PROD": { password: "PROD1234", dept: "PROD" },
             "CATALOGUE": { password: "CATLOG1234", dept: "CATALOGUE" },
-            "SHE": { password: "SHE1234", dept: "CATALOGUE" }
+            "SHE": { password: "SHE1234", dept: "CATALOGUE" },
+            "SM": { password: "SM1234", dept: "SM" }, // Ditambahkan user SM untuk validasi logika
+            "DC": { password: "DC1234", dept: "DC" },
+            "ICGS": { password: "ICGS1234", dept: "ICGS" },
+            "FAT": { password: "FAT1234", dept: "FAT" },
+            "ENG": { password: "ENG1234", dept: "ENG" }
         };
 
         function setupVisualSwap(id, options) {
@@ -777,6 +815,7 @@
         window.handleMainLogin = function() {
             const uInput = document.getElementById('login-username').value.trim();
             const pInput = document.getElementById('login-password').value.trim();
+            const plInput = document.getElementById('login-plant').value.trim();
 
             if (!uInput || !pInput) return window.notify('Input Kosong', 'Silakan isi username dan password.', 'error');
 
@@ -784,6 +823,46 @@
             
             if (foundKey && USER_CREDENTIALS[foundKey].password === pInput) {
                 currentUserDept = USER_CREDENTIALS[foundKey].dept;
+                currentUserPlant = plInput;
+
+                // --- ADDED LOGIC FOR CARD FILTERING ---
+                const restrictedCards = ['card-migo', 'card-rel-po', 'card-block', 'card-pr', 'card-add-sloc', 'card-role', 'card-intransit', 'card-db-req', 'card-master'];
+                const cardGrid = document.getElementById('home-card-grid');
+                
+                // Reset all to visible and default size
+                restrictedCards.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.style.display = 'flex';
+                });
+                if (cardGrid) {
+                    cardGrid.className = "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5 gap-3";
+                    Array.from(cardGrid.children).forEach(card => card.classList.remove('large-mode'));
+                }
+
+                // Hide for non-LOG and non-CATALOGUE
+                if (currentUserDept !== "LOG" && currentUserDept !== "CATALOGUE") {
+                    restrictedCards.forEach(id => {
+                        const el = document.getElementById(id);
+                        if (el) el.style.display = 'none';
+                    });
+                    
+                    // Specific override for SM
+                    if (currentUserDept === "SM") {
+                        const prCard = document.getElementById('card-pr');
+                        if (prCard) prCard.style.display = 'flex';
+                    }
+
+                    // Menyesuaikan grid untuk user selain LOG & CATALOGUE: 3 card berjejer, proporsional, layar full
+                    if (cardGrid) {
+                        cardGrid.className = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto min-h-[65vh] content-center";
+                        Array.from(cardGrid.children).forEach(card => {
+                            if (card.style.display !== 'none') {
+                                card.classList.add('large-mode');
+                            }
+                        });
+                    }
+                }
+                // --------------------------------------
                 
                 document.getElementById('login-section').style.display = 'none';
                 const mainContent = document.getElementById('main-content');
@@ -799,7 +878,9 @@
                     document.getElementById('btn-alarm').classList.add('hidden');
                 }
                 
-                document.getElementById('session-badge').innerText = `SESSION: ${currentUserDept}`;
+                let badgeText = `SESSION: ${currentUserDept}`;
+                if (currentUserPlant) badgeText += ` | ${currentUserPlant}`;
+                document.getElementById('session-badge').innerText = badgeText;
                 
                 const fReqDept = document.getElementById('f-req-dept');
                 if(fReqDept) fReqDept.value = currentUserDept;
@@ -1653,6 +1734,7 @@
                     <th>Pengaju</th>
                     <th>Departemen</th>
                     <th>Part Number</th>
+                    <th>Nomor Material</th>
                     <th>Deskripsi Material</th>
                     <th>Progress / Remarks</th>
                     <th>Waktu Penyelesaian</th>
@@ -1669,7 +1751,8 @@
                 </tr>`;
             }
 
-            document.getElementById('monitor-list').innerHTML = `<tr><td colspan="7" class="px-8 py-24 text-center text-slate-400 text-[12px] font-bold uppercase tracking-widest">Menyinkronkan Aktivitas Terbaru...</td></tr>`;
+            const colCount = mode === 'CREATE' ? 8 : 7;
+            document.getElementById('monitor-list').innerHTML = `<tr><td colspan="${colCount}" class="px-8 py-24 text-center text-slate-400 text-[12px] font-bold uppercase tracking-widest">Menyinkronkan Aktivitas Terbaru...</td></tr>`;
 
             syncMonitoringData();
         };
@@ -1689,6 +1772,7 @@
                 const lines = csvText.split(/\r?\n/);
                 let html = "";
                 const isCatalogue = currentUserDept === "CATALOGUE";
+                const colCount = currentMonitorMode === 'CREATE' ? 8 : 7;
                 
                 for (let i = lines.length - 1; i >= 1; i--) {
                     if (!lines[i].trim()) continue;
@@ -1698,12 +1782,41 @@
                         const recordDept = (cols[29] || "").toUpperCase().trim();
                         if (!isCatalogue && recordDept !== currentUserDept) continue;
 
+                        // --- LOGIKA FILTER PLANT ---
+                        if (currentUserPlant) {
+                            const rowHasPlant = cols.some(c => c && c.trim().toUpperCase() === currentUserPlant);
+                            if (!rowHasPlant) continue;
+                        }
+                        // -------------------------
+
                         const reqId = cols[0] ? cols[0].trim() : "";
                         const originalRemarks = cols[30] ? cols[30].trim() : "";
                         const originalTime = cols[31] ? cols[31].trim() : "";
                         
                         const remarks = LOCAL_FEEDBACK.has(reqId) ? LOCAL_FEEDBACK.get(reqId) : (originalRemarks || "DALAM PROSES");
                         const completionTime = LOCAL_FEEDBACK_TIME.has(reqId) ? LOCAL_FEEDBACK_TIME.get(reqId) : originalTime;
+
+                        // --- LOGIKA FILTER BULAN BERJALAN ATAU PENDING ---
+                        const isPending = !completionTime || !remarks.toUpperCase().includes('DONE');
+                        let isCurrentMonth = true;
+                        if (reqId) {
+                            const now = new Date();
+                            let reqM = -1, reqY = -1;
+                            const match = reqId.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/);
+                            if (match) {
+                                let p1 = parseInt(match[1]), p2 = parseInt(match[2]), p3 = parseInt(match[3]);
+                                reqY = p3;
+                                reqM = (p1 > 12) ? p2 - 1 : p2 - 1; // Asumsi DD/MM/YYYY
+                            } else {
+                                const d = new Date(reqId);
+                                if (!isNaN(d.getTime())) { reqM = d.getMonth(); reqY = d.getFullYear(); }
+                            }
+                            if (reqY !== -1 && reqM !== -1) {
+                                isCurrentMonth = (reqM === now.getMonth() && reqY === now.getFullYear());
+                            }
+                        }
+                        if (!isCurrentMonth && !isPending) continue;
+                        // -------------------------------------------------
 
                         let actionHtml = `<div class="status-badge ${remarks.toUpperCase().includes('REJECT') ? 'bg-red-50 text-red-600' : 'bg-blue-50 text-blue-600'}">${remarks}</div>`;
                         
@@ -1714,11 +1827,18 @@
                             actionHtml += `<button onclick="openFeedback('${safeId}', '${safePn}', '${safeRemarks}', 'CREATE')" class="ml-3 bg-slate-900 text-white px-3 py-1.5 rounded-lg text-[9px] font-black uppercase hover:bg-blue-600 transition-colors shadow-sm"><i class="fas fa-edit"></i> Update</button>`;
                         }
 
-                        html += `<tr><td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${cols[28] || "-"}</td><td class="font-bold">${cols[29]}</td><td class="text-blue-600 font-black">${cols[7] || "-"}</td><td class="text-[10px]">${cols[2]}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`;
+                        html += `<tr><td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${cols[28] || "-"}</td><td class="font-bold">${cols[29]}</td><td class="text-blue-600 font-black">${cols[7] || "-"}</td><td class="text-emerald-600 font-black">${cols[1] || "-"}</td><td class="text-[10px]">${cols[2]}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`;
                     } else {
                         // MAINTAIN MODE LOGIC (sheet: maintaind)
                         const recordDept = (cols[7] || "").toUpperCase().trim();
                         if (!isCatalogue && recordDept !== currentUserDept) continue;
+
+                        // --- LOGIKA FILTER PLANT ---
+                        if (currentUserPlant) {
+                            const rowHasPlant = cols.some(c => c && c.trim().toUpperCase() === currentUserPlant);
+                            if (!rowHasPlant) continue;
+                        }
+                        // -------------------------
 
                         const reqId = cols[0] ? cols[0].trim() : "";
                         const materialCode = cols[1] || "-";
@@ -1729,6 +1849,28 @@
 
                         const remarks = LOCAL_FEEDBACK.has(reqId) ? LOCAL_FEEDBACK.get(reqId) : originalRemarks;
                         const completionTime = LOCAL_FEEDBACK_TIME.has(reqId) ? LOCAL_FEEDBACK_TIME.get(reqId) : originalTime;
+
+                        // --- LOGIKA FILTER BULAN BERJALAN ATAU PENDING ---
+                        const isPending = !completionTime || !remarks.toUpperCase().includes('DONE');
+                        let isCurrentMonth = true;
+                        if (reqId) {
+                            const now = new Date();
+                            let reqM = -1, reqY = -1;
+                            const match = reqId.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/);
+                            if (match) {
+                                let p1 = parseInt(match[1]), p2 = parseInt(match[2]), p3 = parseInt(match[3]);
+                                reqY = p3;
+                                reqM = (p1 > 12) ? p2 - 1 : p2 - 1; // Asumsi DD/MM/YYYY
+                            } else {
+                                const d = new Date(reqId);
+                                if (!isNaN(d.getTime())) { reqM = d.getMonth(); reqY = d.getFullYear(); }
+                            }
+                            if (reqY !== -1 && reqM !== -1) {
+                                isCurrentMonth = (reqM === now.getMonth() && reqY === now.getFullYear());
+                            }
+                        }
+                        if (!isCurrentMonth && !isPending) continue;
+                        // -------------------------------------------------
 
                         let actionHtml = `<div class="status-badge ${remarks.toUpperCase().includes('DONE') ? 'bg-emerald-50 text-emerald-600' : 'bg-blue-50 text-blue-600'}">${remarks}</div>`;
                         
@@ -1742,9 +1884,10 @@
                         html += `<tr><td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${cols[6] || "-"}</td><td class="font-bold">${cols[7]}</td><td class="text-blue-600 font-black">${materialCode}</td><td class="text-[10px] font-bold">${targetLoc}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`;
                     }
                 }
-                monitorList.innerHTML = html || `<tr><td colspan="7" class="py-10 text-center text-slate-400">Belum ada aktivitas untuk ${isCatalogue ? 'semua departemen' : 'Dept ' + currentUserDept}</td></tr>`;
+                monitorList.innerHTML = html || `<tr><td colspan="${colCount}" class="py-10 text-center text-slate-400">Belum ada aktivitas untuk ${isCatalogue ? 'semua departemen' : 'Dept ' + currentUserDept}</td></tr>`;
             } catch (e) {
-                monitorList.innerHTML = `<tr><td colspan="7" class="py-10 text-center text-red-500 font-bold">Gagal memuat data monitoring. Pastikan link CSV dapat diakses.</td></tr>`;
+                const colCount = currentMonitorMode === 'CREATE' ? 8 : 7;
+                monitorList.innerHTML = `<tr><td colspan="${colCount}" class="py-10 text-center text-red-500 font-bold">Gagal memuat data monitoring. Pastikan link CSV dapat diakses.</td></tr>`;
             }
         }
 
@@ -2020,7 +2163,9 @@
                 
                 document.getElementById('login-username').value = '';
                 document.getElementById('login-password').value = '';
+                document.getElementById('login-plant').value = '';
                 currentUserDept = "";
+                currentUserPlant = "";
                 
                 batchMaterials = [];
                 currentMaterialIdx = 0;
