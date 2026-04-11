@@ -926,8 +926,9 @@
                     checkAlarmStats();
                 } else {
                     window.showSection('home-section');
-                    document.getElementById('btn-alarm').classList.add('hidden');
                     document.getElementById('btn-access-cat').classList.add('hidden');
+                    document.getElementById('btn-alarm').classList.remove('hidden');
+                    checkAlarmStats();
                 }
                 
                 let badgeText = `SESSION: ${currentUserDept}`;
@@ -2348,113 +2349,182 @@
         };
 
         window.checkAlarmStats = async function() {
-            if (currentUserDept !== "CATALOGUE") return;
-            
             const alarmBadge = document.getElementById('alarm-badge');
             const alarmContent = document.getElementById('alarm-content');
             
             alarmContent.innerHTML = `<div class="text-center text-sm text-slate-500 py-4"><i class="fas fa-circle-notch animate-spin text-orange-500 text-2xl mb-2"></i><br>Menghitung data...</div>`;
             
             try {
-                let createPending = 0;
-                let maintainPending = 0;
-                
-                // Fetch Access Code Request for Catalogue
-                try {
-                    const resAcc = await fetchWithRetry(csvAccessURL + '&t=' + new Date().getTime());
-                    const textAcc = await resAcc.text();
-                    const linesAcc = textAcc.split(/\r?\n/);
-                    const pendingReqs = {};
+                if (currentUserDept === "CATALOGUE") {
+                    let createPending = 0;
+                    let maintainPending = 0;
                     
-                    for(let i=1; i<linesAcc.length; i++) {
-                        const cols = parseCSVLine(linesAcc[i]);
-                        if (cols.length < 6) continue;
+                    // Fetch Access Code Request for Catalogue
+                    try {
+                        const resAcc = await fetchWithRetry(csvAccessURL + '&t=' + new Date().getTime());
+                        const textAcc = await resAcc.text();
+                        const linesAcc = textAcc.split(/\r?\n/);
+                        const pendingReqs = {};
                         
-                        const reqName = cols[1] ? cols[1].trim() : "Unknown";
-                        const deptCol = cols[2] ? cols[2].trim() : "";
-                        const statusCol = cols[5] ? cols[5].trim().toUpperCase() : "";
-                        
-                        if (deptCol && Object.keys(USER_CREDENTIALS).includes(deptCol)) {
-                            const key = deptCol + "_" + reqName;
-                            if (statusCol === "OPEN") {
-                                pendingReqs[key] = true;
-                            } else if (statusCol === "REALIZE") {
-                                delete pendingReqs[key];
+                        for(let i=1; i<linesAcc.length; i++) {
+                            const cols = parseCSVLine(linesAcc[i]);
+                            if (cols.length < 6) continue;
+                            
+                            const reqName = cols[1] ? cols[1].trim() : "Unknown";
+                            const deptCol = cols[2] ? cols[2].trim() : "";
+                            const statusCol = cols[5] ? cols[5].trim().toUpperCase() : "";
+                            
+                            if (deptCol && Object.keys(USER_CREDENTIALS).includes(deptCol)) {
+                                const key = deptCol + "_" + reqName;
+                                if (statusCol === "OPEN") {
+                                    pendingReqs[key] = true;
+                                } else if (statusCol === "REALIZE") {
+                                    delete pendingReqs[key];
+                                }
                             }
                         }
-                    }
+                        
+                        let reqCount = Object.keys(pendingReqs).length;
+                        const btnAccBadge = document.getElementById('access-cat-badge');
+                        
+                        if(reqCount > 0) {
+                            btnAccBadge.innerText = reqCount;
+                            btnAccBadge.classList.remove('hidden');
+                        } else {
+                            btnAccBadge.classList.add('hidden');
+                        }
+                    } catch (e) { console.error('Error fetching Access stats', e); }
                     
-                    let reqCount = Object.keys(pendingReqs).length;
-                    const btnAccBadge = document.getElementById('access-cat-badge');
+                    // Fetch Create
+                    try {
+                        const resCreate = await fetchWithRetry(csvCreateMatURL);
+                        const textCreate = await resCreate.text();
+                        const lines = textCreate.split(/\r?\n/);
+                        for (let i = 1; i < lines.length; i++) {
+                            if (!lines[i].trim()) continue;
+                            const cols = parseCSVLine(lines[i]);
+                            const reqId = cols[0] ? cols[0].trim() : "";
+                            const originalTime = cols[31] ? cols[31].trim() : "";
+                            const completionTime = LOCAL_FEEDBACK_TIME.has(reqId) ? LOCAL_FEEDBACK_TIME.get(reqId) : originalTime;
+                            
+                            if (!completionTime) createPending++;
+                        }
+                    } catch (e) { console.error('Error fetching create stats', e); }
+
+                    // Fetch Maintain
+                    try {
+                        const resMaintain = await fetchWithRetry(csvMaintainMatURL);
+                        const textMaintain = await resMaintain.text();
+                        const lines = textMaintain.split(/\r?\n/);
+                        for (let i = 1; i < lines.length; i++) {
+                            if (!lines[i].trim()) continue;
+                            const cols = parseCSVLine(lines[i]);
+                            const reqId = cols[0] ? cols[0].trim() : "";
+                            const originalTime = cols[8] ? cols[8].trim() : "";
+                            const completionTime = LOCAL_FEEDBACK_TIME.has(reqId) ? LOCAL_FEEDBACK_TIME.get(reqId) : originalTime;
+                            
+                            if (!completionTime) maintainPending++;
+                        }
+                    } catch (e) { console.error('Error fetching maintain stats', e); }
+
+                    const totalPending = createPending + maintainPending;
                     
-                    if(reqCount > 0) {
-                        btnAccBadge.innerText = reqCount;
-                        btnAccBadge.classList.remove('hidden');
+                    if (totalPending > 0) {
+                        alarmBadge.innerText = totalPending;
+                        alarmBadge.classList.remove('hidden');
                     } else {
-                        btnAccBadge.classList.add('hidden');
+                        alarmBadge.classList.add('hidden');
                     }
-                } catch (e) { console.error('Error fetching Access stats', e); }
-                
-                // Fetch Create
-                try {
-                    const resCreate = await fetchWithRetry(csvCreateMatURL);
-                    const textCreate = await resCreate.text();
-                    const lines = textCreate.split(/\r?\n/);
-                    for (let i = 1; i < lines.length; i++) {
-                        if (!lines[i].trim()) continue;
-                        const cols = parseCSVLine(lines[i]);
-                        const reqId = cols[0] ? cols[0].trim() : "";
-                        const originalTime = cols[31] ? cols[31].trim() : "";
-                        const completionTime = LOCAL_FEEDBACK_TIME.has(reqId) ? LOCAL_FEEDBACK_TIME.get(reqId) : originalTime;
-                        
-                        if (!completionTime) createPending++;
+                    
+                    let html = '';
+                    if (createPending > 0) {
+                        html += `<div class="bg-orange-50 border border-orange-100 p-4 rounded-xl flex items-center justify-between">
+                            <div><p class="professional-label text-[11px] text-orange-600">Create Material</p><p class="text-[10px] text-slate-500 font-bold">${createPending} Item Waiting progress</p></div>
+                            <i class="fas fa-plus-circle text-orange-400 text-xl"></i>
+                        </div>`;
                     }
-                } catch (e) { console.error('Error fetching create stats', e); }
-
-                // Fetch Maintain
-                try {
-                    const resMaintain = await fetchWithRetry(csvMaintainMatURL);
-                    const textMaintain = await resMaintain.text();
-                    const lines = textMaintain.split(/\r?\n/);
-                    for (let i = 1; i < lines.length; i++) {
-                        if (!lines[i].trim()) continue;
-                        const cols = parseCSVLine(lines[i]);
-                        const reqId = cols[0] ? cols[0].trim() : "";
-                        const originalTime = cols[8] ? cols[8].trim() : "";
-                        const completionTime = LOCAL_FEEDBACK_TIME.has(reqId) ? LOCAL_FEEDBACK_TIME.get(reqId) : originalTime;
-                        
-                        if (!completionTime) maintainPending++;
+                    if (maintainPending > 0) {
+                        html += `<div class="bg-blue-50 border border-blue-100 p-4 rounded-xl flex items-center justify-between">
+                            <div><p class="professional-label text-[11px] text-blue-600">Maintain Material</p><p class="text-[10px] text-slate-500 font-bold">${maintainPending} Item Waiting progress</p></div>
+                            <i class="fas fa-screwdriver-wrench text-blue-400 text-xl"></i>
+                        </div>`;
                     }
-                } catch (e) { console.error('Error fetching maintain stats', e); }
-
-                const totalPending = createPending + maintainPending;
-                
-                if (totalPending > 0) {
-                    alarmBadge.innerText = totalPending;
-                    alarmBadge.classList.remove('hidden');
+                    
+                    if (html === '') {
+                        html = `<div class="text-center py-6"><i class="fas fa-check-circle text-emerald-500 text-4xl mb-3 shadow-sm rounded-full bg-emerald-50 p-2"></i><p class="professional-label text-sm text-emerald-600">All Clear!</p><p class="text-xs text-slate-500 mt-1">Tidak ada pengajuan yang tertunda.</p></div>`;
+                    }
+                    
+                    alarmContent.innerHTML = html;
                 } else {
-                    alarmBadge.classList.add('hidden');
+                    // USER BIASA (Selain Catalogue): Menampilkan Code Akses
+                    let realizedCodes = [];
+                    try {
+                        const resAcc = await fetchWithRetry(csvAccessURL + '&t=' + new Date().getTime());
+                        const textAcc = await resAcc.text();
+                        const linesAcc = textAcc.split(/\r?\n/);
+                        const userReqs = {}; 
+                        
+                        for(let i=1; i<linesAcc.length; i++) {
+                            const cols = parseCSVLine(linesAcc[i]);
+                            if (cols.length < 6) continue;
+                            
+                            const reqName = cols[1] ? cols[1].trim() : "Unknown";
+                            const deptCol = cols[2] ? cols[2].trim() : "";
+                            const codeCol = cols[3] ? cols[3].trim() : "";
+                            const plCol = cols[4] ? cols[4].trim() : "-";
+                            const statusCol = cols[5] ? cols[5].trim().toUpperCase() : "";
+                            
+                            let plantMatch = true;
+                            if (currentUserPlant) {
+                                plantMatch = (plCol === currentUserPlant);
+                            }
+
+                            if (deptCol === currentUserDept && plantMatch) {
+                                const tsStr = cols[0];
+                                const ts = parseSheetDate(tsStr);
+                                const diffMins = (new Date().getTime() - ts.getTime()) / 60000;
+                                
+                                if (diffMins <= 30 && diffMins >= 0) {
+                                    userReqs[reqName] = { status: statusCol, code: codeCol };
+                                } else {
+                                    delete userReqs[reqName];
+                                }
+                            }
+                        }
+                        
+                        for (const [reqName, data] of Object.entries(userReqs)) {
+                            if (data.status === "REALIZE" && data.code !== "-" && data.code !== "") {
+                                realizedCodes.push({ name: reqName, code: data.code });
+                            }
+                        }
+                    } catch (e) { console.error('Error fetching Access stats for user', e); }
+
+                    let reqCount = realizedCodes.length;
+                    if(reqCount > 0) {
+                        alarmBadge.innerText = reqCount;
+                        alarmBadge.classList.remove('hidden');
+                        document.getElementById('btn-alarm').classList.remove('hidden');
+                    } else {
+                        alarmBadge.classList.add('hidden');
+                    }
+
+                    let html = '';
+                    if (realizedCodes.length > 0) {
+                        realizedCodes.forEach(item => {
+                            html += `<div class="bg-emerald-50 border border-emerald-100 p-4 rounded-xl flex flex-col mb-2">
+                                <p class="professional-label text-[11px] text-emerald-600 mb-1">KODE AKSES DITERIMA</p>
+                                <p class="text-[10px] text-slate-600 font-bold mb-2">Berikut kode access anda untuk pengajuan part Interchange atau Deskripsi berbeda (Pengaju: ${item.name}).</p>
+                                <div class="bg-white border-2 border-emerald-200 text-emerald-700 text-center py-2 rounded-lg font-black tracking-[0.5em] text-lg">${item.code}</div>
+                            </div>`;
+                        });
+                    }
+
+                    if (html === '') {
+                        html = `<div class="text-center py-6"><i class="fas fa-check-circle text-slate-300 text-4xl mb-3 shadow-sm rounded-full bg-slate-50 p-2"></i><p class="professional-label text-sm text-slate-400">Tidak ada pemberitahuan</p></div>`;
+                    }
+
+                    alarmContent.innerHTML = html;
                 }
-                
-                let html = '';
-                if (createPending > 0) {
-                    html += `<div class="bg-orange-50 border border-orange-100 p-4 rounded-xl flex items-center justify-between">
-                        <div><p class="professional-label text-[11px] text-orange-600">Create Material</p><p class="text-[10px] text-slate-500 font-bold">${createPending} Item Waiting progress</p></div>
-                        <i class="fas fa-plus-circle text-orange-400 text-xl"></i>
-                    </div>`;
-                }
-                if (maintainPending > 0) {
-                    html += `<div class="bg-blue-50 border border-blue-100 p-4 rounded-xl flex items-center justify-between">
-                        <div><p class="professional-label text-[11px] text-blue-600">Maintain Material</p><p class="text-[10px] text-slate-500 font-bold">${maintainPending} Item Waiting progress</p></div>
-                        <i class="fas fa-screwdriver-wrench text-blue-400 text-xl"></i>
-                    </div>`;
-                }
-                
-                if (html === '') {
-                    html = `<div class="text-center py-6"><i class="fas fa-check-circle text-emerald-500 text-4xl mb-3 shadow-sm rounded-full bg-emerald-50 p-2"></i><p class="professional-label text-sm text-emerald-600">All Clear!</p><p class="text-xs text-slate-500 mt-1">Tidak ada pengajuan yang tertunda.</p></div>`;
-                }
-                
-                alarmContent.innerHTML = html;
                 
             } catch (error) {
                 alarmContent.innerHTML = `<div class="text-center text-sm text-red-500 py-4 font-bold">Gagal memuat notifikasi.</div>`;
