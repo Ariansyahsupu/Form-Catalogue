@@ -286,7 +286,9 @@
                 </div>
                 <div class="space-y-2">
                     <label class="text-[10px] professional-label tracking-widest ml-1">Plant (Opsional)</label>
-                    <input type="text" id="login-plant" placeholder="PL01, PL08, DLL." class="input-field border-2 font-bold uppercase" oninput="this.value = this.value.toUpperCase()">
+                    <select id="login-plant" class="input-field border-2 font-bold uppercase bg-white">
+                        <!-- Options injected via JavaScript -->
+                    </select>
                 </div>
                 <button onclick="handleMainLogin()" class="w-full py-5 bg-slate-900 text-white font-black rounded-2xl uppercase text-[11px] tracking-widest shadow-2xl hover:bg-blue-600 transition-all transform active:scale-95">
                     Masuk ke Dashboard
@@ -315,6 +317,10 @@
             <div class="flex items-center gap-6">
                 <div id="session-badge" class="hidden md:block text-[10px] font-black text-emerald-600 bg-emerald-50 px-4 py-2 rounded-full uppercase border border-emerald-100 tracking-widest"></div>
                 <div id="header-date" class="hidden md:block text-[10px] font-bold text-slate-500 bg-slate-100 px-4 py-2 rounded-full uppercase"></div>
+                <button id="btn-access-cat" onclick="showCatAccessModal()" class="hidden w-10 h-10 rounded-2xl bg-white border-2 border-blue-50 text-blue-500 flex items-center justify-center hover:bg-blue-500 hover:text-white transition-all shadow-sm relative" title="Akses Permintaan Code">
+                    <i class="fas fa-key"></i>
+                    <span id="access-cat-badge" class="absolute -top-1 -right-1 bg-red-500 text-white text-[8px] font-black w-4 h-4 rounded-full flex items-center justify-center hidden">0</span>
+                </button>
                 <button id="btn-alarm" onclick="showAlarmModal()" class="hidden w-10 h-10 rounded-2xl bg-white border-2 border-orange-50 text-orange-500 flex items-center justify-center hover:bg-orange-500 hover:text-white transition-all shadow-sm relative" title="Notifications">
                     <i class="fas fa-bell"></i>
                     <span id="alarm-badge" class="absolute -top-1 -right-1 bg-red-500 text-white text-[8px] font-black w-4 h-4 rounded-full flex items-center justify-center hidden">0</span>
@@ -427,7 +433,7 @@
                         <div class="icon-box bg-blue-50 text-blue-500 border border-blue-100 shadow-md shadow-blue-100/50"><i class="fas fa-chalkboard-user"></i></div>
                         <h3 class="text-[11px] professional-label mb-1 leading-tight">TRANSFER KNOWLEDGE</h3>
                         <p class="text-slate-500 text-[9px] mb-2 line-clamp-2 leading-tight">Materi pelatihan dan dokumentasi sistem.</p>
-                        <button class="w-full mt-auto py-1.5 bg-blue-500 text-white rounded-lg font-black text-[9px] uppercase shadow-sm shadow-blue-200">Buka Modul</button>
+                        <button class="w-full mt-auto py-1.5 bg-blue-50 text-white rounded-lg font-black text-[9px] uppercase shadow-sm shadow-blue-200">Buka Modul</button>
                     </div>
 
                     <div onclick="window.notify('Informasi', 'Modul REVISI KODE MATERIAL sedang dalam pengembangan.', 'success')" class="premium-card p-3 text-orange-600">
@@ -712,13 +718,39 @@
                     <i class="fas fa-key"></i>
                 </div>
                 <h3 class="text-xl professional-label mb-2">Otorisasi Akses</h3>
-                <p class="text-[10px] text-slate-500 mb-6 font-bold tracking-widest uppercase">Masukkan 4 digit kode otorisasi untuk mendaftarkan PN Duplikat / Interchange.</p>
+                <p class="text-[10px] text-slate-500 mb-6 font-bold tracking-widest uppercase">Pendaftaran PN Duplikat / Interchange membutuhkan Kode Akses.</p>
+                
+                <div id="req-access-section" class="mb-6 pb-6 border-b border-slate-100">
+                    <div class="space-y-3 mb-3">
+                        <input type="text" id="req-access-name" placeholder="NAMA PENGAJU" class="input-field border-2 professional-input text-center text-xs">
+                        <input type="text" id="req-access-dept" readonly class="input-field border-2 professional-input text-center text-xs input-readonly" placeholder="DEPARTEMEN">
+                        <select id="req-access-pl" class="input-field border-2 professional-input text-center text-xs bg-white">
+                            <option value="">-- PILIH PL --</option>
+                        </select>
+                    </div>
+                    <button onclick="sendAccessRequest()" class="w-full py-3 bg-blue-600 text-white font-black rounded-xl uppercase text-xs shadow-lg shadow-blue-200 hover:bg-blue-700 transition-colors">Minta Kode ke Catalogue</button>
+                </div>
+
                 <div class="space-y-4">
+                    <p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Masukkan Kode (Berlaku 30 Menit):</p>
                     <input type="password" id="access-code-input" maxlength="4" class="input-field border-2 professional-input text-center text-2xl tracking-[0.5em]" placeholder="••••">
                     <div class="flex gap-3">
                         <button onclick="closeAccessModal()" class="flex-1 py-3 bg-slate-100 text-slate-600 font-black rounded-xl uppercase text-xs hover:bg-slate-200">Batal</button>
                         <button onclick="verifyAccessCode()" class="flex-1 py-3 bg-red-600 text-white font-black rounded-xl uppercase text-xs shadow-lg shadow-red-200 hover:bg-red-700">Verifikasi</button>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Catalogue Access Modal -->
+        <div id="cat-access-modal" class="hidden fixed inset-0 z-[5000] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+            <div class="bg-white rounded-[2rem] p-8 max-w-md w-full shadow-2xl">
+                <div class="flex justify-between items-center mb-6 border-b border-slate-100 pb-4">
+                    <h3 class="text-lg professional-label"><i class="fas fa-key text-blue-500 mr-2"></i> Otorisasi Akses</h3>
+                    <button onclick="closeCatAccessModal()" class="text-slate-400 hover:text-red-500"><i class="fas fa-times text-xl"></i></button>
+                </div>
+                <div id="cat-access-list" class="space-y-3 max-h-64 overflow-y-auto custom-scrollbar">
+                    <div class="text-center text-sm text-slate-500 py-4"><i class="fas fa-circle-notch animate-spin"></i> Memuat data...</div>
                 </div>
             </div>
         </div>
@@ -740,7 +772,7 @@
     <script type="module">
         const scriptURL = "https://script.google.com/macros/s/AKfycbyR2spJCAxKQ-DViYl8JI8vMrcTqDTHez67DAHWcufvflC8dbNaBAEaxyGxt2sMqCQ1/exec";
         const csvPubURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQFR3WLBquvFttCMJlrZQOrK2u8TMm3Dhj2yMukhbakAC5LdUAndnaPn6FesXRWUl5R1IHmAuKDRnER/pub?gid=1089770718&single=true&output=csv";
-        const csvAccessURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQf_Og1jqJhzDmiLJYNEaL_NK_jYS7-Y9tpNcFaI1qBaI57ql11fRVHAP42anjct-vwvOKw-CGlikLU/pub?gid=242300721&single=true&output=csv";
+        const csvAccessURL = "https://docs.google.com/spreadsheets/d/1Bu4_lnZJe-NAezO0Jyw2AkqQk0bdVFTU8VrIlSn3eJY/export?format=csv&gid=242300721";
         const csvCreateMatURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQf_Og1jqJhzDmiLJYNEaL_NK_jYS7-Y9tpNcFaI1qBaI57ql11fRVHAP42anjct-vwvOKw-CGlikLU/pub?gid=1174357410&single=true&output=csv";
         const csvMaintainMatURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQf_Og1jqJhzDmiLJYNEaL_NK_jYS7-Y9tpNcFaI1qBaI57ql11fRVHAP42anjct-vwvOKw-CGlikLU/pub?gid=0&single=true&output=csv";
 
@@ -890,10 +922,12 @@
                 if (currentUserDept === "CATALOGUE") {
                     window.showSection('catalogue-landing-section');
                     document.getElementById('btn-alarm').classList.remove('hidden');
+                    document.getElementById('btn-access-cat').classList.remove('hidden');
                     checkAlarmStats();
                 } else {
                     window.showSection('home-section');
                     document.getElementById('btn-alarm').classList.add('hidden');
+                    document.getElementById('btn-access-cat').classList.add('hidden');
                 }
                 
                 let badgeText = `SESSION: ${currentUserDept}`;
@@ -1664,6 +1698,20 @@
             return result;
         }
 
+        function parseSheetDate(dateStr) {
+            if (!dateStr) return new Date(0);
+            const m = dateStr.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})(?:\s+(\d{1,2}):(\d{1,2})(?::(\d{1,2}))?)?/);
+            if (m) {
+                const p1 = parseInt(m[1]), p2 = parseInt(m[2]), year = parseInt(m[3]);
+                const h = m[4] ? parseInt(m[4]) : 0, min = m[5] ? parseInt(m[5]) : 0, sec = m[6] ? parseInt(m[6]) : 0;
+                // Handle both DD/MM/YYYY and MM/DD/YYYY based on typical Google Sheet locale formats.
+                if (p2 > 12) return new Date(year, p1 - 1, p2, h, min, sec);
+                return new Date(year, p2 - 1, p1, h, min, sec); // Default to DD/MM/YYYY
+            }
+            const d = new Date(dateStr);
+            return isNaN(d.getTime()) ? new Date(0) : d;
+        }
+
         async function syncZerpdFromSpreadsheet() {
             const stat = document.getElementById('zerpd-status-bar');
             try {
@@ -1744,9 +1792,92 @@
             pendingBypassPNs = pns;
             document.getElementById('access-modal').classList.remove('hidden');
             document.getElementById('access-code-input').value = '';
+            
+            let plOptions = '<option value="">-- PILIH PL --</option>';
+            for(let i=1; i<=28; i++) {
+                let v = `PL${i.toString().padStart(2,'0')}`;
+                let sel = (currentUserPlant === v) ? 'selected' : '';
+                plOptions += `<option value="${v}" ${sel}>${v}</option>`;
+            }
+            
+            // Reset polling section visually
+            const reqSec = document.getElementById('req-access-section');
+            reqSec.innerHTML = `
+                <div class="space-y-3 mb-3">
+                    <input type="text" id="req-access-name" placeholder="NAMA PENGAJU" class="input-field border-2 professional-input text-center text-xs">
+                    <input type="text" id="req-access-dept" value="${currentUserDept}" readonly class="input-field border-2 professional-input text-center text-xs input-readonly" placeholder="DEPARTEMEN">
+                    <select id="req-access-pl" class="input-field border-2 professional-input text-center text-xs bg-white">
+                        ${plOptions}
+                    </select>
+                </div>
+                <button onclick="sendAccessRequest()" class="w-full py-3 bg-blue-600 text-white font-black rounded-xl uppercase text-xs shadow-lg shadow-blue-200 hover:bg-blue-700 transition-colors">Minta Kode ke Catalogue</button>`;
+        };
+
+        window.sendAccessRequest = async function() {
+            const name = document.getElementById('req-access-name').value.toUpperCase().trim();
+            const dept = document.getElementById('req-access-dept').value.toUpperCase().trim();
+            const pl = document.getElementById('req-access-pl').value;
+            
+            if(!name || !dept || !pl) return window.notify('Error', 'Lengkapi Nama Pengaju, Dept, dan PL.', 'error');
+            
+            document.getElementById('loader').style.display = 'flex';
+            try {
+                await fetchWithRetry(scriptURL, { method: 'POST', body: JSON.stringify({
+                    request_type: "Access Code", 
+                    requester_name: name, 
+                    department: dept, 
+                    pl: pl,
+                    access_code: "-",
+                    remarks: "OPEN" // Disimpan ke kolom Status
+                })});
+                window.notify('Terkirim', 'Permintaan dikirim. Menunggu Catalogue...', 'success');
+                startAccessPolling(); 
+            } catch(e) {
+                window.notify('Error', 'Gagal mengirim permintaan.', 'error');
+            } finally {
+                document.getElementById('loader').style.display = 'none';
+            }
+        };
+
+        window.startAccessPolling = function() {
+            if(window.accessPollInterval) clearInterval(window.accessPollInterval);
+            
+            const reqSec = document.getElementById('req-access-section');
+            reqSec.innerHTML = `<div class="bg-blue-50 text-blue-600 p-3 rounded-xl border border-blue-100 text-xs font-bold animate-pulse text-center"><i class="fas fa-satellite-dish mr-2"></i>Menunggu Kode dari Catalogue...</div>`;
+
+            window.accessPollInterval = setInterval(async () => {
+                try {
+                    const res = await fetchWithRetry(csvAccessURL + '&t=' + new Date().getTime());
+                    const text = await res.text();
+                    const lines = text.split(/\r?\n/);
+                    for(let i = lines.length - 1; i >= 1; i--) {
+                        const cols = parseCSVLine(lines[i]);
+                        if (cols.length < 6) continue;
+                        
+                        const deptCol = cols[2] ? cols[2].trim() : "";
+                        const codeCol = cols[3] ? cols[3].trim() : "";
+                        const statusCol = cols[5] ? cols[5].trim().toUpperCase() : "";
+                        
+                        if (deptCol === currentUserDept && statusCol === "REALIZE" && codeCol !== "-") {
+                            const tsStr = cols[0];
+                            const ts = parseSheetDate(tsStr);
+                            const diffMins = (new Date().getTime() - ts.getTime()) / 60000;
+                            
+                            if (diffMins <= 30 && diffMins >= 0) {
+                                window.notify('Kode Diterima!', 'Catalogue menerbitkan kode: ' + codeCol, 'success');
+                                document.getElementById('access-code-input').value = codeCol;
+                                clearInterval(window.accessPollInterval);
+                                reqSec.innerHTML = `<div class="bg-emerald-50 text-emerald-600 p-3 rounded-xl border border-emerald-100 text-xs font-bold text-center"><i class="fas fa-check-circle mr-2"></i>Kode otomatis terisi!</div>`;
+                                break;
+                            }
+                        }
+                    }
+                } catch(e) {}
+            }, 10000); // Tiap 10 detik
         };
 
         window.closeAccessModal = function() {
+            if(window.accessPollInterval) clearInterval(window.accessPollInterval);
             document.getElementById('access-modal').classList.add('hidden');
         };
 
@@ -1756,32 +1887,114 @@
 
             document.getElementById('loader').style.display = 'flex';
             try {
-                const response = await fetchWithRetry(csvAccessURL);
+                const response = await fetchWithRetry(csvAccessURL + '&t=' + new Date().getTime());
                 const csvText = await response.text();
                 const lines = csvText.split(/\r?\n/);
-                let validCode = "";
+                let isValid = false;
                 
-                // Search for 4 digit code from bottom up
-                for (let i = lines.length - 1; i >= 0; i--) {
-                    if (lines[i].trim()) {
-                        const cols = parseCSVLine(lines[i]);
-                        const codeCol = cols.find(c => /^\d{4}$/.test(c.trim()));
-                        if (codeCol) {
-                            validCode = codeCol.trim();
+                for (let i = lines.length - 1; i >= 1; i--) {
+                    const cols = parseCSVLine(lines[i]);
+                    if (cols.length < 6) continue;
+                    
+                    const codeCol = cols[3] ? cols[3].trim() : "";
+                    const deptCol = cols[2] ? cols[2].trim() : "";
+                    const statusCol = cols[5] ? cols[5].trim().toUpperCase() : "";
+                    
+                    if (codeCol === inputCode && deptCol === currentUserDept && statusCol === "REALIZE") {
+                        const tsStr = cols[0];
+                        const ts = parseSheetDate(tsStr);
+                        const diffMins = (new Date().getTime() - ts.getTime()) / 60000;
+                        
+                        if (diffMins <= 30 && diffMins >= 0) {
+                            isValid = true;
                             break;
                         }
                     }
                 }
 
-                if (inputCode === validCode && validCode !== "") {
+                if (isValid) {
                     window.notify('Akses Diberikan', 'Otorisasi berhasil. Form dibuka.', 'success');
                     closeAccessModal();
-                    startBatchForm(pendingBypassPNs, false); // Membuka form dgn PN duplikat tsb
+                    startBatchForm(pendingBypassPNs, false); // Form terbuka
                 } else {
-                    window.notify('Akses Ditolak', 'Kode akses salah atau kadaluarsa.', 'error');
+                    window.notify('Akses Ditolak', 'Kode akses salah atau kadaluarsa (Max 30 Menit).', 'error');
+                    document.getElementById('access-code-input').value = '';
                 }
             } catch (e) {
                 window.notify('Error', 'Gagal memverifikasi kode dari server.', 'error');
+            } finally {
+                document.getElementById('loader').style.display = 'none';
+            }
+        };
+
+        window.showCatAccessModal = async function() {
+            document.getElementById('cat-access-modal').classList.remove('hidden');
+            const listEl = document.getElementById('cat-access-list');
+            listEl.innerHTML = `<div class="text-center text-sm text-slate-500 py-4"><i class="fas fa-circle-notch animate-spin"></i> Memuat data...</div>`;
+            
+            try {
+                const res = await fetchWithRetry(csvAccessURL + '&t=' + new Date().getTime());
+                const text = await res.text();
+                const lines = text.split(/\r?\n/);
+                const pendingReqs = {};
+                
+                for(let i=1; i<lines.length; i++) {
+                    const cols = parseCSVLine(lines[i]);
+                    if (cols.length < 6) continue;
+                    
+                    const ts = cols[0].trim();
+                    const reqName = cols[1] ? cols[1].trim() : "Unknown";
+                    const deptCol = cols[2] ? cols[2].trim() : "";
+                    const plCol = cols[4] ? cols[4].trim() : "-";
+                    const statusCol = cols[5] ? cols[5].trim().toUpperCase() : "";
+                    
+                    if (deptCol && Object.keys(USER_CREDENTIALS).includes(deptCol)) {
+                        const key = deptCol + "_" + reqName;
+                        if (statusCol === "OPEN") {
+                            pendingReqs[key] = { reqName: reqName, dept: deptCol, pl: plCol, time: ts };
+                        } else if (statusCol === "REALIZE") {
+                            delete pendingReqs[key];
+                        }
+                    }
+                }
+                
+                let html = '';
+                for (const [key, data] of Object.entries(pendingReqs)) {
+                    html += `<div class="bg-blue-50 border border-blue-100 p-4 rounded-xl flex items-center justify-between mb-2">
+                        <div><p class="professional-label text-[11px] text-blue-600">DEPT: ${data.dept} | PL: ${data.pl}</p><p class="text-[10px] text-slate-500 font-bold">${data.reqName} - ${data.time}</p></div>
+                        <button onclick="generateAccessCode('${data.dept}', '${data.reqName}', '${data.pl}')" class="bg-blue-600 text-white px-3 py-2 rounded-lg text-[9px] font-black uppercase hover:bg-blue-700 shadow-sm">REALIZE</button>
+                    </div>`;
+                }
+                
+                if (html === '') html = `<div class="text-center py-6 text-slate-500 text-xs font-bold">Tidak ada request akses tertunda.</div>`;
+                listEl.innerHTML = html;
+                
+            } catch(e) {
+                listEl.innerHTML = `<div class="text-center text-sm text-red-500 py-4 font-bold">Gagal memuat data.</div>`;
+            }
+        };
+
+        window.closeCatAccessModal = function() {
+            document.getElementById('cat-access-modal').classList.add('hidden');
+        };
+
+        window.generateAccessCode = async function(dept, reqName, pl) {
+            const code = Math.floor(1000 + Math.random() * 9000).toString();
+            document.getElementById('loader').style.display = 'flex';
+            try {
+                await fetchWithRetry(scriptURL, { method: 'POST', body: JSON.stringify({
+                    request_type: "Access Code", 
+                    requester_name: reqName, 
+                    department: dept, 
+                    pl: pl,
+                    access_code: code,
+                    remarks: "REALIZE" // Disimpan ke kolom Status
+                })});
+                window.notify('Berhasil', 'Kode ' + code + ' di-realize untuk ' + dept, 'success');
+                showCatAccessModal(); // refresh list
+                checkAlarmStats();
+            } catch(e) {
+                window.notify('Error', 'Gagal generate kode.', 'error');
             } finally {
                 document.getElementById('loader').style.display = 'none';
             }
@@ -2031,13 +2244,14 @@
         };
 
         function populateSelects() {
-            const pS = document.getElementById('f-plant'); const mvpS = document.getElementById('m-f-plant');
-            for(let i=1;i<=28;i++) { let v = `PL${i.toString().padStart(2,'0')}`; if(pS) pS.innerHTML += `<option value="${v}">${v}</option>`; if(mvpS) mvpS.innerHTML += `<option value="${v}">${v}</option>`; }
+            const pS = document.getElementById('f-plant'); const mvpS = document.getElementById('m-f-plant'); const lPS = document.getElementById('login-plant');
+            for(let i=1;i<=28;i++) { let v = `PL${i.toString().padStart(2,'0')}`; if(pS) pS.innerHTML += `<option value="${v}">${v}</option>`; if(mvpS) mvpS.innerHTML += `<option value="${v}">${v}</option>`; if(lPS) lPS.innerHTML += `<option value="${v}">${v}</option>`; }
             const sS = document.getElementById('f-sloc'); const mvsS = document.getElementById('m-f-sloc');
             for(let i=1;i<=15;i++) { let v = `S${i.toString().padStart(3,'0')}`; if(sS) sS.innerHTML += `<option value="${v}">${v}</option>`; if(mvsS) mvsS.innerHTML += `<option value="${v}">${v}</option>`; }
             
             if(pS && pS.options.length > 0) pS.insertAdjacentHTML('afterbegin', '<option value="">-- PILIH --</option>');
             if(mvpS && mvpS.options.length > 0) mvpS.insertAdjacentHTML('afterbegin', '<option value="">-- PILIH --</option>');
+            if(lPS && lPS.options.length > 0) lPS.insertAdjacentHTML('afterbegin', '<option value="">-- OPSIONAL --</option>');
             if(sS && sS.options.length > 0) sS.insertAdjacentHTML('afterbegin', '<option value="">-- PILIH --</option>');
             if(mvsS && mvsS.options.length > 0) mvsS.insertAdjacentHTML('afterbegin', '<option value="">-- PILIH --</option>');
 
@@ -2144,6 +2358,42 @@
             try {
                 let createPending = 0;
                 let maintainPending = 0;
+                
+                // Fetch Access Code Request for Catalogue
+                try {
+                    const resAcc = await fetchWithRetry(csvAccessURL + '&t=' + new Date().getTime());
+                    const textAcc = await resAcc.text();
+                    const linesAcc = textAcc.split(/\r?\n/);
+                    const pendingReqs = {};
+                    
+                    for(let i=1; i<linesAcc.length; i++) {
+                        const cols = parseCSVLine(linesAcc[i]);
+                        if (cols.length < 6) continue;
+                        
+                        const reqName = cols[1] ? cols[1].trim() : "Unknown";
+                        const deptCol = cols[2] ? cols[2].trim() : "";
+                        const statusCol = cols[5] ? cols[5].trim().toUpperCase() : "";
+                        
+                        if (deptCol && Object.keys(USER_CREDENTIALS).includes(deptCol)) {
+                            const key = deptCol + "_" + reqName;
+                            if (statusCol === "OPEN") {
+                                pendingReqs[key] = true;
+                            } else if (statusCol === "REALIZE") {
+                                delete pendingReqs[key];
+                            }
+                        }
+                    }
+                    
+                    let reqCount = Object.keys(pendingReqs).length;
+                    const btnAccBadge = document.getElementById('access-cat-badge');
+                    
+                    if(reqCount > 0) {
+                        btnAccBadge.innerText = reqCount;
+                        btnAccBadge.classList.remove('hidden');
+                    } else {
+                        btnAccBadge.classList.add('hidden');
+                    }
+                } catch (e) { console.error('Error fetching Access stats', e); }
                 
                 // Fetch Create
                 try {
@@ -2257,7 +2507,9 @@
                 maintBatchMaterials = [];
                 currentMaintIdx = 0;
                 
+                if(window.accessPollInterval) clearInterval(window.accessPollInterval);
                 document.getElementById('btn-alarm').classList.add('hidden');
+                document.getElementById('btn-access-cat').classList.add('hidden');
                 
                 showSection('home-section');
                 
