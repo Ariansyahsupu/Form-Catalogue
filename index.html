@@ -1130,20 +1130,25 @@
             
             document.getElementById('loader').style.display = 'flex';
             try {
-                const promises = maintBatchMaterials.map(m => fetchWithRetry(scriptURL, { 
-                    method: 'POST', 
-                    body: JSON.stringify({ 
-                        material: m.material,
-                        plant: m.plant,
-                        storage_location: m.storage_location,
-                        storage_bin: m.storage_bin,
-                        remarks: m.remarks,
-                        requester_name: reqName, 
-                        department: currentUserDept, 
-                        request_type: "Maintain Material" 
-                    }) 
-                }));
-                await Promise.all(promises);
+                for (let i = 0; i < maintBatchMaterials.length; i++) {
+                    const m = maintBatchMaterials[i];
+                    document.querySelector('#loader p').innerText = `Memproses Data ${i + 1} dari ${maintBatchMaterials.length}...`;
+                    await fetchWithRetry(scriptURL, { 
+                        method: 'POST', 
+                        body: JSON.stringify({ 
+                            material: m.material,
+                            plant: m.plant,
+                            storage_location: m.storage_location,
+                            storage_bin: m.storage_bin,
+                            remarks: m.remarks,
+                            requester_name: reqName, 
+                            department: currentUserDept, 
+                            request_type: "Maintain Material" 
+                        }) 
+                    });
+                    await new Promise(r => setTimeout(r, 400)); // Jeda 400ms antar request untuk hindari limit Google Script
+                }
+                document.querySelector('#loader p').innerText = `Memproses Data...`; // Reset
                 window.notify('Berhasil!', `${maintBatchMaterials.length} Pengajuan Maintain dikirim.`, 'success');
                 
                 document.getElementById('maint-full-form').classList.add('hidden');
@@ -1561,16 +1566,21 @@
 
             document.getElementById('loader').style.display = 'flex';
             try {
-                const promises = batchMaterials.map(m => fetchWithRetry(scriptURL, {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        ...m,
-                        requester_name: reqName,
-                        department: currentUserDept,
-                        request_type: "Create Material"
-                    })
-                }));
-                await Promise.all(promises);
+                for (let i = 0; i < batchMaterials.length; i++) {
+                    const m = batchMaterials[i];
+                    document.querySelector('#loader p').innerText = `Memproses Data ${i + 1} dari ${batchMaterials.length}...`;
+                    await fetchWithRetry(scriptURL, {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            ...m,
+                            requester_name: reqName,
+                            department: currentUserDept,
+                            request_type: "Create Material"
+                        })
+                    });
+                    await new Promise(r => setTimeout(r, 400)); // Jeda aman
+                }
+                document.querySelector('#loader p').innerText = `Memproses Data...`; // Reset
                 window.notify('Berhasil!', `${batchMaterials.length} Pengajuan Create dikirim.`, 'success');
 
                 document.getElementById('create-full-form').classList.add('hidden');
