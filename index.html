@@ -338,7 +338,7 @@
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto mt-8">
-                    <div onclick="showSection('home-section')" class="premium-card p-12 text-blue-600 cursor-pointer">
+                    <div onclick="goToHome()" class="premium-card p-12 text-blue-600 cursor-pointer">
                         <div class="icon-box w-20 h-20 text-4xl bg-blue-50 text-blue-600 border border-blue-100 shadow-xl shadow-blue-100/50 mb-6"><i class="fas fa-folder-open"></i></div>
                         <h3 class="text-2xl professional-label mb-3">Form</h3>
                         <p class="text-slate-500 text-sm">Akses seluruh form pendaftaran dan maintain master data.</p>
@@ -366,14 +366,14 @@
                         <button class="w-full mt-auto py-1.5 bg-emerald-600 text-white rounded-lg font-black text-[9px] uppercase shadow-sm shadow-emerald-200">Buka Monitor</button>
                     </div>
 
-                    <div onclick="showSection('maintain-section')" class="premium-card p-3 text-blue-600">
+                    <div onclick="openMaintainSection()" class="premium-card p-3 text-blue-600">
                         <div class="icon-box bg-blue-50 text-blue-600 border border-blue-100 shadow-md shadow-blue-100/50"><i class="fas fa-screwdriver-wrench"></i></div>
                         <h3 class="text-[11px] professional-label mb-1 leading-tight">Maintain Item</h3>
                         <p class="text-slate-500 text-[9px] mb-2 line-clamp-2 leading-tight">Update spesifikasi teknis material terdaftar.</p>
                         <button class="w-full mt-auto py-1.5 bg-blue-600 text-white rounded-lg font-black text-[9px] uppercase shadow-sm shadow-blue-200">Pilih Modul</button>
                     </div>
 
-                    <div onclick="showSection('create-section')" class="premium-card p-3 text-orange-500">
+                    <div onclick="openCreateSection()" class="premium-card p-3 text-orange-500">
                         <div class="icon-box bg-orange-50 text-orange-500 border border-orange-100 shadow-md shadow-orange-100/50"><i class="fas fa-plus-circle"></i></div>
                         <h3 class="text-[11px] professional-label mb-1 leading-tight">Create Material</h3>
                         <p class="text-slate-500 text-[9px] mb-2 line-clamp-2 leading-tight">Registrasi material code baru (Validasi ZERPD).</p>
@@ -469,7 +469,7 @@
             <!-- MONITOR SECTION -->
             <section id="monitor-section" class="hidden animate-fade">
                 <div class="max-w-full mx-auto px-2 lg:px-4">
-                    <button onclick="showSection('home-section')" class="btn-back"><i class="fas fa-chevron-left"></i> Dashboard</button>
+                    <button onclick="goToHome()" class="btn-back"><i class="fas fa-chevron-left"></i> Back</button>
                     
                     <!-- Selection Menu (Create / Maintain) -->
                     <div id="monitor-selection-menu" class="max-w-4xl mx-auto mt-4 animate-fade">
@@ -535,7 +535,7 @@
             <!-- MAINTAIN SECTION -->
             <section id="maintain-section" class="hidden animate-fade">
                 <div class="max-w-6xl mx-auto">
-                    <button onclick="showSection('home-section')" class="btn-back"><i class="fas fa-chevron-left"></i> Dashboard</button>
+                    <button onclick="goToHome()" class="btn-back"><i class="fas fa-chevron-left"></i> Back</button>
                     <div class="bg-white rounded-[3rem] overflow-hidden shadow-2xl border border-slate-100">
                         <div class="bg-slate-900 p-8 text-white"><h2 class="text-2xl professional-label">Maintain / Update Material</h2></div>
                         <div class="p-10 space-y-10">
@@ -593,7 +593,7 @@
             <!-- CREATE SECTION -->
             <section id="create-section" class="hidden animate-fade">
                 <div class="max-w-6xl mx-auto">
-                    <button onclick="showSection('home-section')" class="btn-back"><i class="fas fa-chevron-left"></i> Dashboard</button>
+                    <button onclick="goToHome()" class="btn-back"><i class="fas fa-chevron-left"></i> Back</button>
                     <div class="bg-white rounded-[3rem] overflow-hidden shadow-2xl border border-slate-100">
                         <div class="bg-slate-900 p-8 text-white"><h2 class="text-2xl professional-label">Pendaftaran Material Baru</h2></div>
                         <div class="p-10 space-y-10">
@@ -691,6 +691,22 @@
             </div>
         </div>
 
+        <!-- Resume Transaction Modal -->
+        <div id="resume-modal" class="hidden fixed inset-0 z-[5000] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+            <div class="bg-white rounded-[2rem] p-8 max-w-sm w-full shadow-2xl text-center">
+                <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4">
+                    <i class="fas fa-history"></i>
+                </div>
+                <h3 class="text-xl professional-label mb-2">Transaksi Belum Selesai</h3>
+                <p class="text-[10px] text-slate-500 mb-6 font-bold tracking-widest uppercase">Anda memiliki draf pengajuan yang belum di-submit.</p>
+                <div class="flex flex-col gap-3">
+                    <button onclick="resumeTransaction()" class="w-full py-3 bg-blue-600 text-white font-black rounded-xl uppercase text-xs shadow-lg shadow-blue-200 hover:bg-blue-700 transition-colors">Lanjutkan Draf Sebelumnya</button>
+                    <button onclick="discardTransaction()" class="w-full py-3 bg-red-100 text-red-600 font-black rounded-xl uppercase text-xs hover:bg-red-200 transition-colors">Hapus & Buat Baru</button>
+                    <button onclick="closeResumeModal()" class="w-full py-3 bg-slate-100 text-slate-600 font-black rounded-xl uppercase text-xs hover:bg-slate-200 transition-colors">Batal</button>
+                </div>
+            </div>
+        </div>
+
         <!-- Feedback Modal (Hanya untuk CREATE) -->
         <div id="feedback-modal" class="hidden fixed inset-0 z-[4000] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
             <div class="bg-white rounded-[2rem] p-8 max-w-md w-full shadow-2xl">
@@ -779,6 +795,8 @@
         // Global State & User Config
         let currentUserDept = "";
         let currentUserPlant = "";
+        let pendingSectionToOpen = ""; // Untuk menyimpan state menu draf
+
         const USER_CREDENTIALS = {
             "PLANT": { password: "PLANT1234", dept: "PLANT" },
             "IT": { password: "IT1234", dept: "IT" },
@@ -855,12 +873,79 @@
         };
 
         window.goToHome = function() {
+            // Hapus Draf Create Material
+            batchMaterials = [];
+            currentMaterialIdx = 0;
+            const cPnCheck = document.getElementById('c-pn-check');
+            if (cPnCheck) cPnCheck.value = '';
+            const pnRes = document.getElementById('pn-res');
+            if (pnRes) pnRes.classList.add('hidden');
+            const createForm = document.getElementById('create-full-form');
+            if (createForm) createForm.classList.add('hidden');
+
+            // Hapus Draf Maintain Material
+            maintBatchMaterials = [];
+            currentMaintIdx = 0;
+            const mMatCheck = document.getElementById('m-mat-check');
+            if (mMatCheck) mMatCheck.value = '';
+            const maintRes = document.getElementById('maint-res');
+            if (maintRes) maintRes.classList.add('hidden');
+            const maintForm = document.getElementById('maint-full-form');
+            if (maintForm) maintForm.classList.add('hidden');
+
             if (currentUserDept === "CATALOGUE") {
                 showSection('catalogue-landing-section');
             } else {
                 showSection('home-section');
             }
         };
+
+        // --- PENANGANAN TRANSAKSI DRAF (RESUME / DISCARD) ---
+        window.openCreateSection = function() {
+            if (batchMaterials && batchMaterials.length > 0) {
+                pendingSectionToOpen = 'create-section';
+                document.getElementById('resume-modal').classList.remove('hidden');
+            } else {
+                showSection('create-section');
+            }
+        };
+
+        window.openMaintainSection = function() {
+            if (maintBatchMaterials && maintBatchMaterials.length > 0) {
+                pendingSectionToOpen = 'maintain-section';
+                document.getElementById('resume-modal').classList.remove('hidden');
+            } else {
+                showSection('maintain-section');
+            }
+        };
+
+        window.resumeTransaction = function() {
+            document.getElementById('resume-modal').classList.add('hidden');
+            showSection(pendingSectionToOpen);
+        };
+
+        window.discardTransaction = function() {
+            document.getElementById('resume-modal').classList.add('hidden');
+            if (pendingSectionToOpen === 'create-section') {
+                batchMaterials = [];
+                currentMaterialIdx = 0;
+                document.getElementById('c-pn-check').value = '';
+                document.getElementById('pn-res').classList.add('hidden');
+                document.getElementById('create-full-form').classList.add('hidden');
+            } else if (pendingSectionToOpen === 'maintain-section') {
+                maintBatchMaterials = [];
+                currentMaintIdx = 0;
+                document.getElementById('m-mat-check').value = '';
+                document.getElementById('maint-res').classList.add('hidden');
+                document.getElementById('maint-full-form').classList.add('hidden');
+            }
+            showSection(pendingSectionToOpen);
+        };
+
+        window.closeResumeModal = function() {
+            document.getElementById('resume-modal').classList.add('hidden');
+        };
+        // ----------------------------------------------------
 
         window.handleMainLogin = function() {
             const uInput = document.getElementById('login-username').value.trim();
@@ -1046,7 +1131,13 @@
             if (uniqueList.length > 0) {
                 const safeAvailable = JSON.stringify(uniqueList).replace(/"/g, '&quot;');
                 html += `<div class="bg-blue-50 p-6 rounded-2xl border-2 border-blue-100"><h5 class="font-black text-blue-600 mb-4 flex items-center gap-2"><i class="fas fa-check-circle"></i> DAFTAR MATERIAL UNTUK DI-MAINTAIN (${uniqueList.length})</h5>`;
-                html += `<div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4"><button onclick="window.startBatchFormMaint(${safeAvailable}, true)" class="py-3 bg-emerald-600 text-white font-black rounded-xl text-[10px] uppercase shadow-sm shadow-emerald-200 hover:bg-emerald-700 transition-colors">Mode Spesifikasi Sama</button><button onclick="window.startBatchFormMaint(${safeAvailable}, false)" class="py-3 bg-blue-600 text-white font-black rounded-xl text-[10px] uppercase shadow-sm shadow-blue-200 hover:bg-blue-700 transition-colors">Mode Spesifikasi Beda</button></div></div>`;
+                html += `<div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4"><button onclick="window.startBatchFormMaint(${safeAvailable}, true)" class="py-3 bg-emerald-600 text-white font-black rounded-xl text-[10px] uppercase shadow-sm shadow-emerald-200 hover:bg-emerald-700 transition-colors">Mode Spesifikasi Sama</button><button onclick="window.startBatchFormMaint(${safeAvailable}, false)" class="py-3 bg-blue-600 text-white font-black rounded-xl text-[10px] uppercase shadow-sm shadow-blue-200 hover:bg-blue-700 transition-colors">Mode Spesifikasi Beda</button></div>`;
+                
+                // Menambahkan penjelasan mode
+                html += `<div class="mt-4 p-4 bg-white rounded-xl border border-blue-200 text-[10.5px] text-slate-600 space-y-2">
+                    <p><span class="font-black text-emerald-700">1. Mode Spesifikasi Sama:</span> Material Type Base UoM Material Group Purch Group Val Cat Val Class SLoc Storage Bin semuanya sama dikarenakan hanya satu kali pemilihan untuk melakukan request masal.</p>
+                    <p><span class="font-black text-blue-700">2. Mode Spesifikasi Beda:</span> Material Type Base UoM Material Group Purch Group Val Cat Val Class SLoc Storage Bin semuanya berbeda dikarenakan harus memilih satu persatu atas request.</p>
+                </div></div>`;
             } else {
                 html += `<div class="bg-red-50 p-6 rounded-2xl border-2 border-red-100 text-red-600 font-bold text-center text-[10px]">Tidak ada material valid yang ditemukan.</div>`;
             }
@@ -1056,7 +1147,13 @@
 
         window.startBatchFormMaint = function(validMaterials, identicalMode = false) {
             isMaintBatchIdentical = identicalMode;
-            maintBatchMaterials = validMaterials.map(mat => ({ material: mat, plant: "", storage_location: "", storage_bin: "", remarks: "" }));
+            maintBatchMaterials = validMaterials.map(mat => ({ 
+                material: mat, 
+                plant: (currentUserDept !== "CATALOGUE" && currentUserPlant) ? currentUserPlant : "", 
+                storage_location: "", 
+                storage_bin: "", 
+                remarks: "" 
+            }));
             currentMaintIdx = 0;
             document.getElementById('maint-res').classList.add('hidden');
             document.getElementById('maint-full-form').classList.remove('hidden');
@@ -1134,7 +1231,21 @@
             
             const attemptSet = (id, val) => { const el = document.getElementById(id); if(el) el.value = val || ""; };
             
-            attemptSet('m-f-plant', m.plant);
+            const mFPlant = document.getElementById('m-f-plant');
+            if (currentUserDept !== "CATALOGUE" && currentUserPlant) {
+                attemptSet('m-f-plant', currentUserPlant);
+                if (mFPlant) {
+                    mFPlant.disabled = true;
+                    mFPlant.classList.add('input-readonly');
+                }
+            } else {
+                attemptSet('m-f-plant', m.plant);
+                if (mFPlant) {
+                    mFPlant.disabled = false;
+                    mFPlant.classList.remove('input-readonly');
+                }
+            }
+
             attemptSet('m-f-sloc', m.storage_location);
             attemptSet('m-f-bin', m.storage_bin);
             attemptSet('m-f-remarks', m.remarks);
@@ -1205,12 +1316,14 @@
                 document.querySelector('#loader p').innerText = `Memproses Data...`; // Reset
                 window.notify('Berhasil!', `${maintBatchMaterials.length} Pengajuan Maintain dikirim.`, 'success');
                 
+                // Clear the batch
+                maintBatchMaterials = [];
+                currentMaintIdx = 0;
+
                 document.getElementById('maint-full-form').classList.add('hidden');
                 document.getElementById('m-mat-check').value = '';
                 document.getElementById('maint-res').classList.add('hidden');
-                showSection('home-section');
-                
-                setTimeout(() => { backToAccessMenu(); }, 1800000);
+                goToHome();
             } catch (e) { window.notify('Error', 'Gagal menghubungi server.', 'error'); } 
             finally { document.getElementById('loader').style.display = 'none'; }
         };
@@ -1218,6 +1331,56 @@
         // ==========================================
         // CREATE MATERIAL BATCH TAMBAHAN 
         // ==========================================
+
+        window.handleVerifyPN = function() {
+            const rawText = document.getElementById('c-pn-check').value.trim();
+            if (!rawText) return window.notify('Input Kosong', 'Masukkan minimal satu PN.', 'error');
+            const uniqueInputList = [...new Set(rawText.split(/[,\n]/).map(pn => pn.trim()).filter(pn => pn !== ""))];
+            const res = document.getElementById('pn-res');
+            res.classList.remove('hidden');
+            identifiedDuplicates = [];
+            let available = [];
+            
+            uniqueInputList.forEach(rawPN => {
+                const clean = rawPN.toUpperCase().replace(/[^A-Z0-9]/g, '');
+                if (CLEAN_ZERPD_MAP.has(clean)) identifiedDuplicates.push({ raw: rawPN, matches: CLEAN_ZERPD_MAP.get(clean) });
+                else available.push(rawPN.toUpperCase());
+            });
+            
+            let html = `<div class="space-y-6">`;
+            if (identifiedDuplicates.length > 0) {
+                html += `<div class="bg-red-50 p-6 rounded-2xl border-2 border-red-100"><h5 class="font-black text-red-600 mb-4 flex items-center gap-2"><i class="fas fa-times-circle"></i> PN DUPLIKAT (${identifiedDuplicates.length})</h5>`;
+                identifiedDuplicates.forEach(d => {
+                    html += `<div class="bg-white p-3 rounded-xl border border-red-100 mb-2"><p class="font-black text-[11px] text-slate-800 underline decoration-red-300 mb-2">${d.raw}</p><div class="space-y-1">`;
+                    d.matches.forEach(m => { html += `<div class="text-[9px] border-l-2 border-red-200 pl-2 py-0.5"><span class="font-bold text-blue-600">MAT: ${m.mat}</span><br><span class="text-slate-500 font-medium">${m.Bird}</span></div>`; });
+                    html += `</div></div>`;
+                });
+                
+                // Add interchange option
+                const dupList = identifiedDuplicates.map(d => d.raw);
+                const safeDupList = JSON.stringify(dupList).replace(/"/g, '&quot;');
+                html += `<div class="mt-4 pt-4 border-t border-red-200">
+                    <p class="text-[10.5px] text-red-600 font-bold mb-3 leading-snug">Apakah Anda ingin tetap mendaftarkan PN ini sebagai <span class="font-black underline">Interchange</span> atau <span class="font-black underline">PN Sama Deskripsi Berbeda</span>?</p>
+                    <button onclick="requestBypassAccess(${safeDupList})" class="w-full py-3 bg-red-600 text-white font-black rounded-xl text-[10px] uppercase shadow-sm shadow-red-200 hover:bg-red-700 transition-colors">Ya, Daftarkan (Butuh Kode Akses)</button>
+                </div>`;
+                
+                html += `</div>`;
+            }
+            if (available.length > 0) {
+                const safeAvailable = JSON.stringify(available).replace(/"/g, '&quot;');
+                
+                html += `<div class="bg-emerald-50 p-6 rounded-2xl border-2 border-emerald-100"><h5 class="font-black text-emerald-600 mb-4 flex items-center gap-2"><i class="fas fa-check-circle"></i> PN TERSEDIA (${available.length})</h5>`;
+                html += `<div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4"><button onclick="window.startBatchForm(${safeAvailable}, true)" class="py-3 bg-emerald-600 text-white font-black rounded-xl text-[10px] uppercase shadow-sm shadow-emerald-200 hover:bg-emerald-700 transition-colors">Mode Spesifikasi Sama</button><button onclick="window.startBatchForm(${safeAvailable}, false)" class="py-3 bg-blue-600 text-white font-black rounded-xl text-[10px] uppercase shadow-sm shadow-blue-200 hover:bg-blue-700 transition-colors">Mode Spesifikasi Beda</button></div>`;
+                
+                // Menambahkan penjelasan mode
+                html += `<div class="mt-4 p-4 bg-white rounded-xl border border-emerald-200 text-[10.5px] text-slate-600 space-y-2">
+                    <p><span class="font-black text-emerald-700">1. Mode Spesifikasi Sama:</span> Material Type Base UoM Material Group Purch Group Val Cat Val Class SLoc Storage Bin semuanya sama dikarenakan hanya satu kali pemilihan untuk melakukan request masal.</p>
+                    <p><span class="font-black text-blue-700">2. Mode Spesifikasi Beda:</span> Material Type Base UoM Material Group Purch Group Val Cat Val Class SLoc Storage Bin semuanya berbeda dikarenakan harus memilih satu persatu atas request.</p>
+                </div></div>`;
+            }
+            res.innerHTML = html;
+        };
+
 
         function saveCurrentToBatch() {
             if (batchMaterials.length === 0) return;
@@ -1288,7 +1451,22 @@
             attemptSet('f-uom', m.base_uom);
             attemptSet('f-type', m.material_type);
             attemptSet('f-group', m.material_group);
-            attemptSet('f-plant', m.plant);
+
+            const fPlant = document.getElementById('f-plant');
+            if (currentUserDept !== "CATALOGUE" && currentUserPlant) {
+                attemptSet('f-plant', currentUserPlant);
+                if(fPlant) {
+                    fPlant.disabled = true;
+                    fPlant.classList.add('input-readonly');
+                }
+            } else {
+                attemptSet('f-plant', m.plant);
+                if(fPlant) {
+                    fPlant.disabled = false;
+                    fPlant.classList.remove('input-readonly');
+                }
+            }
+
             attemptSet('f-sloc', m.storage_location);
             attemptSet('f-purch', m.purchasing_group);
             attemptSet('f-val-cat', m.valuation_cat);
@@ -1636,12 +1814,15 @@
                 }
                 document.querySelector('#loader p').innerText = `Memproses Data...`; // Reset
                 window.notify('Berhasil!', `${batchMaterials.length} Pengajuan Create dikirim.`, 'success');
+                
+                // Clear the batch
+                batchMaterials = [];
+                currentMaterialIdx = 0;
 
                 document.getElementById('create-full-form').classList.add('hidden');
                 document.getElementById('c-pn-check').value = '';
                 document.getElementById('pn-res').classList.add('hidden');
-                showSection('home-section');
-
+                goToHome();
             } catch (e) { window.notify('Error', 'Gagal menghubungi server.', 'error'); }
             finally { document.getElementById('loader').style.display = 'none'; }
         };
@@ -1784,7 +1965,13 @@
                 const safeAvailable = JSON.stringify(available).replace(/"/g, '&quot;');
                 
                 html += `<div class="bg-emerald-50 p-6 rounded-2xl border-2 border-emerald-100"><h5 class="font-black text-emerald-600 mb-4 flex items-center gap-2"><i class="fas fa-check-circle"></i> PN TERSEDIA (${available.length})</h5>`;
-                html += `<div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4"><button onclick="window.startBatchForm(${safeAvailable}, true)" class="py-3 bg-emerald-600 text-white font-black rounded-xl text-[10px] uppercase shadow-sm shadow-emerald-200 hover:bg-emerald-700 transition-colors">Mode Spesifikasi Sama</button><button onclick="window.startBatchForm(${safeAvailable}, false)" class="py-3 bg-blue-600 text-white font-black rounded-xl text-[10px] uppercase shadow-sm shadow-blue-200 hover:bg-blue-700 transition-colors">Mode Spesifikasi Beda</button></div></div>`;
+                html += `<div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4"><button onclick="window.startBatchForm(${safeAvailable}, true)" class="py-3 bg-emerald-600 text-white font-black rounded-xl text-[10px] uppercase shadow-sm shadow-emerald-200 hover:bg-emerald-700 transition-colors">Mode Spesifikasi Sama</button><button onclick="window.startBatchForm(${safeAvailable}, false)" class="py-3 bg-blue-600 text-white font-black rounded-xl text-[10px] uppercase shadow-sm shadow-blue-200 hover:bg-blue-700 transition-colors">Mode Spesifikasi Beda</button></div>`;
+                
+                // Menambahkan penjelasan mode
+                html += `<div class="mt-4 p-4 bg-white rounded-xl border border-emerald-200 text-[10.5px] text-slate-600 space-y-2">
+                    <p><span class="font-black text-emerald-700">1. Mode Spesifikasi Sama:</span> Material Type Base UoM Material Group Purch Group Val Cat Val Class SLoc Storage Bin semuanya sama dikarenakan hanya satu kali pemilihan untuk melakukan request masal.</p>
+                    <p><span class="font-black text-blue-700">2. Mode Spesifikasi Beda:</span> Material Type Base UoM Material Group Purch Group Val Cat Val Class SLoc Storage Bin semuanya berbeda dikarenakan harus memilih satu persatu atas request.</p>
+                </div></div>`;
             }
             res.innerHTML = html;
         };
@@ -2003,7 +2190,7 @@
 
         window.startBatchForm = function(availablePNs, identicalMode = false) {
             isBatchIdentical = identicalMode;
-            batchMaterials = availablePNs.map(pn => ({ mfg_part: pn, description: "", base_uom: "", material_type: "", material_group: "", plant: "", storage_location: "", purchasing_group: "", valuation_cat: "", valuation_class: "", storage_bin: "", remarks: "", serial_profile: "" }));
+            batchMaterials = availablePNs.map(pn => ({ mfg_part: pn, description: "", base_uom: "", material_type: "", material_group: "", plant: (currentUserDept !== "CATALOGUE" && currentUserPlant) ? currentUserPlant : "", storage_location: "", purchasing_group: "", valuation_cat: "", valuation_class: "", storage_bin: "", remarks: "", serial_profile: "" }));
             currentMaterialIdx = 0;
             document.getElementById('pn-res').classList.add('hidden');
             document.getElementById('create-full-form').classList.remove('hidden');
@@ -2246,15 +2433,26 @@
 
         function populateSelects() {
             const pS = document.getElementById('f-plant'); const mvpS = document.getElementById('m-f-plant'); const lPS = document.getElementById('login-plant');
-            for(let i=1;i<=28;i++) { let v = `PL${i.toString().padStart(2,'0')}`; if(pS) pS.innerHTML += `<option value="${v}">${v}</option>`; if(mvpS) mvpS.innerHTML += `<option value="${v}">${v}</option>`; if(lPS) lPS.innerHTML += `<option value="${v}">${v}</option>`; }
-            const sS = document.getElementById('f-sloc'); const mvsS = document.getElementById('m-f-sloc');
-            for(let i=1;i<=15;i++) { let v = `S${i.toString().padStart(3,'0')}`; if(sS) sS.innerHTML += `<option value="${v}">${v}</option>`; if(mvsS) mvsS.innerHTML += `<option value="${v}">${v}</option>`; }
             
-            if(pS && pS.options.length > 0) pS.insertAdjacentHTML('afterbegin', '<option value="">-- PILIH --</option>');
-            if(mvpS && mvpS.options.length > 0) mvpS.insertAdjacentHTML('afterbegin', '<option value="">-- PILIH --</option>');
-            if(lPS && lPS.options.length > 0) lPS.insertAdjacentHTML('afterbegin', '<option value="">-- OPSIONAL --</option>');
-            if(sS && sS.options.length > 0) sS.insertAdjacentHTML('afterbegin', '<option value="">-- PILIH --</option>');
-            if(mvsS && mvsS.options.length > 0) mvsS.insertAdjacentHTML('afterbegin', '<option value="">-- PILIH --</option>');
+            if(pS) pS.innerHTML = '<option value="">-- PILIH --</option>';
+            if(mvpS) mvpS.innerHTML = '<option value="">-- PILIH --</option>';
+            if(lPS) lPS.innerHTML = '<option value="">-- OPSIONAL --</option>';
+            
+            for(let i=1;i<=28;i++) { 
+                let v = `PL${i.toString().padStart(2,'0')}`; 
+                if(pS) pS.innerHTML += `<option value="${v}">${v}</option>`; 
+                if(mvpS) mvpS.innerHTML += `<option value="${v}">${v}</option>`; 
+                if(lPS) lPS.innerHTML += `<option value="${v}">${v}</option>`; 
+            }
+            
+            const sS = document.getElementById('f-sloc'); const mvsS = document.getElementById('m-f-sloc');
+            if(sS) sS.innerHTML = '<option value="">-- PILIH --</option>';
+            if(mvsS) mvsS.innerHTML = '<option value="">-- PILIH --</option>';
+            for(let i=1;i<=15;i++) { 
+                let v = `S${i.toString().padStart(3,'0')}`; 
+                if(sS) sS.innerHTML += `<option value="${v}">${v}</option>`; 
+                if(mvsS) mvsS.innerHTML += `<option value="${v}">${v}</option>`; 
+            }
 
             setupVisualSwap('f-uom', [{code:"EA",display:"EA - EACH"},{code:"PC",display:"PC - PIECE"},{code:"SET",display:"SET - SET"},{code:"UNT",display:"UNT - UNIT"},{code:"ROL",display:"ROL - ROLL"},{code:"M",display:"M - METER"},{code:"KG",display:"KG - KILOGRAM"},{code:"L",display:"L - LITER"},{code:"CAN",display:"CAN - CANISTER"},{code:"DR",display:"DR - DRUM"},{code:"PL",display:"PL - PAIL"}]);
             setupVisualSwap('f-type', [{code:"SPRT",display:"SPRT - Sparepart"},{code:"FOGC",display:"FOGC - FOGC"},{code:"TYRE",display:"TYRE - Tyre"},{code:"CONS",display:"CONS - Consumable"},{code:"GENS",display:"GENS - General Supply"},{code:"ASET",display:"ASET - Asset"},{code:"SEJA",display:"SEJA - Service & Jasa"},{code:"MDLE",display:"MDLE - Module"},{code:"BOMM",display:"BOMM - Bom Material"},{code:"FFF",display:"FFF - FFF Class"}]);
