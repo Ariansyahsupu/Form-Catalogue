@@ -705,6 +705,24 @@
             </div>
         </div>
 
+        <!-- Access Code Modal -->
+        <div id="access-modal" class="hidden fixed inset-0 z-[5000] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+            <div class="bg-white rounded-[2rem] p-8 max-w-sm w-full shadow-2xl text-center">
+                <div class="w-16 h-16 bg-red-100 text-red-600 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4">
+                    <i class="fas fa-key"></i>
+                </div>
+                <h3 class="text-xl professional-label mb-2">Otorisasi Akses</h3>
+                <p class="text-[10px] text-slate-500 mb-6 font-bold tracking-widest uppercase">Masukkan 4 digit kode otorisasi untuk mendaftarkan PN Duplikat / Interchange.</p>
+                <div class="space-y-4">
+                    <input type="password" id="access-code-input" maxlength="4" class="input-field border-2 professional-input text-center text-2xl tracking-[0.5em]" placeholder="••••">
+                    <div class="flex gap-3">
+                        <button onclick="closeAccessModal()" class="flex-1 py-3 bg-slate-100 text-slate-600 font-black rounded-xl uppercase text-xs hover:bg-slate-200">Batal</button>
+                        <button onclick="verifyAccessCode()" class="flex-1 py-3 bg-red-600 text-white font-black rounded-xl uppercase text-xs shadow-lg shadow-red-200 hover:bg-red-700">Verifikasi</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Alarm Modal -->
         <div id="alarm-modal" class="hidden fixed inset-0 z-[4000] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
             <div class="bg-white rounded-[2rem] p-8 max-w-sm w-full shadow-2xl">
@@ -928,6 +946,7 @@
         let currentMaterialIdx = 0;
         let identifiedDuplicates = []; 
         let isBatchIdentical = false;
+        let pendingBypassPNs = []; // Variabel untuk menyimpan PN bypass sementara
 
         function getMissingFields(m) {
             let missing = [];
@@ -1701,6 +1720,15 @@
                     d.matches.forEach(m => { html += `<div class="text-[9px] border-l-2 border-red-200 pl-2 py-0.5"><span class="font-bold text-blue-600">MAT: ${m.mat}</span><br><span class="text-slate-500 font-medium">${m.Bird}</span></div>`; });
                     html += `</div></div>`;
                 });
+                
+                // Add interchange option
+                const dupList = identifiedDuplicates.map(d => d.raw);
+                const safeDupList = JSON.stringify(dupList).replace(/"/g, '&quot;');
+                html += `<div class="mt-4 pt-4 border-t border-red-200">
+                    <p class="text-[10.5px] text-red-600 font-bold mb-3 leading-snug">Apakah Anda ingin tetap mendaftarkan PN ini sebagai <span class="font-black underline">Interchange</span> atau <span class="font-black underline">PN Sama Deskripsi Berbeda</span>?</p>
+                    <button onclick="requestBypassAccess(${safeDupList})" class="w-full py-3 bg-red-600 text-white font-black rounded-xl text-[10px] uppercase shadow-sm shadow-red-200 hover:bg-red-700 transition-colors">Ya, Daftarkan (Butuh Kode Akses)</button>
+                </div>`;
+                
                 html += `</div>`;
             }
             if (available.length > 0) {
@@ -1710,6 +1738,53 @@
                 html += `<div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4"><button onclick="window.startBatchForm(${safeAvailable}, true)" class="py-3 bg-emerald-600 text-white font-black rounded-xl text-[10px] uppercase shadow-sm shadow-emerald-200 hover:bg-emerald-700 transition-colors">Mode Spesifikasi Sama</button><button onclick="window.startBatchForm(${safeAvailable}, false)" class="py-3 bg-blue-600 text-white font-black rounded-xl text-[10px] uppercase shadow-sm shadow-blue-200 hover:bg-blue-700 transition-colors">Mode Spesifikasi Beda</button></div></div>`;
             }
             res.innerHTML = html;
+        };
+
+        window.requestBypassAccess = function(pns) {
+            pendingBypassPNs = pns;
+            document.getElementById('access-modal').classList.remove('hidden');
+            document.getElementById('access-code-input').value = '';
+        };
+
+        window.closeAccessModal = function() {
+            document.getElementById('access-modal').classList.add('hidden');
+        };
+
+        window.verifyAccessCode = async function() {
+            const inputCode = document.getElementById('access-code-input').value.trim();
+            if (!inputCode || inputCode.length !== 4) return window.notify('Error', 'Masukkan 4 digit kode akses.', 'error');
+
+            document.getElementById('loader').style.display = 'flex';
+            try {
+                const response = await fetchWithRetry(csvAccessURL);
+                const csvText = await response.text();
+                const lines = csvText.split(/\r?\n/);
+                let validCode = "";
+                
+                // Search for 4 digit code from bottom up
+                for (let i = lines.length - 1; i >= 0; i--) {
+                    if (lines[i].trim()) {
+                        const cols = parseCSVLine(lines[i]);
+                        const codeCol = cols.find(c => /^\d{4}$/.test(c.trim()));
+                        if (codeCol) {
+                            validCode = codeCol.trim();
+                            break;
+                        }
+                    }
+                }
+
+                if (inputCode === validCode && validCode !== "") {
+                    window.notify('Akses Diberikan', 'Otorisasi berhasil. Form dibuka.', 'success');
+                    closeAccessModal();
+                    startBatchForm(pendingBypassPNs, false); // Membuka form dgn PN duplikat tsb
+                } else {
+                    window.notify('Akses Ditolak', 'Kode akses salah atau kadaluarsa.', 'error');
+                }
+            } catch (e) {
+                window.notify('Error', 'Gagal memverifikasi kode dari server.', 'error');
+            } finally {
+                document.getElementById('loader').style.display = 'none';
+            }
         };
 
         window.startBatchForm = function(availablePNs, identicalMode = false) {
