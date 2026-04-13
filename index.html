@@ -381,7 +381,7 @@
 
                     <div onclick="openMaintainSection()" class="premium-card p-3 text-blue-600">
                         <div class="icon-box bg-blue-50 text-blue-600 border border-blue-100 shadow-md shadow-blue-100/50"><i class="fas fa-screwdriver-wrench"></i></div>
-                        <h3 class="text-[11px] professional-label mb-1 leading-tight">Maintain Item</h3>
+                        <h3 class="text-[11px] professional-label mb-1 leading-tight">MAINTAIN MATERIAL</h3>
                         <p class="text-slate-500 text-[9px] mb-2 line-clamp-2 leading-tight">Update spesifikasi teknis material terdaftar.</p>
                         <button class="w-full mt-auto py-1.5 bg-blue-600 text-white rounded-lg font-black text-[9px] uppercase shadow-sm shadow-blue-200">Pilih Modul</button>
                     </div>
@@ -576,7 +576,7 @@
                                                     <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Target Plant</label><select id="m-f-plant" required class="input-field border-2 bg-white professional-input"></select></div>
                                                     <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Target SLoc</label><select id="m-f-sloc" required class="input-field border-2 bg-white professional-input"></select></div>
                                                     <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Storage Bin</label><input type="text" id="m-f-bin" placeholder="INPUT RAK" class="input-field border-2 professional-input"></div>
-                                                    <div class="space-y-1.5 md:col-span-2"><label class="text-[10px] professional-label tracking-widest">CCP / Remarks <span class="text-red-500 font-black">*</span></label><input type="text" id="m-f-remarks" placeholder="MASUKKAN CCP ATAU ALASAN MAINTAIN" required class="input-field border-2 professional-input border-blue-200" autocomplete="off"></div>
+                                                    <div class="space-y-1.5 md:col-span-2"><label class="text-[10px] professional-label tracking-widest">Reason/Notif Error <span class="text-red-500 font-black">*</span></label><input type="text" id="m-f-remarks" placeholder="MASUKKAN REASON ATAU NOTIF ERROR" required class="input-field border-2 professional-input border-blue-200" autocomplete="off"></div>
                                                 </div>
                                             </div>
                                             <button type="button" onclick="handleMaintBatchSubmit()" class="w-full py-5 bg-blue-600 text-white font-black rounded-3xl uppercase text-lg shadow-2xl hover:bg-blue-700 transition-all">SUBMIT SELURUH PENGAJUAN MAINTAIN</button>
@@ -885,26 +885,6 @@
         };
 
         window.goToHome = function() {
-            // Hapus Draf Create Material
-            batchMaterials = [];
-            currentMaterialIdx = 0;
-            const cPnCheck = document.getElementById('c-pn-check');
-            if (cPnCheck) cPnCheck.value = '';
-            const pnRes = document.getElementById('pn-res');
-            if (pnRes) pnRes.classList.add('hidden');
-            const createForm = document.getElementById('create-full-form');
-            if (createForm) createForm.classList.add('hidden');
-
-            // Hapus Draf Maintain Material
-            maintBatchMaterials = [];
-            currentMaintIdx = 0;
-            const mMatCheck = document.getElementById('m-mat-check');
-            if (mMatCheck) mMatCheck.value = '';
-            const maintRes = document.getElementById('maint-res');
-            if (maintRes) maintRes.classList.add('hidden');
-            const maintForm = document.getElementById('maint-full-form');
-            if (maintForm) maintForm.classList.add('hidden');
-
             if (currentUserDept === "CATALOGUE") {
                 showSection('catalogue-landing-section');
             } else {
@@ -912,9 +892,36 @@
             }
         };
 
+        function clearCreateDraft() {
+            batchMaterials = [];
+            currentMaterialIdx = 0;
+            localStorage.removeItem('catlog_create_draft');
+            localStorage.removeItem('catlog_create_identical');
+            const cPnCheck = document.getElementById('c-pn-check');
+            if (cPnCheck) cPnCheck.value = '';
+            const pnRes = document.getElementById('pn-res');
+            if (pnRes) pnRes.classList.add('hidden');
+            const createForm = document.getElementById('create-full-form');
+            if (createForm) createForm.classList.add('hidden');
+        }
+
+        function clearMaintDraft() {
+            maintBatchMaterials = [];
+            currentMaintIdx = 0;
+            localStorage.removeItem('catlog_maint_draft');
+            localStorage.removeItem('catlog_maint_mode');
+            const mMatCheck = document.getElementById('m-mat-check');
+            if (mMatCheck) mMatCheck.value = '';
+            const maintRes = document.getElementById('maint-res');
+            if (maintRes) maintRes.classList.add('hidden');
+            const maintForm = document.getElementById('maint-full-form');
+            if (maintForm) maintForm.classList.add('hidden');
+        }
+
         // --- PENANGANAN TRANSAKSI DRAF (RESUME / DISCARD) ---
         window.openCreateSection = function() {
-            if (batchMaterials && batchMaterials.length > 0) {
+            const draftStr = localStorage.getItem('catlog_create_draft');
+            if ((batchMaterials && batchMaterials.length > 0) || (draftStr && JSON.parse(draftStr).length > 0)) {
                 pendingSectionToOpen = 'create-section';
                 document.getElementById('resume-modal').classList.remove('hidden');
             } else {
@@ -923,7 +930,8 @@
         };
 
         window.openMaintainSection = function() {
-            if (maintBatchMaterials && maintBatchMaterials.length > 0) {
+            const draftStr = localStorage.getItem('catlog_maint_draft');
+            if ((maintBatchMaterials && maintBatchMaterials.length > 0) || (draftStr && JSON.parse(draftStr).length > 0)) {
                 pendingSectionToOpen = 'maintain-section';
                 document.getElementById('resume-modal').classList.remove('hidden');
             } else {
@@ -933,23 +941,36 @@
 
         window.resumeTransaction = function() {
             document.getElementById('resume-modal').classList.add('hidden');
+            if (pendingSectionToOpen === 'create-section') {
+                const draftStr = localStorage.getItem('catlog_create_draft');
+                if (draftStr) {
+                    batchMaterials = JSON.parse(draftStr);
+                    isBatchIdentical = localStorage.getItem('catlog_create_identical') === 'true';
+                    currentMaterialIdx = 0;
+                    document.getElementById('create-full-form').classList.remove('hidden');
+                    renderNav();
+                    loadMaterialToForm(0);
+                }
+            } else if (pendingSectionToOpen === 'maintain-section') {
+                const draftStr = localStorage.getItem('catlog_maint_draft');
+                if (draftStr) {
+                    maintBatchMaterials = JSON.parse(draftStr);
+                    maintBatchMode = parseInt(localStorage.getItem('catlog_maint_mode')) || 1;
+                    currentMaintIdx = 0;
+                    document.getElementById('maint-full-form').classList.remove('hidden');
+                    renderMaintNav();
+                    loadMaintMaterialToForm(0);
+                }
+            }
             showSection(pendingSectionToOpen);
         };
 
         window.discardTransaction = function() {
             document.getElementById('resume-modal').classList.add('hidden');
             if (pendingSectionToOpen === 'create-section') {
-                batchMaterials = [];
-                currentMaterialIdx = 0;
-                document.getElementById('c-pn-check').value = '';
-                document.getElementById('pn-res').classList.add('hidden');
-                document.getElementById('create-full-form').classList.add('hidden');
+                clearCreateDraft();
             } else if (pendingSectionToOpen === 'maintain-section') {
-                maintBatchMaterials = [];
-                currentMaintIdx = 0;
-                document.getElementById('m-mat-check').value = '';
-                document.getElementById('maint-res').classList.add('hidden');
-                document.getElementById('maint-full-form').classList.add('hidden');
+                clearMaintDraft();
             }
             showSection(pendingSectionToOpen);
         };
@@ -1151,7 +1172,7 @@
         // ==========================================
         let maintBatchMaterials = [];
         let currentMaintIdx = 0;
-        let isMaintBatchIdentical = false;
+        let maintBatchMode = 1;
 
         window.handleVerifyMaintBatch = function() {
             const rawText = document.getElementById('m-mat-check').value.trim();
@@ -1189,12 +1210,13 @@
             if (uniqueList.length > 0) {
                 const safeAvailable = JSON.stringify(uniqueList).replace(/"/g, '&quot;');
                 html += `<div class="bg-blue-50 p-6 rounded-2xl border-2 border-blue-100"><h5 class="font-black text-blue-600 mb-4 flex items-center gap-2"><i class="fas fa-check-circle"></i> DAFTAR MATERIAL UNTUK DI-MAINTAIN (${uniqueList.length})</h5>`;
-                html += `<div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4"><button onclick="window.startBatchFormMaint(${safeAvailable}, true)" class="py-3 bg-emerald-600 text-white font-black rounded-xl text-[10px] uppercase shadow-sm shadow-emerald-200 hover:bg-emerald-700 transition-colors">Mode Spesifikasi Sama</button><button onclick="window.startBatchFormMaint(${safeAvailable}, false)" class="py-3 bg-blue-600 text-white font-black rounded-xl text-[10px] uppercase shadow-sm shadow-blue-200 hover:bg-blue-700 transition-colors">Mode Spesifikasi Beda</button></div>`;
+                html += `<div class="grid grid-cols-1 md:grid-cols-3 gap-3 mt-4"><button onclick="window.startBatchFormMaint(${safeAvailable}, 1)" class="py-3 bg-emerald-600 text-white font-black rounded-xl text-[10px] uppercase shadow-sm shadow-emerald-200 hover:bg-emerald-700 transition-colors">Mode Data Seragam</button><button onclick="window.startBatchFormMaint(${safeAvailable}, 2)" class="py-3 bg-blue-600 text-white font-black rounded-xl text-[10px] uppercase shadow-sm shadow-blue-200 hover:bg-blue-700 transition-colors">Mode Plant & Sloc Sama</button><button onclick="window.startBatchFormMaint(${safeAvailable}, 3)" class="py-3 bg-orange-600 text-white font-black rounded-xl text-[10px] uppercase shadow-sm shadow-orange-200 hover:bg-orange-700 transition-colors">Mode Plant Sama & Sloc Berbeda</button></div>`;
                 
                 // Menambahkan penjelasan mode
                 html += `<div class="mt-4 p-4 bg-white rounded-xl border border-blue-200 text-[10.5px] text-slate-600 space-y-2">
-                    <p><span class="font-black text-emerald-700">1. Mode Spesifikasi Sama:</span> Material Type Base UoM Material Group Purch Group Val Cat Val Class SLoc Storage Bin semuanya sama dikarenakan hanya satu kali pemilihan untuk melakukan request masal.</p>
-                    <p><span class="font-black text-blue-700">2. Mode Spesifikasi Beda:</span> Material Type Base UoM Material Group Purch Group Val Cat Val Class SLoc Storage Bin semuanya berbeda dikarenakan harus memilih satu persatu atas request.</p>
+                    <p><span class="font-black text-emerald-700">1. Mode Data Seragam:</span> Input tunggal untuk Plant, Sloc, dan Storage Bin akan diaplikasikan ke seluruh material.</p>
+                    <p><span class="font-black text-blue-700">2. Mode Plant & Sloc Sama:</span> Input tunggal berlaku untuk Plant dan Sloc, sedangkan Storage Bin diisi manual per item.</p>
+                    <p><span class="font-black text-orange-700">3. Mode Plant Sama & Sloc Berbeda:</span> Hanya Plant yang diseragamkan; Sloc dan Storage Bin diinput secara manual untuk tiap material.</p>
                 </div></div>`;
             } else {
                 html += `<div class="bg-red-50 p-6 rounded-2xl border-2 border-red-100 text-red-600 font-bold text-center text-[10px]">Tidak ada material valid yang ditemukan.</div>`;
@@ -1203,8 +1225,8 @@
             res.innerHTML = html;
         };
 
-        window.startBatchFormMaint = function(validMaterials, identicalMode = false) {
-            isMaintBatchIdentical = identicalMode;
+        window.startBatchFormMaint = function(validMaterials, mode = 1) {
+            maintBatchMode = mode;
             maintBatchMaterials = validMaterials.map(mat => ({ 
                 material: mat, 
                 plant: (currentUserDept !== "CATALOGUE" && currentUserPlant) ? currentUserPlant : "", 
@@ -1215,6 +1237,10 @@
             currentMaintIdx = 0;
             document.getElementById('maint-res').classList.add('hidden');
             document.getElementById('maint-full-form').classList.remove('hidden');
+            
+            localStorage.setItem('catlog_maint_draft', JSON.stringify(maintBatchMaterials));
+            localStorage.setItem('catlog_maint_mode', maintBatchMode);
+
             renderMaintNav(); 
             loadMaintMaterialToForm(0);
         };
@@ -1222,8 +1248,13 @@
         function getMaintMissingFields(m) {
             let missing = [];
             if (!m.plant) missing.push("Plant");
-            if (!m.storage_location) missing.push("SLoc");
-            if (!m.remarks) missing.push("CCP");
+            
+            const is7or4 = m.material && (m.material.startsWith('7') || m.material.startsWith('4'));
+            if (!is7or4) {
+                if (!m.storage_location) missing.push("SLoc");
+            }
+            
+            if (!m.remarks) missing.push("Reason/Notif");
             return missing;
         }
 
@@ -1278,9 +1309,31 @@
                 }
             });
 
-            if (isMaintBatchIdentical) {
-                maintBatchMaterials.forEach((item, idx) => { if (idx !== currentMaintIdx) { props.forEach(p => item[p] = m[p]); } });
+            // Enforce logic for current item just in case
+            const isCurrent7or4 = m.material && (m.material.startsWith('7') || m.material.startsWith('4'));
+            if(isCurrent7or4) {
+                m.storage_location = "";
+                m.storage_bin = "";
             }
+
+            maintBatchMaterials.forEach((item, idx) => { 
+                if (idx !== currentMaintIdx) { 
+                    const is7or4 = item.material && (item.material.startsWith('7') || item.material.startsWith('4'));
+                    
+                    if (maintBatchMode === 1) {
+                        item.plant = m.plant;
+                        item.storage_location = is7or4 ? "" : m.storage_location;
+                        item.storage_bin = is7or4 ? "" : m.storage_bin;
+                    } else if (maintBatchMode === 2) {
+                        item.plant = m.plant;
+                        item.storage_location = is7or4 ? "" : m.storage_location;
+                    } else if (maintBatchMode === 3) {
+                        item.plant = m.plant;
+                    }
+                } 
+            });
+
+            localStorage.setItem('catlog_maint_draft', JSON.stringify(maintBatchMaterials));
         }
 
         function loadMaintMaterialToForm(idx) {
@@ -1304,8 +1357,23 @@
                 }
             }
 
-            attemptSet('m-f-sloc', m.storage_location);
-            attemptSet('m-f-bin', m.storage_bin);
+            // CHECK PREFIX 7 and 4
+            const is7or4 = m.material && (m.material.startsWith('7') || m.material.startsWith('4'));
+            const mFSloc = document.getElementById('m-f-sloc');
+            const mFBin = document.getElementById('m-f-bin');
+
+            if (is7or4) {
+                attemptSet('m-f-sloc', "");
+                attemptSet('m-f-bin', "");
+                if (mFSloc) { mFSloc.disabled = true; mFSloc.classList.add('input-readonly'); }
+                if (mFBin) { mFBin.disabled = true; mFBin.classList.add('input-readonly'); }
+            } else {
+                attemptSet('m-f-sloc', m.storage_location);
+                attemptSet('m-f-bin', m.storage_bin);
+                if (mFSloc) { mFSloc.disabled = false; mFSloc.classList.remove('input-readonly'); }
+                if (mFBin) { mFBin.disabled = false; mFBin.classList.remove('input-readonly'); }
+            }
+
             attemptSet('m-f-remarks', m.remarks);
             
             updateAllFieldsStatus();
@@ -1332,7 +1400,7 @@
                     renderMaintNav();
                 }
                 
-                const fieldMap = { "Plant": "m-f-plant", "SLoc": "m-f-sloc", "Bin": "m-f-bin", "CCP": "m-f-remarks" };
+                const fieldMap = { "Plant": "m-f-plant", "SLoc": "m-f-sloc", "Bin": "m-f-bin", "Reason/Notif": "m-f-remarks" };
                 const targetId = fieldMap[missingForFirst[0]];
                 
                 if (targetId) {
@@ -1374,13 +1442,7 @@
                 document.querySelector('#loader p').innerText = `Memproses Data...`; // Reset
                 window.notify('Berhasil!', `${maintBatchMaterials.length} Pengajuan Maintain dikirim.`, 'success');
                 
-                // Clear the batch
-                maintBatchMaterials = [];
-                currentMaintIdx = 0;
-
-                document.getElementById('maint-full-form').classList.add('hidden');
-                document.getElementById('m-mat-check').value = '';
-                document.getElementById('maint-res').classList.add('hidden');
+                clearMaintDraft();
                 goToHome();
             } catch (e) { window.notify('Error', 'Gagal menghubungi server.', 'error'); } 
             finally { document.getElementById('loader').style.display = 'none'; }
@@ -1462,6 +1524,8 @@
                     }
                 });
             }
+            
+            localStorage.setItem('catlog_create_draft', JSON.stringify(batchMaterials));
         }
 
         function renderNav() {
@@ -1873,13 +1937,7 @@
                 document.querySelector('#loader p').innerText = `Memproses Data...`; // Reset
                 window.notify('Berhasil!', `${batchMaterials.length} Pengajuan Create dikirim.`, 'success');
                 
-                // Clear the batch
-                batchMaterials = [];
-                currentMaterialIdx = 0;
-
-                document.getElementById('create-full-form').classList.add('hidden');
-                document.getElementById('c-pn-check').value = '';
-                document.getElementById('pn-res').classList.add('hidden');
+                clearCreateDraft();
                 goToHome();
             } catch (e) { window.notify('Error', 'Gagal menghubungi server.', 'error'); }
             finally { document.getElementById('loader').style.display = 'none'; }
@@ -2171,7 +2229,7 @@
             } finally {
                 document.getElementById('loader').style.display = 'none';
             }
-        }; // <-- FIXED THIS CLOSING BRACE
+        };
 
         window.showCatAccessModal = async function(isAutoSync = false) {
             document.getElementById('cat-access-modal').classList.remove('hidden');
@@ -2254,6 +2312,10 @@
             currentMaterialIdx = 0;
             document.getElementById('pn-res').classList.add('hidden');
             document.getElementById('create-full-form').classList.remove('hidden');
+            
+            localStorage.setItem('catlog_create_draft', JSON.stringify(batchMaterials));
+            localStorage.setItem('catlog_create_identical', isBatchIdentical);
+            
             renderNav(); 
             loadMaterialToForm(0);
         };
@@ -2832,10 +2894,8 @@
                 currentUserDept = "";
                 currentUserPlant = "";
                 
-                batchMaterials = [];
-                currentMaterialIdx = 0;
-                maintBatchMaterials = [];
-                currentMaintIdx = 0;
+                clearCreateDraft();
+                clearMaintDraft();
                 
                 if(window.accessPollInterval) clearInterval(window.accessPollInterval);
                 if(window.globalAlarmInterval) clearInterval(window.globalAlarmInterval);
