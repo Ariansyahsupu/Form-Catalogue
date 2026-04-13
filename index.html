@@ -337,8 +337,8 @@
                     <h1 class="text-2xl lg:text-3xl font-black text-slate-900 tracking-tight">Portal Catalogue</h1>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto mt-8">
-                    <div onclick="goToHome()" class="premium-card p-12 text-blue-600 cursor-pointer">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto mt-8">
+                    <div onclick="showSection('home-section')" class="premium-card p-12 text-blue-600 cursor-pointer">
                         <div class="icon-box w-20 h-20 text-4xl bg-blue-50 text-blue-600 border border-blue-100 shadow-xl shadow-blue-100/50 mb-6"><i class="fas fa-folder-open"></i></div>
                         <h3 class="text-2xl professional-label mb-3">Form</h3>
                         <p class="text-slate-500 text-sm">Akses seluruh form pendaftaran dan maintain master data.</p>
@@ -348,18 +348,31 @@
                         <h3 class="text-2xl professional-label mb-3">Monitoring</h3>
                         <p class="text-slate-500 text-sm">Pantau dan update status progress pengajuan.</p>
                     </div>
+                    <div onclick="requestProtectedLink('https://docs.google.com/spreadsheets/d/1Bu4_lnZJe-NAezO0Jyw2AkqQk0bdVFTU8VrIlSn3eJY/edit?usp=sharing')" class="premium-card p-12 text-purple-600 cursor-pointer">
+                        <div class="icon-box w-20 h-20 text-4xl bg-purple-50 text-purple-600 border border-purple-100 shadow-xl shadow-purple-100/50 mb-6"><i class="fas fa-file-excel"></i></div>
+                        <h3 class="text-2xl professional-label mb-3">Database Request</h3>
+                        <p class="text-slate-500 text-sm">Informasi Data Database Request Log.</p>
+                    </div>
+                    <div onclick="requestProtectedLink('https://docs.google.com/spreadsheets/d/16PmMztvhkA9PnYOXoRF7IyeVmvqkIa-I89CCcT6iElU/edit?usp=sharing')" class="premium-card p-12 text-indigo-600 cursor-pointer">
+                        <div class="icon-box w-20 h-20 text-4xl bg-indigo-50 text-indigo-600 border border-indigo-100 shadow-xl shadow-indigo-100/50 mb-6"><i class="fas fa-database"></i></div>
+                        <h3 class="text-2xl professional-label mb-3">Master Material</h3>
+                        <p class="text-slate-500 text-sm">Informasi Data Master Material Data.</p>
+                    </div>
                 </div>
             </section>
 
             <!-- HOME SECTION -->
             <section id="home-section" class="animate-fade pb-6 space-y-5">
+                <div id="btn-back-catalogue-container" class="hidden">
+                    <button onclick="goToHome()" class="btn-back mb-0"><i class="fas fa-chevron-left"></i> Back to Catalogue</button>
+                </div>
                 <div class="text-center space-y-2">
                     <div class="inline-flex px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-[10px] font-black uppercase tracking-widest">Main Hub</div>
                     <h1 class="text-2xl lg:text-3xl font-black text-slate-900 tracking-tight">Portal Manajemen Master Data</h1>
                 </div>
 
                 <div id="home-card-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5 gap-3">
-                    <div onclick="showSection('monitor-section')" class="premium-card p-3 text-emerald-600">
+                    <div id="card-activity-monitor" onclick="showSection('monitor-section')" class="premium-card p-3 text-emerald-600">
                         <div class="icon-box bg-emerald-50 text-emerald-600 border border-emerald-100 shadow-md shadow-emerald-100/50"><i class="fas fa-desktop"></i></div>
                         <h3 class="text-[11px] professional-label mb-1 leading-tight">Activity Monitor</h3>
                         <p class="text-slate-500 text-[9px] mb-2 line-clamp-2 leading-tight">Pantau progress pengajuan secara real-time.</p>
@@ -433,7 +446,7 @@
                         <div class="icon-box bg-blue-50 text-blue-500 border border-blue-100 shadow-md shadow-blue-100/50"><i class="fas fa-chalkboard-user"></i></div>
                         <h3 class="text-[11px] professional-label mb-1 leading-tight">TRANSFER KNOWLEDGE</h3>
                         <p class="text-slate-500 text-[9px] mb-2 line-clamp-2 leading-tight">Materi pelatihan dan dokumentasi sistem.</p>
-                        <button class="w-full mt-auto py-1.5 bg-blue-50 text-white rounded-lg font-black text-[9px] uppercase shadow-sm shadow-blue-200">Buka Modul</button>
+                        <button class="w-full mt-auto py-1.5 bg-blue-500 text-white rounded-lg font-black text-[9px] uppercase shadow-sm shadow-blue-200">Buka Modul</button>
                     </div>
 
                     <div onclick="window.notify('Informasi', 'Modul REVISI KODE MATERIAL sedang dalam pengembangan.', 'success')" class="premium-card p-3 text-orange-600">
@@ -448,20 +461,6 @@
                         <h3 class="text-[11px] professional-label mb-1 leading-tight">SETTING INTRANSIT PO</h3>
                         <p class="text-slate-500 text-[9px] mb-2 line-clamp-2 leading-tight">Monitoring dan pengaturan stok dalam perjalanan.</p>
                         <button class="w-full mt-auto py-1.5 bg-emerald-500 text-white rounded-lg font-black text-[9px] uppercase shadow-sm shadow-emerald-200">Buka Modul</button>
-                    </div>
-
-                    <div id="card-db-req" onclick="requestProtectedLink('https://docs.google.com/spreadsheets/d/1Bu4_lnZJe-NAezO0Jyw2AkqQk0bdVFTU8VrIlSn3eJY/edit?usp=sharing')" class="premium-card p-3 text-emerald-600">
-                        <div class="icon-box bg-emerald-50 text-emerald-600 border border-emerald-100 shadow-md shadow-emerald-100/50"><i class="fas fa-file-excel"></i></div>
-                        <h3 class="text-[11px] professional-label mb-1 leading-tight">DATABASE REQUEST</h3>
-                        <p class="text-slate-500 text-[9px] mb-2 line-clamp-2 leading-tight">Informasi Data Database Request Log.</p>
-                        <button class="w-full mt-auto py-1.5 bg-emerald-600 text-white rounded-lg font-black text-[9px] uppercase shadow-sm shadow-emerald-200">Buka Data</button>
-                    </div>
-
-                    <div id="card-master" onclick="requestProtectedLink('https://docs.google.com/spreadsheets/d/16PmMztvhkA9PnYOXoRF7IyeVmvqkIa-I89CCcT6iElU/edit?usp=sharing')" class="premium-card p-3 text-blue-600">
-                        <div class="icon-box bg-blue-50 text-blue-600 border border-blue-100 shadow-md shadow-blue-100/50"><i class="fas fa-database"></i></div>
-                        <h3 class="text-[11px] professional-label mb-1 leading-tight">MASTER MATERIAL</h3>
-                        <p class="text-slate-500 text-[9px] mb-2 line-clamp-2 leading-tight">Informasi Data Master Material Data.</p>
-                        <button class="w-full mt-auto py-1.5 bg-blue-600 text-white rounded-lg font-black text-[9px] uppercase shadow-sm shadow-blue-200">Buka Data</button>
                     </div>
                 </div>
             </section>
@@ -683,14 +682,6 @@
             </section>
         </div>
 
-        <div id="toast" class="fixed bottom-10 right-10 flex items-center gap-6 bg-slate-900 text-white px-8 py-5 rounded-[2rem] shadow-2xl translate-y-40 opacity-0 transition-all z-[3000] border border-slate-700">
-            <div id="toast-icon" class="w-10 h-10 rounded-xl flex items-center justify-center text-lg"></div>
-            <div>
-                <p id="t-title" class="font-black text-sm"></p>
-                <p id="t-msg" class="text-[10px] text-slate-400 font-medium"></p>
-            </div>
-        </div>
-
         <!-- Resume Transaction Modal -->
         <div id="resume-modal" class="hidden fixed inset-0 z-[5000] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
             <div class="bg-white rounded-[2rem] p-8 max-w-sm w-full shadow-2xl text-center">
@@ -785,6 +776,26 @@
         </div>
     </main>
 
+    <div id="toast" class="fixed bottom-10 right-10 flex items-center gap-6 bg-slate-900 text-white px-8 py-5 rounded-[2rem] shadow-2xl translate-y-40 opacity-0 transition-all z-[3000] border border-slate-700">
+        <div id="toast-icon" class="w-10 h-10 rounded-xl flex items-center justify-center text-lg"></div>
+        <div>
+            <p id="t-title" class="font-black text-sm"></p>
+            <p id="t-msg" class="text-[10px] text-slate-400 font-medium"></p>
+        </div>
+    </div>
+
+    <!-- Login Error Modal -->
+    <div id="login-error-modal" class="hidden fixed inset-0 z-[6000] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 animate-fade">
+        <div class="bg-white rounded-[2rem] p-8 max-w-sm w-full shadow-2xl text-center">
+            <div class="w-20 h-20 bg-red-100 text-red-600 rounded-[2rem] flex items-center justify-center text-4xl mx-auto mb-6 shadow-lg shadow-red-100">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <h3 id="login-error-title" class="text-2xl font-black text-slate-900 tracking-tight mb-2">Gagal Login</h3>
+            <p id="login-error-msg" class="text-[12px] text-slate-500 mb-8 font-bold tracking-widest uppercase">Pesan Error</p>
+            <button onclick="closeLoginErrorModal()" class="w-full py-4 bg-slate-900 text-white font-black rounded-xl uppercase text-xs shadow-lg hover:bg-slate-800 transition-colors">Tutup</button>
+        </div>
+    </div>
+
     <script type="module">
         const scriptURL = "https://script.google.com/macros/s/AKfycbyR2spJCAxKQ-DViYl8JI8vMrcTqDTHez67DAHWcufvflC8dbNaBAEaxyGxt2sMqCQ1/exec";
         const csvPubURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQFR3WLBquvFttCMJlrZQOrK2u8TMm3Dhj2yMukhbakAC5LdUAndnaPn6FesXRWUl5R1IHmAuKDRnER/pub?gid=1089770718&single=true&output=csv";
@@ -796,6 +807,7 @@
         let currentUserDept = "";
         let currentUserPlant = "";
         let pendingSectionToOpen = ""; // Untuk menyimpan state menu draf
+        let loginAttempts = 0;
 
         const USER_CREDENTIALS = {
             "PLANT": { password: "PLANT1234", dept: "PLANT" },
@@ -947,35 +959,70 @@
         };
         // ----------------------------------------------------
 
+        window.showLoginError = function(title, msg) {
+            document.getElementById('login-error-title').innerText = title;
+            document.getElementById('login-error-msg').innerText = msg;
+            document.getElementById('login-error-modal').classList.remove('hidden');
+        };
+
+        window.closeLoginErrorModal = function() {
+            document.getElementById('login-error-modal').classList.add('hidden');
+        };
+
         window.handleMainLogin = function() {
             const uInput = document.getElementById('login-username').value.trim();
             const pInput = document.getElementById('login-password').value.trim();
             const plInput = document.getElementById('login-plant').value.trim();
 
-            if (!uInput || !pInput) return window.notify('Input Kosong', 'Silakan isi username dan password.', 'error');
+            if (!uInput || !pInput) return window.showLoginError('Input Kosong', 'Silakan isi username dan password.');
 
             const foundKey = Object.keys(USER_CREDENTIALS).find(key => key.toLowerCase() === uInput.toLowerCase());
             
-            if (foundKey && USER_CREDENTIALS[foundKey].password === pInput) {
-                currentUserDept = USER_CREDENTIALS[foundKey].dept;
-                currentUserPlant = plInput;
-
-                // --- ADDED LOGIC FOR CARD FILTERING ---
-                const restrictedCards = ['card-migo', 'card-rel-po', 'card-block', 'card-pr', 'card-add-sloc', 'card-role', 'card-intransit', 'card-db-req', 'card-master'];
-                const cardGrid = document.getElementById('home-card-grid');
-                
-                // Reset all to visible and default size
-                restrictedCards.forEach(id => {
-                    const el = document.getElementById(id);
-                    if (el) el.style.display = 'flex';
-                });
-                if (cardGrid) {
-                    cardGrid.className = "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5 gap-3";
-                    Array.from(cardGrid.children).forEach(card => card.classList.remove('large-mode'));
+            if (!foundKey) {
+                loginAttempts++;
+                if (loginAttempts >= 3) {
+                    return window.showLoginError('Akses Diblokir', 'Silahkan hubungi team catalogue untuk mendapatkan Password.');
                 }
+                return window.showLoginError('Gagal Login', 'User name tidak sesuai.');
+            }
 
-                // Hide for non-LOG and non-CATALOGUE
-                if (currentUserDept !== "LOG" && currentUserDept !== "CATALOGUE") {
+            if (USER_CREDENTIALS[foundKey].password !== pInput) {
+                loginAttempts++;
+                if (loginAttempts >= 3) {
+                    return window.showLoginError('Akses Diblokir', 'Silahkan hubungi team catalogue untuk mendapatkan Password.');
+                } else {
+                    return window.showLoginError('Gagal Login', 'Password yang Anda masukkan tidak sesuai.');
+                }
+            }
+
+            loginAttempts = 0; // Reset on success
+
+            currentUserDept = USER_CREDENTIALS[foundKey].dept;
+            currentUserPlant = plInput;
+
+            // --- ADDED LOGIC FOR CARD FILTERING ---
+            const restrictedCards = ['card-migo', 'card-rel-po', 'card-block', 'card-pr', 'card-add-sloc', 'card-role', 'card-intransit'];
+            const cardGrid = document.getElementById('home-card-grid');
+            
+            // Reset all to visible and default size
+            restrictedCards.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.style.display = 'flex';
+            });
+
+            // Reset Activity Monitor & Back Button for Catalogue
+            const actMon = document.getElementById('card-activity-monitor');
+            if(actMon) actMon.style.display = 'flex';
+            const btnBackCat = document.getElementById('btn-back-catalogue-container');
+            if(btnBackCat) btnBackCat.classList.add('hidden');
+
+            if (cardGrid) {
+                cardGrid.className = "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5 gap-3";
+                Array.from(cardGrid.children).forEach(card => card.classList.remove('large-mode'));
+            }
+
+            // Hide for non-LOG and non-CATALOGUE
+            if (currentUserDept !== "LOG" && currentUserDept !== "CATALOGUE") {
                     restrictedCards.forEach(id => {
                         const el = document.getElementById(id);
                         if (el) el.style.display = 'none';
@@ -997,6 +1044,11 @@
                         });
                     }
                 }
+
+                if (currentUserDept === "CATALOGUE") {
+                    if(actMon) actMon.style.display = 'none'; // Hide Activity Monitor inside Form Hub
+                    if(btnBackCat) btnBackCat.classList.remove('hidden'); // Show back button
+                }
                 // --------------------------------------
                 
                 document.getElementById('login-section').style.display = 'none';
@@ -1016,6 +1068,15 @@
                     checkAlarmStats();
                 }
                 
+                // Polling otomatis untuk notifikasi tanpa refresh halaman
+                if(window.globalAlarmInterval) clearInterval(window.globalAlarmInterval);
+                window.globalAlarmInterval = setInterval(() => {
+                    checkAlarmStats(true);
+                    if (currentUserDept === "CATALOGUE" && !document.getElementById('cat-access-modal').classList.contains('hidden')) {
+                        showCatAccessModal(true);
+                    }
+                }, 15000); // Mengecek request baru setiap 15 detik
+                
                 let badgeText = `SESSION: ${currentUserDept}`;
                 if (currentUserPlant) badgeText += ` | ${currentUserPlant}`;
                 document.getElementById('session-badge').innerText = badgeText;
@@ -1027,9 +1088,6 @@
                 if(mReqDept) mReqDept.value = currentUserDept;
                 
                 window.notify('Berhasil Masuk', `Selamat datang di modul Dept ${currentUserDept}`, 'success');
-            } else {
-                window.notify('Gagal Login', 'Username atau Password salah. Periksa huruf besar/kecil pada password.', 'error');
-            }
         };
 
         window.notify = function(title, msg, type) {
@@ -2113,12 +2171,14 @@
             } finally {
                 document.getElementById('loader').style.display = 'none';
             }
-        };
+        }; // <-- FIXED THIS CLOSING BRACE
 
-        window.showCatAccessModal = async function() {
+        window.showCatAccessModal = async function(isAutoSync = false) {
             document.getElementById('cat-access-modal').classList.remove('hidden');
             const listEl = document.getElementById('cat-access-list');
-            listEl.innerHTML = `<div class="text-center text-sm text-slate-500 py-4"><i class="fas fa-circle-notch animate-spin"></i> Memuat data...</div>`;
+            if (!isAutoSync) {
+                listEl.innerHTML = `<div class="text-center text-sm text-slate-500 py-4"><i class="fas fa-circle-notch animate-spin"></i> Memuat data...</div>`;
+            }
             
             try {
                 const res = await fetchWithRetry(csvAccessURL + '&t=' + new Date().getTime());
@@ -2546,11 +2606,13 @@
             document.getElementById('alarm-modal').classList.add('hidden');
         };
 
-        window.checkAlarmStats = async function() {
+        window.checkAlarmStats = async function(isAutoSync = false) {
             const alarmBadge = document.getElementById('alarm-badge');
             const alarmContent = document.getElementById('alarm-content');
             
-            alarmContent.innerHTML = `<div class="text-center text-sm text-slate-500 py-4"><i class="fas fa-circle-notch animate-spin text-orange-500 text-2xl mb-2"></i><br>Menghitung data...</div>`;
+            if (!isAutoSync) {
+                alarmContent.innerHTML = `<div class="text-center text-sm text-slate-500 py-4"><i class="fas fa-circle-notch animate-spin text-orange-500 text-2xl mb-2"></i><br>Menghitung data...</div>`;
+            }
             
             try {
                 if (currentUserDept === "CATALOGUE") {
@@ -2776,6 +2838,7 @@
                 currentMaintIdx = 0;
                 
                 if(window.accessPollInterval) clearInterval(window.accessPollInterval);
+                if(window.globalAlarmInterval) clearInterval(window.globalAlarmInterval);
                 document.getElementById('btn-alarm').classList.add('hidden');
                 document.getElementById('btn-access-cat').classList.add('hidden');
                 
@@ -2793,8 +2856,43 @@
             initFormListeners(); 
             
             document.getElementById('login-username').focus();
-            document.addEventListener('keypress', (e) => { 
-                if (e.key === 'Enter' && !document.getElementById('login-section').classList.contains('hidden')) handleMainLogin(); 
+            
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    if (e.target.tagName === 'TEXTAREA') return;
+
+                    if (e.target.closest('form')) {
+                        e.preventDefault();
+                    }
+
+                    if (!document.getElementById('login-section').classList.contains('hidden')) {
+                        if (e.target.id === 'login-username') {
+                            e.preventDefault();
+                            document.getElementById('login-password').focus();
+                            return;
+                        } else if (e.target.id === 'login-password') {
+                            e.preventDefault();
+                            document.getElementById('login-plant').focus();
+                            return;
+                        } else if (e.target.id === 'login-plant') {
+                            e.preventDefault();
+                            handleMainLogin();
+                            return;
+                        }
+                    }
+
+                    if (e.target.classList.contains('input-field')) {
+                        e.preventDefault();
+                        const container = e.target.closest('section, .modal-alarm, .bg-white');
+                        if (container) {
+                            const focusableElements = Array.from(container.querySelectorAll('input.input-field:not([disabled]):not([readonly]), select.input-field:not([disabled]):not([readonly]), button:not([disabled])')).filter(el => el.offsetWidth > 0 && el.offsetHeight > 0);
+                            const currentIndex = focusableElements.indexOf(e.target);
+                            if (currentIndex > -1 && currentIndex < focusableElements.length - 1) {
+                                focusableElements[currentIndex + 1].focus();
+                            }
+                        }
+                    }
+                }
             });
         };
     </script>
