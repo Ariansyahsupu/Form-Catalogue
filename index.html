@@ -473,24 +473,52 @@
                 <div class="max-w-full mx-auto px-2 lg:px-4">
                     <button onclick="goToHome()" class="btn-back"><i class="fas fa-chevron-left"></i> Back</button>
                     
-                    <!-- Selection Menu (Create / Maintain) -->
-                    <div id="monitor-selection-menu" class="max-w-4xl mx-auto mt-4 animate-fade">
+                    <!-- Selection Menu -->
+                    <div id="monitor-selection-menu" class="max-w-6xl mx-auto mt-4 animate-fade">
                         <div class="text-center mb-8">
                             <h2 class="text-2xl font-black text-slate-900 tracking-tight mb-2">Pilih Modul Monitoring</h2>
                             <p class="text-slate-400 font-bold uppercase text-[10px] tracking-[0.2em]">Pilih jenis pengajuan yang ingin dipantau</p>
                         </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div onclick="openMonitorView('CREATE')" class="premium-card p-8 text-orange-500 cursor-pointer">
-                                <div class="icon-box bg-orange-50 text-orange-500 border border-orange-100 shadow-lg shadow-orange-100/50"><i class="fas fa-plus-circle"></i></div>
-                                <h3 class="text-lg professional-label mb-2">Monitor Create Material</h3>
-                                <p class="text-slate-500 text-[10px] mb-6">Pantau status registrasi material code baru.</p>
-                                <button class="w-full mt-auto py-3 bg-orange-500 text-white rounded-xl font-black text-[10px] uppercase shadow-sm shadow-orange-200 pointer-events-none">Buka Data</button>
+                        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                            <div onclick="openMonitorView('CREATE')" class="premium-card p-6 text-orange-500 cursor-pointer">
+                                <div class="icon-box bg-orange-50 text-orange-500 border border-orange-100"><i class="fas fa-plus-circle"></i></div>
+                                <h3 class="text-[11px] professional-label mb-1">Create Material</h3>
+                                <button class="w-full mt-auto py-2 bg-orange-500 text-white rounded-xl font-black text-[9px] uppercase shadow-sm pointer-events-none">Buka Data</button>
                             </div>
-                            <div onclick="openMonitorView('MAINTAIN')" class="premium-card p-8 text-blue-600 cursor-pointer">
-                                <div class="icon-box bg-blue-50 text-blue-600 border border-blue-100 shadow-lg shadow-blue-100/50"><i class="fas fa-screwdriver-wrench"></i></div>
-                                <h3 class="text-lg professional-label mb-2">Monitor Maintain Material</h3>
-                                <p class="text-slate-500 text-[10px] mb-6">Pantau status pembaruan / maintain item.</p>
-                                <button class="w-full mt-auto py-3 bg-blue-600 text-white rounded-xl font-black text-[10px] uppercase shadow-sm shadow-blue-200 pointer-events-none">Buka Data</button>
+                            <div onclick="openMonitorView('MAINTAIN')" class="premium-card p-6 text-blue-600 cursor-pointer">
+                                <div class="icon-box bg-blue-50 text-blue-600 border border-blue-100"><i class="fas fa-screwdriver-wrench"></i></div>
+                                <h3 class="text-[11px] professional-label mb-1">Maintain Material</h3>
+                                <button class="w-full mt-auto py-2 bg-blue-600 text-white rounded-xl font-black text-[9px] uppercase shadow-sm pointer-events-none">Buka Data</button>
+                            </div>
+                            <div onclick="openMonitorView('MIGO')" class="premium-card p-6 text-indigo-600 cursor-pointer">
+                                <div class="icon-box bg-indigo-50 text-indigo-600 border border-indigo-100"><i class="fas fa-truck-ramp-box"></i></div>
+                                <h3 class="text-[11px] professional-label mb-1">Transaksi Migo</h3>
+                                <button class="w-full mt-auto py-2 bg-indigo-600 text-white rounded-xl font-black text-[9px] uppercase shadow-sm pointer-events-none">Buka Data</button>
+                            </div>
+                            <div onclick="openMonitorView('RELPO')" class="premium-card p-6 text-violet-600 cursor-pointer">
+                                <div class="icon-box bg-violet-50 text-violet-600 border border-violet-100"><i class="fas fa-file-signature"></i></div>
+                                <h3 class="text-[11px] professional-label mb-1">Rel / Unrel PR/PO</h3>
+                                <button class="w-full mt-auto py-2 bg-violet-600 text-white rounded-xl font-black text-[9px] uppercase shadow-sm pointer-events-none">Buka Data</button>
+                            </div>
+                            <div onclick="openMonitorView('PR')" class="premium-card p-6 text-cyan-600 cursor-pointer">
+                                <div class="icon-box bg-cyan-50 text-cyan-600 border border-cyan-100"><i class="fas fa-file-invoice"></i></div>
+                                <h3 class="text-[11px] professional-label mb-1">Transaksi PR</h3>
+                                <button class="w-full mt-auto py-2 bg-cyan-600 text-white rounded-xl font-black text-[9px] uppercase shadow-sm pointer-events-none">Buka Data</button>
+                            </div>
+                            <div onclick="openMonitorView('ADDSLOC')" class="premium-card p-6 text-teal-600 cursor-pointer">
+                                <div class="icon-box bg-teal-50 text-teal-600 border border-teal-100"><i class="fas fa-warehouse"></i></div>
+                                <h3 class="text-[11px] professional-label mb-1">Additional Storage</h3>
+                                <button class="w-full mt-auto py-2 bg-teal-600 text-white rounded-xl font-black text-[9px] uppercase shadow-sm pointer-events-none">Buka Data</button>
+                            </div>
+                            <div onclick="openMonitorView('INTRANSIT')" class="premium-card p-6 text-emerald-500 cursor-pointer">
+                                <div class="icon-box bg-emerald-50 text-emerald-500 border border-emerald-100"><i class="fas fa-clock-rotate-left"></i></div>
+                                <h3 class="text-[11px] professional-label mb-1">Intransit PO</h3>
+                                <button class="w-full mt-auto py-2 bg-emerald-500 text-white rounded-xl font-black text-[9px] uppercase shadow-sm pointer-events-none">Buka Data</button>
+                            </div>
+                            <div onclick="openMonitorView('ROLE')" class="premium-card p-6 text-slate-600 cursor-pointer">
+                                <div class="icon-box bg-slate-50 text-slate-600 border border-slate-100"><i class="fas fa-user-shield"></i></div>
+                                <h3 class="text-[11px] professional-label mb-1">User Role Access</h3>
+                                <button class="w-full mt-auto py-2 bg-slate-600 text-white rounded-xl font-black text-[9px] uppercase shadow-sm pointer-events-none">Buka Data</button>
                             </div>
                         </div>
                     </div>
@@ -1061,6 +1089,14 @@
         const csvAccessURL = "https://docs.google.com/spreadsheets/d/1Bu4_lnZJe-NAezO0Jyw2AkqQk0bdVFTU8VrIlSn3eJY/export?format=csv&gid=242300721";
         const csvCreateMatURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQf_Og1jqJhzDmiLJYNEaL_NK_jYS7-Y9tpNcFaI1qBaI57ql11fRVHAP42anjct-vwvOKw-CGlikLU/pub?gid=1174357410&single=true&output=csv";
         const csvMaintainMatURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQf_Og1jqJhzDmiLJYNEaL_NK_jYS7-Y9tpNcFaI1qBaI57ql11fRVHAP42anjct-vwvOKw-CGlikLU/pub?gid=0&single=true&output=csv";
+
+        // CSV Links untuk Monitoring Baru
+        const csvMigoURL = "https://docs.google.com/spreadsheets/d/1Bu4_lnZJe-NAezO0Jyw2AkqQk0bdVFTU8VrIlSn3eJY/export?format=csv&gid=490029289";
+        const csvRelpoURL = "https://docs.google.com/spreadsheets/d/1Bu4_lnZJe-NAezO0Jyw2AkqQk0bdVFTU8VrIlSn3eJY/export?format=csv&gid=937908262";
+        const csvPrURL = "https://docs.google.com/spreadsheets/d/1Bu4_lnZJe-NAezO0Jyw2AkqQk0bdVFTU8VrIlSn3eJY/export?format=csv&gid=1913979496";
+        const csvAddslocURL = "https://docs.google.com/spreadsheets/d/1Bu4_lnZJe-NAezO0Jyw2AkqQk0bdVFTU8VrIlSn3eJY/export?format=csv&gid=1566382419";
+        const csvIntransitURL = "https://docs.google.com/spreadsheets/d/1Bu4_lnZJe-NAezO0Jyw2AkqQk0bdVFTU8VrIlSn3eJY/export?format=csv&gid=950997119";
+        const csvRoleURL = "https://docs.google.com/spreadsheets/d/1Bu4_lnZJe-NAezO0Jyw2AkqQk0bdVFTU8VrIlSn3eJY/export?format=csv&gid=261859756";
 
         // Global State & User Config
         let currentUserDept = "";
@@ -2867,39 +2903,60 @@
         let currentMonitorMode = 'CREATE';
         let currentFeedbackMode = 'CREATE';
 
+        // Konfigurasi kolom untuk memproses monitoring secara dinamis
+        const modeConfig = {
+            'CREATE': { colCount: 8 },
+            'MAINTAIN': { colCount: 7 },
+            'MIGO': { colCount: 7 },
+            'RELPO': { colCount: 7 },
+            'PR': { colCount: 7 },
+            'ADDSLOC': { colCount: 7 },
+            'INTRANSIT': { colCount: 7 },
+            'ROLE': { colCount: 7 }
+        };
+
         window.openMonitorView = function(mode) {
             currentMonitorMode = mode;
             document.getElementById('monitor-selection-menu').classList.add('hidden');
             document.getElementById('monitor-data-view').classList.remove('hidden');
 
-            const title = mode === 'CREATE' ? 'Monitor Create Material' : 'Monitor Maintain Material';
-            document.getElementById('monitor-title-label').innerText = title;
+            const titleMap = {
+                'CREATE': 'Monitor Create Material',
+                'MAINTAIN': 'Monitor Maintain Material',
+                'MIGO': 'Monitor Transaksi MIGO',
+                'RELPO': 'Monitor Realize/Unrealize PR/PO',
+                'PR': 'Monitor Transaksi PR',
+                'ADDSLOC': 'Monitor Additional Storage',
+                'INTRANSIT': 'Monitor Setting Intransit PO',
+                'ROLE': 'Monitor User Role Access'
+            };
+
+            document.getElementById('monitor-title-label').innerText = titleMap[mode] || 'Monitor Data';
 
             const thead = document.getElementById('monitor-table-head');
-            if (mode === 'CREATE') {
-                thead.innerHTML = `<tr>
-                    <th>Tanggal Request</th>
-                    <th>Pengaju</th>
-                    <th>Departemen</th>
-                    <th>Part Number</th>
-                    <th>Nomor Material</th>
-                    <th>Deskripsi Material</th>
-                    <th>Progress / Remarks</th>
-                    <th>Waktu Penyelesaian</th>
-                </tr>`;
-            } else {
-                thead.innerHTML = `<tr>
-                    <th>Tanggal Request</th>
-                    <th>Pengaju</th>
-                    <th>Departemen</th>
-                    <th>Material Code</th>
-                    <th>Target (Plant/SLoc/Bin)</th>
-                    <th>Progress / Remarks</th>
-                    <th>Waktu Penyelesaian</th>
-                </tr>`;
-            }
+            let theadHtml = '';
 
-            const colCount = mode === 'CREATE' ? 8 : 7;
+            if (mode === 'CREATE') {
+                theadHtml = `<tr><th>Tanggal Request</th><th>Pengaju</th><th>Departemen</th><th>Part Number</th><th>Nomor Material</th><th>Deskripsi Material</th><th>Progress / Remarks</th><th>Waktu Penyelesaian</th></tr>`;
+            } else if (mode === 'MAINTAIN') {
+                theadHtml = `<tr><th>Tanggal Request</th><th>Pengaju</th><th>Departemen</th><th>Material Code</th><th>Target (Plant/SLoc/Bin)</th><th>Progress / Remarks</th><th>Waktu Penyelesaian</th></tr>`;
+            } else if (mode === 'MIGO') {
+                theadHtml = `<tr><th>Tanggal Request</th><th>Pengaju</th><th>Dept</th><th>Sub Transaksi</th><th>Detail Transaksi</th><th>Progress / Remarks</th><th>Waktu Penyelesaian</th></tr>`;
+            } else if (mode === 'RELPO') {
+                theadHtml = `<tr><th>Tanggal Request</th><th>Pengaju</th><th>Dept</th><th>No PR/PO</th><th>Metadata</th><th>Progress / Remarks</th><th>Waktu Penyelesaian</th></tr>`;
+            } else if (mode === 'PR') {
+                theadHtml = `<tr><th>Tanggal Request</th><th>Pengaju</th><th>Dept</th><th>Plant</th><th>Material (Qty)</th><th>Progress / Remarks</th><th>Waktu Penyelesaian</th></tr>`;
+            } else if (mode === 'ADDSLOC') {
+                theadHtml = `<tr><th>Tanggal Request</th><th>Pengaju</th><th>Dept</th><th>Plant</th><th>Request SLoc</th><th>Progress / Remarks</th><th>Waktu Penyelesaian</th></tr>`;
+            } else if (mode === 'INTRANSIT') {
+                theadHtml = `<tr><th>Tanggal Request</th><th>Pengaju</th><th>Dept</th><th>No PO</th><th>Setting</th><th>Progress / Remarks</th><th>Waktu Penyelesaian</th></tr>`;
+            } else if (mode === 'ROLE') {
+                theadHtml = `<tr><th>Tanggal Request</th><th>Pengaju</th><th>Dept</th><th>Plant</th><th>T-code</th><th>Progress / Remarks</th><th>Waktu Penyelesaian</th></tr>`;
+            }
+            
+            thead.innerHTML = theadHtml;
+
+            const colCount = modeConfig[mode].colCount;
             document.getElementById('monitor-list').innerHTML = `<tr><td colspan="${colCount}" class="px-8 py-24 text-center text-slate-400 text-[12px] font-bold uppercase tracking-widest">Menyinkronkan Aktivitas Terbaru...</td></tr>`;
 
             syncMonitoringData();
@@ -2914,136 +2971,179 @@
             if (!currentUserDept) return; 
             const monitorList = document.getElementById('monitor-list');
             try {
-                const targetURL = currentMonitorMode === 'CREATE' ? csvCreateMatURL : csvMaintainMatURL;
+                let targetURL = "";
+                if (currentMonitorMode === 'CREATE') targetURL = csvCreateMatURL;
+                else if (currentMonitorMode === 'MAINTAIN') targetURL = csvMaintainMatURL;
+                else if (currentMonitorMode === 'MIGO') targetURL = csvMigoURL;
+                else if (currentMonitorMode === 'RELPO') targetURL = csvRelpoURL;
+                else if (currentMonitorMode === 'PR') targetURL = csvPrURL;
+                else if (currentMonitorMode === 'ADDSLOC') targetURL = csvAddslocURL;
+                else if (currentMonitorMode === 'INTRANSIT') targetURL = csvIntransitURL;
+                else if (currentMonitorMode === 'ROLE') targetURL = csvRoleURL;
+
                 const response = await fetchWithRetry(targetURL);
                 const csvText = await response.text();
                 const lines = csvText.split(/\r?\n/);
                 let html = "";
                 const isCatalogue = currentUserDept === "CATALOGUE";
-                const colCount = currentMonitorMode === 'CREATE' ? 8 : 7;
+                const colCount = modeConfig[currentMonitorMode].colCount;
                 
                 for (let i = lines.length - 1; i >= 1; i--) {
                     if (!lines[i].trim()) continue;
                     const cols = parseCSVLine(lines[i]);
                     
+                    let reqId = cols[0] ? cols[0].trim() : "";
+                    let originalRemarks = "";
+                    let originalTime = "";
+                    let recordDept = "";
+                    let reqName = "";
+                    let plantVal = "";
+                    let materialCode = "";
+
                     if (currentMonitorMode === 'CREATE') {
-                        const recordDept = (cols[29] || "").toUpperCase().trim();
-                        if (!isCatalogue && recordDept !== currentUserDept) continue;
+                        recordDept = (cols[29] || "").toUpperCase().trim();
+                        originalRemarks = cols[30] ? cols[30].trim() : "DALAM PROSES";
+                        originalTime = cols[31] ? cols[31].trim() : "";
+                        materialCode = cols[7] || "-";
+                        reqName = cols[28] || "-";
+                    } else if (currentMonitorMode === 'MAINTAIN') {
+                        recordDept = (cols[7] || "").toUpperCase().trim();
+                        originalRemarks = cols[10] ? cols[10].trim() : "DALAM PROSES";
+                        originalTime = cols[8] ? cols[8].trim() : "";
+                        materialCode = cols[1] || "-";
+                        reqName = cols[6] || "-";
+                    } else if (currentMonitorMode === 'MIGO') {
+                        recordDept = (cols[16] || "").toUpperCase().trim();
+                        originalRemarks = cols[20] ? cols[20].trim() : "DALAM PROSES";
+                        originalTime = cols[17] ? cols[17].trim() : "";
+                        materialCode = cols[1] || "-";
+                        reqName = cols[15] || "-";
+                        plantVal = (cols[3] || "") + (cols[4] || "");
+                    } else if (currentMonitorMode === 'RELPO') {
+                        recordDept = (cols[4] || "").toUpperCase().trim();
+                        originalRemarks = cols[6] ? cols[6].trim() : "DALAM PROSES";
+                        originalTime = cols[5] ? cols[5].trim() : "";
+                        materialCode = cols[1] || "-";
+                        reqName = cols[3] || "-";
+                    } else if (currentMonitorMode === 'PR') {
+                        recordDept = (cols[6] || "").toUpperCase().trim();
+                        originalRemarks = cols[9] ? cols[9].trim() : "DALAM PROSES";
+                        originalTime = cols[7] ? cols[7].trim() : "";
+                        materialCode = cols[1] || "-";
+                        reqName = cols[5] || "-";
+                        plantVal = cols[3] || "";
+                    } else if (currentMonitorMode === 'ADDSLOC') {
+                        recordDept = (cols[7] || "").toUpperCase().trim();
+                        originalRemarks = cols[9] ? cols[9].trim() : "DALAM PROSES";
+                        originalTime = cols[8] ? cols[8].trim() : "";
+                        materialCode = cols[1] || "-"; // Request SLoc
+                        reqName = cols[6] || "-";
+                        plantVal = cols[4] || "";
+                    } else if (currentMonitorMode === 'INTRANSIT') {
+                        recordDept = (cols[5] || "").toUpperCase().trim();
+                        originalRemarks = cols[7] ? cols[7].trim() : "DALAM PROSES";
+                        originalTime = cols[6] ? cols[6].trim() : "";
+                        materialCode = cols[1] || "-"; // No PO
+                        reqName = cols[4] || "-";
+                    } else if (currentMonitorMode === 'ROLE') {
+                        recordDept = (cols[6] || "").toUpperCase().trim();
+                        originalRemarks = cols[8] ? cols[8].trim() : "DALAM PROSES";
+                        originalTime = cols[7] ? cols[7].trim() : "";
+                        materialCode = cols[1] || "-"; // T-code
+                        reqName = cols[5] || "-";
+                        plantVal = cols[2] || "";
+                    }
 
-                        // --- LOGIKA FILTER PLANT ---
-                        if (currentUserPlant) {
-                            const rowHasPlant = cols.some(c => c && c.trim().toUpperCase() === currentUserPlant);
-                            if (!rowHasPlant) continue;
+                    // --- FILTER DEPT ---
+                    if (!isCatalogue && recordDept !== currentUserDept) continue;
+
+                    // --- FILTER PLANT ---
+                    if (currentUserPlant && (currentMonitorMode === 'CREATE' || currentMonitorMode === 'MAINTAIN' || currentMonitorMode === 'MIGO' || currentMonitorMode === 'PR' || currentMonitorMode === 'ADDSLOC' || currentMonitorMode === 'ROLE')) {
+                        let rowHasPlant = false;
+                        if (currentMonitorMode === 'CREATE' || currentMonitorMode === 'MAINTAIN') {
+                            rowHasPlant = cols.some(c => c && c.trim().toUpperCase() === currentUserPlant);
+                        } else {
+                            rowHasPlant = plantVal.toUpperCase().includes(currentUserPlant);
                         }
-                        // -------------------------
+                        if (!rowHasPlant) continue;
+                    }
 
-                        const reqId = cols[0] ? cols[0].trim() : "";
-                        const originalRemarks = cols[30] ? cols[30].trim() : "";
-                        const originalTime = cols[31] ? cols[31].trim() : "";
-                        
-                        const remarks = LOCAL_FEEDBACK.has(reqId) ? LOCAL_FEEDBACK.get(reqId) : (originalRemarks || "DALAM PROSES");
-                        const completionTime = LOCAL_FEEDBACK_TIME.has(reqId) ? LOCAL_FEEDBACK_TIME.get(reqId) : originalTime;
+                    const remarks = LOCAL_FEEDBACK.has(reqId) ? LOCAL_FEEDBACK.get(reqId) : originalRemarks;
+                    const completionTime = LOCAL_FEEDBACK_TIME.has(reqId) ? LOCAL_FEEDBACK_TIME.get(reqId) : originalTime;
 
-                        // --- LOGIKA FILTER BULAN BERJALAN ATAU PENDING ---
-                        const isPending = !completionTime || !remarks.toUpperCase().includes('DONE');
-                        let isCurrentMonth = true;
-                        if (reqId) {
-                            const now = new Date();
-                            let reqM = -1, reqY = -1;
-                            const match = reqId.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/);
-                            if (match) {
-                                let p1 = parseInt(match[1]), p2 = parseInt(match[2]), p3 = parseInt(match[3]);
-                                reqY = p3;
-                                reqM = (p1 > 12) ? p2 - 1 : p2 - 1; // Asumsi DD/MM/YYYY
-                            } else {
-                                const d = new Date(reqId);
-                                if (!isNaN(d.getTime())) { reqM = d.getMonth(); reqY = d.getFullYear(); }
-                            }
-                            if (reqY !== -1 && reqM !== -1) {
-                                isCurrentMonth = (reqM === now.getMonth() && reqY === now.getFullYear());
-                            }
+                    // --- FILTER BULAN PENDING ---
+                    const isPending = !completionTime || !remarks.toUpperCase().includes('DONE');
+                    let isCurrentMonth = true;
+                    if (reqId) {
+                        const now = new Date();
+                        let reqM = -1, reqY = -1;
+                        const match = reqId.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/);
+                        if (match) {
+                            let p1 = parseInt(match[1]), p2 = parseInt(match[2]), p3 = parseInt(match[3]);
+                            reqY = p3;
+                            reqM = (p1 > 12) ? p2 - 1 : p2 - 1; 
+                        } else {
+                            const d = new Date(reqId);
+                            if (!isNaN(d.getTime())) { reqM = d.getMonth(); reqY = d.getFullYear(); }
                         }
-                        if (!isCurrentMonth && !isPending) continue;
-                        // -------------------------------------------------
+                        if (reqY !== -1 && reqM !== -1) {
+                            isCurrentMonth = (reqM === now.getMonth() && reqY === now.getFullYear());
+                        }
+                    }
+                    if (!isCurrentMonth && !isPending) continue;
 
-                        let actionHtml = `<div class="status-badge ${remarks.toUpperCase().includes('REJECT') ? 'bg-red-50 text-red-600' : 'bg-blue-50 text-blue-600'}">${remarks}</div>`;
-                        
-                        if (isCatalogue && !completionTime) {
-                            const safeId = encodeURIComponent(reqId);
-                            const safePn = encodeURIComponent(cols[7] || "");
+                    // --- HTML STATUS BADGE ---
+                    let actionHtml = `<div class="status-badge ${remarks.toUpperCase().includes('REJECT') ? 'bg-red-50 text-red-600' : (remarks.toUpperCase().includes('DONE') ? 'bg-emerald-50 text-emerald-600' : 'bg-blue-50 text-blue-600')}">${remarks}</div>`;
+                    
+                    if (isCatalogue && !completionTime) {
+                        const safeId = encodeURIComponent(reqId);
+                        const safePn = encodeURIComponent(materialCode);
+                        if (currentMonitorMode === 'CREATE') {
                             const safeRemarks = encodeURIComponent(remarks);
                             actionHtml += `<button onclick="openFeedback('${safeId}', '${safePn}', '${safeRemarks}', 'CREATE')" class="ml-3 bg-slate-900 text-white px-3 py-1.5 rounded-lg text-[9px] font-black uppercase hover:bg-blue-600 transition-colors shadow-sm"><i class="fas fa-edit"></i> Update</button>`;
+                        } else {
+                            actionHtml += `<button onclick="directDoneUpdate('${safeId}', '${safePn}', '${currentMonitorMode}')" class="ml-3 bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-[9px] font-black uppercase hover:bg-emerald-700 transition-colors shadow-sm shadow-emerald-100"><i class="fas fa-check"></i> DONE</button>`;
                         }
+                    }
 
-                        html += `<tr><td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${cols[28] || "-"}</td><td class="font-bold">${cols[29]}</td><td class="text-blue-600 font-black">${cols[7] || "-"}</td><td class="text-emerald-600 font-black">${cols[1] || "-"}</td><td class="text-[10px]">${cols[2]}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`;
-                    } else {
-                        // MAINTAIN MODE LOGIC (sheet: maintaind)
-                        const recordDept = (cols[7] || "").toUpperCase().trim();
-                        if (!isCatalogue && recordDept !== currentUserDept) continue;
-
-                        // --- LOGIKA FILTER PLANT ---
-                        if (currentUserPlant) {
-                            const rowHasPlant = cols.some(c => c && c.trim().toUpperCase() === currentUserPlant);
-                            if (!rowHasPlant) continue;
-                        }
-                        // -------------------------
-
-                        const reqId = cols[0] ? cols[0].trim() : "";
-                        const materialCode = cols[1] || "-";
+                    // --- RENDER BARIS TABEL ---
+                    if (currentMonitorMode === 'CREATE') {
+                        html += `<tr><td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${reqName}</td><td class="font-bold">${recordDept}</td><td class="text-blue-600 font-black">${materialCode}</td><td class="text-emerald-600 font-black">${cols[1] || "-"}</td><td class="text-[10px]">${cols[2]}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`;
+                    } else if (currentMonitorMode === 'MAINTAIN') {
                         const targetLoc = `${cols[2] || "-"} / ${cols[3] || "-"} / ${cols[4] || "-"}`;
-                        
-                        const originalRemarks = cols[10] ? cols[10].trim() : "DALAM PROSES";
-                        const originalTime = cols[8] ? cols[8].trim() : "";
-
-                        const remarks = LOCAL_FEEDBACK.has(reqId) ? LOCAL_FEEDBACK.get(reqId) : originalRemarks;
-                        const completionTime = LOCAL_FEEDBACK_TIME.has(reqId) ? LOCAL_FEEDBACK_TIME.get(reqId) : originalTime;
-
-                        // --- LOGIKA FILTER BULAN BERJALAN ATAU PENDING ---
-                        const isPending = !completionTime || !remarks.toUpperCase().includes('DONE');
-                        let isCurrentMonth = true;
-                        if (reqId) {
-                            const now = new Date();
-                            let reqM = -1, reqY = -1;
-                            const match = reqId.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/);
-                            if (match) {
-                                let p1 = parseInt(match[1]), p2 = parseInt(match[2]), p3 = parseInt(match[3]);
-                                reqY = p3;
-                                reqM = (p1 > 12) ? p2 - 1 : p2 - 1; // Asumsi DD/MM/YYYY
-                            } else {
-                                const d = new Date(reqId);
-                                if (!isNaN(d.getTime())) { reqM = d.getMonth(); reqY = d.getFullYear(); }
-                            }
-                            if (reqY !== -1 && reqM !== -1) {
-                                isCurrentMonth = (reqM === now.getMonth() && reqY === now.getFullYear());
-                            }
-                        }
-                        if (!isCurrentMonth && !isPending) continue;
-                        // -------------------------------------------------
-
-                        let actionHtml = `<div class="status-badge ${remarks.toUpperCase().includes('DONE') ? 'bg-emerald-50 text-emerald-600' : 'bg-blue-50 text-blue-600'}">${remarks}</div>`;
-                        
-                        // PERBAIKAN: Tombol DONE langsung di tabel tanpa modal khusus MAINTAIN
-                        if (isCatalogue && !completionTime) {
-                            const safeId = encodeURIComponent(reqId);
-                            const safePn = encodeURIComponent(materialCode);
-                            actionHtml += `<button onclick="directDoneUpdate('${safeId}', '${safePn}')" class="ml-3 bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-[9px] font-black uppercase hover:bg-emerald-700 transition-colors shadow-sm shadow-emerald-100"><i class="fas fa-check"></i> DONE</button>`;
-                        }
-
-                        html += `<tr><td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${cols[6] || "-"}</td><td class="font-bold">${cols[7]}</td><td class="text-blue-600 font-black">${materialCode}</td><td class="text-[10px] font-bold">${targetLoc}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`;
+                        html += `<tr><td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${reqName}</td><td class="font-bold">${recordDept}</td><td class="text-blue-600 font-black">${materialCode}</td><td class="text-[10px] font-bold">${targetLoc}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`;
+                    } else if (currentMonitorMode === 'MIGO') {
+                        const subTrx = cols[14] || "-";
+                        let detail = `MAT: ${materialCode} | QTY: ${cols[2]||'-'} | DOC: ${cols[13]||cols[12]||'-'}`;
+                        html += `<tr><td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${reqName}</td><td class="font-bold">${recordDept}</td><td class="font-bold text-indigo-600">${subTrx}</td><td class="text-[10px] font-bold">${detail}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`;
+                    } else if (currentMonitorMode === 'RELPO') {
+                        const metadata = cols[2] || "-";
+                        html += `<tr><td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${reqName}</td><td class="font-bold">${recordDept}</td><td class="font-bold text-violet-600">${materialCode}</td><td class="text-[10px] font-bold">${metadata}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`;
+                    } else if (currentMonitorMode === 'PR') {
+                        const detail = `${materialCode} (${cols[2]||'-'})`;
+                        html += `<tr><td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${reqName}</td><td class="font-bold">${recordDept}</td><td class="font-bold text-cyan-600">${plantVal}</td><td class="text-[10px] font-bold">${detail}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`;
+                    } else if (currentMonitorMode === 'ADDSLOC') {
+                        html += `<tr><td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${reqName}</td><td class="font-bold">${recordDept}</td><td class="font-bold text-teal-600">${plantVal}</td><td class="text-[10px] font-bold">${materialCode}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`;
+                    } else if (currentMonitorMode === 'INTRANSIT') {
+                        const setting = cols[2] || "-";
+                        html += `<tr><td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${reqName}</td><td class="font-bold">${recordDept}</td><td class="font-bold text-emerald-600">${materialCode}</td><td class="text-[10px] font-bold">${setting}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`;
+                    } else if (currentMonitorMode === 'ROLE') {
+                        html += `<tr><td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${reqName}</td><td class="font-bold">${recordDept}</td><td class="font-bold text-slate-600">${plantVal}</td><td class="text-[10px] font-bold">${materialCode}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`;
                     }
                 }
                 monitorList.innerHTML = html || `<tr><td colspan="${colCount}" class="py-10 text-center text-slate-400">Belum ada aktivitas untuk ${isCatalogue ? 'semua departemen' : 'Dept ' + currentUserDept}</td></tr>`;
             } catch (e) {
-                const colCount = currentMonitorMode === 'CREATE' ? 8 : 7;
+                const colCount = modeConfig[currentMonitorMode].colCount;
                 monitorList.innerHTML = `<tr><td colspan="${colCount}" class="py-10 text-center text-red-500 font-bold">Gagal memuat data monitoring. Pastikan link CSV dapat diakses.</td></tr>`;
             }
         }
 
         // FUNGSI BARU: Langsung update status ke DONE khusus Maintain
-        window.directDoneUpdate = async function(id, pn) {
+        window.directDoneUpdate = async function(id, pn, modeOverride) {
             const decodedId = decodeURIComponent(id).trim();
             const decodedPn = decodeURIComponent(pn).trim();
             const remarks = "DONE";
+            const modeToUse = modeOverride || currentMonitorMode;
 
             // Efek visual langsung: ubah tombol menjadi status proses agar user tahu background process berjalan
             if (window.event) {
@@ -3063,7 +3163,7 @@
                     method: 'POST',
                     body: JSON.stringify({
                         request_type: "Update Feedback",
-                        mode: "MAINTAIN",
+                        mode: modeToUse,
                         timestamp: decodedId,
                         material: decodedPn,
                         mfg_part: decodedPn, // Backup key
@@ -3079,7 +3179,7 @@
                     // Setelah background sukses, barulah set ke memori dan refresh tabel menjadi DONE
                     LOCAL_FEEDBACK.set(decodedId, remarks);
                     LOCAL_FEEDBACK_TIME.set(decodedId, timeString);
-                    window.notify('Berhasil', 'Status Maintain terupdate di Spreadsheet.', 'success');
+                    window.notify('Berhasil', 'Status terupdate di Spreadsheet.', 'success');
                 } else {
                     window.notify('Gagal Update', resData.error || 'Server menolak pembaruan.', 'error');
                 }
@@ -3258,6 +3358,12 @@
                 if (currentUserDept === "CATALOGUE") {
                     let createPending = 0;
                     let maintainPending = 0;
+                    let migoPending = 0;
+                    let relpoPending = 0;
+                    let prPending = 0;
+                    let addslocPending = 0;
+                    let intransitPending = 0;
+                    let rolePending = 0;
                     
                     // Fetch Access Code Request for Catalogue
                     try {
@@ -3327,7 +3433,97 @@
                         }
                     } catch (e) { console.error('Error fetching maintain stats', e); }
 
-                    const totalPending = createPending + maintainPending;
+                    // Fetch Migo
+                    try {
+                        const resMigo = await fetchWithRetry(csvMigoURL);
+                        const textMigo = await resMigo.text();
+                        const lines = textMigo.split(/\r?\n/);
+                        for (let i = 1; i < lines.length; i++) {
+                            if (!lines[i].trim()) continue;
+                            const cols = parseCSVLine(lines[i]);
+                            const reqId = cols[0] ? cols[0].trim() : "";
+                            const originalTime = cols[17] ? cols[17].trim() : "";
+                            const completionTime = LOCAL_FEEDBACK_TIME.has(reqId) ? LOCAL_FEEDBACK_TIME.get(reqId) : originalTime;
+                            if (!completionTime) migoPending++;
+                        }
+                    } catch (e) {}
+
+                    // Fetch RELPO
+                    try {
+                        const resRelpo = await fetchWithRetry(csvRelpoURL);
+                        const textRelpo = await resRelpo.text();
+                        const lines = textRelpo.split(/\r?\n/);
+                        for (let i = 1; i < lines.length; i++) {
+                            if (!lines[i].trim()) continue;
+                            const cols = parseCSVLine(lines[i]);
+                            const reqId = cols[0] ? cols[0].trim() : "";
+                            const originalTime = cols[5] ? cols[5].trim() : "";
+                            const completionTime = LOCAL_FEEDBACK_TIME.has(reqId) ? LOCAL_FEEDBACK_TIME.get(reqId) : originalTime;
+                            if (!completionTime) relpoPending++;
+                        }
+                    } catch (e) {}
+
+                    // Fetch PR
+                    try {
+                        const resPr = await fetchWithRetry(csvPrURL);
+                        const textPr = await resPr.text();
+                        const lines = textPr.split(/\r?\n/);
+                        for (let i = 1; i < lines.length; i++) {
+                            if (!lines[i].trim()) continue;
+                            const cols = parseCSVLine(lines[i]);
+                            const reqId = cols[0] ? cols[0].trim() : "";
+                            const originalTime = cols[7] ? cols[7].trim() : "";
+                            const completionTime = LOCAL_FEEDBACK_TIME.has(reqId) ? LOCAL_FEEDBACK_TIME.get(reqId) : originalTime;
+                            if (!completionTime) prPending++;
+                        }
+                    } catch (e) {}
+
+                    // Fetch ADDSLOC
+                    try {
+                        const resAddsloc = await fetchWithRetry(csvAddslocURL);
+                        const textAddsloc = await resAddsloc.text();
+                        const lines = textAddsloc.split(/\r?\n/);
+                        for (let i = 1; i < lines.length; i++) {
+                            if (!lines[i].trim()) continue;
+                            const cols = parseCSVLine(lines[i]);
+                            const reqId = cols[0] ? cols[0].trim() : "";
+                            const originalTime = cols[8] ? cols[8].trim() : "";
+                            const completionTime = LOCAL_FEEDBACK_TIME.has(reqId) ? LOCAL_FEEDBACK_TIME.get(reqId) : originalTime;
+                            if (!completionTime) addslocPending++;
+                        }
+                    } catch (e) {}
+
+                    // Fetch INTRANSIT
+                    try {
+                        const resIntransit = await fetchWithRetry(csvIntransitURL);
+                        const textIntransit = await resIntransit.text();
+                        const lines = textIntransit.split(/\r?\n/);
+                        for (let i = 1; i < lines.length; i++) {
+                            if (!lines[i].trim()) continue;
+                            const cols = parseCSVLine(lines[i]);
+                            const reqId = cols[0] ? cols[0].trim() : "";
+                            const originalTime = cols[6] ? cols[6].trim() : "";
+                            const completionTime = LOCAL_FEEDBACK_TIME.has(reqId) ? LOCAL_FEEDBACK_TIME.get(reqId) : originalTime;
+                            if (!completionTime) intransitPending++;
+                        }
+                    } catch (e) {}
+
+                    // Fetch ROLE
+                    try {
+                        const resRole = await fetchWithRetry(csvRoleURL);
+                        const textRole = await resRole.text();
+                        const lines = textRole.split(/\r?\n/);
+                        for (let i = 1; i < lines.length; i++) {
+                            if (!lines[i].trim()) continue;
+                            const cols = parseCSVLine(lines[i]);
+                            const reqId = cols[0] ? cols[0].trim() : "";
+                            const originalTime = cols[7] ? cols[7].trim() : "";
+                            const completionTime = LOCAL_FEEDBACK_TIME.has(reqId) ? LOCAL_FEEDBACK_TIME.get(reqId) : originalTime;
+                            if (!completionTime) rolePending++;
+                        }
+                    } catch (e) {}
+
+                    const totalPending = createPending + maintainPending + migoPending + relpoPending + prPending + addslocPending + intransitPending + rolePending;
                     
                     if (totalPending > 0) {
                         alarmBadge.innerText = totalPending;
@@ -3338,15 +3534,51 @@
                     
                     let html = '';
                     if (createPending > 0) {
-                        html += `<div class="bg-orange-50 border border-orange-100 p-4 rounded-xl flex items-center justify-between">
+                        html += `<div class="bg-orange-50 border border-orange-100 p-4 rounded-xl flex items-center justify-between mb-2">
                             <div><p class="professional-label text-[11px] text-orange-600">Create Material</p><p class="text-[10px] text-slate-500 font-bold">${createPending} Item Waiting progress</p></div>
                             <i class="fas fa-plus-circle text-orange-400 text-xl"></i>
                         </div>`;
                     }
                     if (maintainPending > 0) {
-                        html += `<div class="bg-blue-50 border border-blue-100 p-4 rounded-xl flex items-center justify-between">
+                        html += `<div class="bg-blue-50 border border-blue-100 p-4 rounded-xl flex items-center justify-between mb-2">
                             <div><p class="professional-label text-[11px] text-blue-600">Maintain Material</p><p class="text-[10px] text-slate-500 font-bold">${maintainPending} Item Waiting progress</p></div>
                             <i class="fas fa-screwdriver-wrench text-blue-400 text-xl"></i>
+                        </div>`;
+                    }
+                    if (migoPending > 0) {
+                        html += `<div class="bg-indigo-50 border border-indigo-100 p-4 rounded-xl flex items-center justify-between mb-2">
+                            <div><p class="professional-label text-[11px] text-indigo-600">Transaksi MIGO</p><p class="text-[10px] text-slate-500 font-bold">${migoPending} Item Waiting progress</p></div>
+                            <i class="fas fa-truck-ramp-box text-indigo-400 text-xl"></i>
+                        </div>`;
+                    }
+                    if (relpoPending > 0) {
+                        html += `<div class="bg-violet-50 border border-violet-100 p-4 rounded-xl flex items-center justify-between mb-2">
+                            <div><p class="professional-label text-[11px] text-violet-600">Rel/Unrel PR/PO</p><p class="text-[10px] text-slate-500 font-bold">${relpoPending} Item Waiting progress</p></div>
+                            <i class="fas fa-file-signature text-violet-400 text-xl"></i>
+                        </div>`;
+                    }
+                    if (prPending > 0) {
+                        html += `<div class="bg-cyan-50 border border-cyan-100 p-4 rounded-xl flex items-center justify-between mb-2">
+                            <div><p class="professional-label text-[11px] text-cyan-600">Transaksi PR</p><p class="text-[10px] text-slate-500 font-bold">${prPending} Item Waiting progress</p></div>
+                            <i class="fas fa-file-invoice text-cyan-400 text-xl"></i>
+                        </div>`;
+                    }
+                    if (addslocPending > 0) {
+                        html += `<div class="bg-teal-50 border border-teal-100 p-4 rounded-xl flex items-center justify-between mb-2">
+                            <div><p class="professional-label text-[11px] text-teal-600">Additional Storage</p><p class="text-[10px] text-slate-500 font-bold">${addslocPending} Item Waiting progress</p></div>
+                            <i class="fas fa-warehouse text-teal-400 text-xl"></i>
+                        </div>`;
+                    }
+                    if (intransitPending > 0) {
+                        html += `<div class="bg-emerald-50 border border-emerald-100 p-4 rounded-xl flex items-center justify-between mb-2">
+                            <div><p class="professional-label text-[11px] text-emerald-600">Intransit PO</p><p class="text-[10px] text-slate-500 font-bold">${intransitPending} Item Waiting progress</p></div>
+                            <i class="fas fa-clock-rotate-left text-emerald-400 text-xl"></i>
+                        </div>`;
+                    }
+                    if (rolePending > 0) {
+                        html += `<div class="bg-slate-50 border border-slate-100 p-4 rounded-xl flex items-center justify-between mb-2">
+                            <div><p class="professional-label text-[11px] text-slate-600">User Role Access</p><p class="text-[10px] text-slate-500 font-bold">${rolePending} Item Waiting progress</p></div>
+                            <i class="fas fa-user-shield text-slate-400 text-xl"></i>
                         </div>`;
                     }
                     
@@ -3354,7 +3586,7 @@
                         html = `<div class="text-center py-6"><i class="fas fa-check-circle text-emerald-500 text-4xl mb-3 shadow-sm rounded-full bg-emerald-50 p-2"></i><p class="professional-label text-sm text-emerald-600">All Clear!</p><p class="text-xs text-slate-500 mt-1">Tidak ada pengajuan yang tertunda.</p></div>`;
                     }
                     
-                    alarmContent.innerHTML = html;
+                    alarmContent.innerHTML = `<div class="max-h-[65vh] overflow-y-auto custom-scrollbar pr-2">${html}</div>`;
                 } else {
                     // USER BIASA (Selain Catalogue): Menampilkan Code Akses
                     let realizedCodes = [];
