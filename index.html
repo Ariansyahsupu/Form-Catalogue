@@ -317,6 +317,9 @@
             <div class="flex items-center gap-6">
                 <div id="session-badge" class="hidden md:block text-[10px] font-black text-emerald-600 bg-emerald-50 px-4 py-2 rounded-full uppercase border border-emerald-100 tracking-widest"></div>
                 <div id="header-date" class="hidden md:block text-[10px] font-bold text-slate-500 bg-slate-100 px-4 py-2 rounded-full uppercase"></div>
+                <button id="btn-manual-refresh" onclick="manualRefresh()" class="hidden w-10 h-10 rounded-2xl bg-white border-2 border-cyan-50 text-cyan-500 flex items-center justify-center hover:bg-cyan-500 hover:text-white transition-all shadow-sm relative" title="Refresh Data">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
                 <button id="btn-access-cat" onclick="showCatAccessModal()" class="hidden w-10 h-10 rounded-2xl bg-white border-2 border-blue-50 text-blue-500 flex items-center justify-center hover:bg-blue-500 hover:text-white transition-all shadow-sm relative" title="Akses Permintaan Code">
                     <i class="fas fa-key"></i>
                     <span id="access-cat-badge" class="absolute -top-1 -right-1 bg-red-500 text-white text-[8px] font-black w-4 h-4 rounded-full flex items-center justify-center hidden">0</span>
@@ -325,7 +328,7 @@
                     <i class="fas fa-bell"></i>
                     <span id="alarm-badge" class="absolute -top-1 -right-1 bg-red-500 text-white text-[8px] font-black w-4 h-4 rounded-full flex items-center justify-center hidden">0</span>
                 </button>
-                <button onclick="backToAccessMenu()" class="w-10 h-10 rounded-2xl bg-white border-2 border-red-50 text-red-50 flex items-center justify-center hover:bg-red-500 hover:text-white transition-all shadow-sm" title="Logout"><i class="fas fa-power-off"></i></button>
+                <button onclick="backToAccessMenu()" class="w-10 h-10 rounded-2xl bg-white border-2 border-red-50 text-red-500 flex items-center justify-center hover:bg-red-500 hover:text-white transition-all shadow-sm" title="Logout"><i class="fas fa-power-off"></i></button>
             </div>
         </header>
 
@@ -393,14 +396,14 @@
                         <button class="w-full mt-auto py-1.5 bg-orange-500 text-white rounded-lg font-black text-[9px] uppercase shadow-sm shadow-orange-200">Registrasi Baru</button>
                     </div>
 
-                    <div id="card-migo" onclick="window.notify('Informasi', 'Modul TRANSAKSI MIGO sedang dalam pengembangan.', 'success')" class="premium-card p-3 text-indigo-600">
+                    <div id="card-migo" onclick="openMigoSection()" class="premium-card p-3 text-indigo-600">
                         <div class="icon-box bg-indigo-50 text-indigo-600 border border-indigo-100 shadow-md shadow-indigo-100/50"><i class="fas fa-truck-ramp-box"></i></div>
                         <h3 class="text-[11px] professional-label mb-1 leading-tight">TRANSAKSI MIGO</h3>
                         <p class="text-slate-500 text-[9px] mb-2 line-clamp-2 leading-tight">Kelola transaksi Goods Issue, Receipt, & Transfer.</p>
                         <button class="w-full mt-auto py-1.5 bg-indigo-600 text-white rounded-lg font-black text-[9px] uppercase shadow-sm shadow-indigo-200">Buka Modul</button>
                     </div>
 
-                    <div id="card-rel-po" onclick="window.notify('Informasi', 'Modul RELEASE/UNRELEASE PO sedang dalam pengembangan.', 'success')" class="premium-card p-3 text-violet-600">
+                    <div id="card-rel-po" onclick="openRelPOSection()" class="premium-card p-3 text-violet-600">
                         <div class="icon-box bg-violet-50 text-violet-600 border border-violet-100 shadow-md shadow-violet-100/50"><i class="fas fa-file-signature"></i></div>
                         <h3 class="text-[11px] professional-label mb-1 leading-tight">RELEASE/UNRELEASE PO</h3>
                         <p class="text-slate-500 text-[9px] mb-2 line-clamp-2 leading-tight">Otorisasi pelepasan Purchase Order.</p>
@@ -414,7 +417,7 @@
                         <button class="w-full mt-auto py-1.5 bg-rose-600 text-white rounded-lg font-black text-[9px] uppercase shadow-sm shadow-rose-200">Buka Modul</button>
                     </div>
 
-                    <div id="card-pr" onclick="window.notify('Informasi', 'Modul TRANSAKSI PR sedang dalam pengembangan.', 'success')" class="premium-card p-3 text-cyan-600">
+                    <div id="card-pr" onclick="openPRSection()" class="premium-card p-3 text-cyan-600">
                         <div class="icon-box bg-cyan-50 text-cyan-600 border border-cyan-100 shadow-md shadow-cyan-100/50"><i class="fas fa-file-invoice"></i></div>
                         <h3 class="text-[11px] professional-label mb-1 leading-tight">TRANSAKSI PR</h3>
                         <p class="text-slate-500 text-[9px] mb-2 line-clamp-2 leading-tight">Pembuatan dan pelacakan Purchase Requisition.</p>
@@ -428,14 +431,14 @@
                         <button class="w-full mt-auto py-1.5 bg-amber-600 text-white rounded-lg font-black text-[9px] uppercase shadow-sm shadow-amber-200">Buka Modul</button>
                     </div>
 
-                    <div id="card-add-sloc" onclick="window.notify('Informasi', 'Modul ADDITIONAL STORAGE LOCATION sedang dalam pengembangan.', 'success')" class="premium-card p-3 text-teal-600">
+                    <div id="card-add-sloc" onclick="openAddSlocSection()" class="premium-card p-3 text-teal-600">
                         <div class="icon-box bg-teal-50 text-teal-600 border border-teal-100 shadow-md shadow-teal-100/50"><i class="fas fa-warehouse"></i></div>
                         <h3 class="text-[11px] professional-label mb-1 leading-tight">ADDITIONAL STORAGE</h3>
                         <p class="text-slate-500 text-[9px] mb-2 line-clamp-2 leading-tight">Penambahan lokasi gudang penyimpanan.</p>
                         <button class="w-full mt-auto py-1.5 bg-teal-600 text-white rounded-lg font-black text-[9px] uppercase shadow-sm shadow-teal-200">Buka Modul</button>
                     </div>
 
-                    <div id="card-role" onclick="window.notify('Informasi', 'Modul USER ROLE ACCESS sedang dalam pengembangan.', 'success')" class="premium-card p-3 text-slate-600">
+                    <div id="card-role" onclick="openRoleAccessSection()" class="premium-card p-3 text-slate-600">
                         <div class="icon-box bg-slate-50 text-slate-600 border border-slate-100 shadow-md shadow-slate-100/50"><i class="fas fa-user-shield"></i></div>
                         <h3 class="text-[11px] professional-label mb-1 leading-tight">USER ROLE ACCESS</h3>
                         <p class="text-slate-500 text-[9px] mb-2 line-clamp-2 leading-tight">Pengaturan hak akses dan peran pengguna.</p>
@@ -456,7 +459,7 @@
                         <button class="w-full mt-auto py-1.5 bg-orange-600 text-white rounded-lg font-black text-[9px] uppercase shadow-sm shadow-orange-200">Buka Modul</button>
                     </div>
 
-                    <div id="card-intransit" onclick="window.notify('Informasi', 'Modul SETTING INTRANSIT PO sedang dalam pengembangan.', 'success')" class="premium-card p-3 text-emerald-500">
+                    <div id="card-intransit" onclick="openIntransitSection()" class="premium-card p-3 text-emerald-500">
                         <div class="icon-box bg-emerald-50 text-emerald-500 border border-emerald-100 shadow-md shadow-emerald-100/50"><i class="fas fa-clock-rotate-left"></i></div>
                         <h3 class="text-[11px] professional-label mb-1 leading-tight">SETTING INTRANSIT PO</h3>
                         <p class="text-slate-500 text-[9px] mb-2 line-clamp-2 leading-tight">Monitoring dan pengaturan stok dalam perjalanan.</p>
@@ -676,6 +679,262 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- MIGO SECTION -->
+            <section id="migo-section" class="hidden animate-fade">
+                <div class="max-w-6xl mx-auto">
+                    <button onclick="goToHome()" class="btn-back"><i class="fas fa-chevron-left"></i> Back</button>
+                    <div class="bg-white rounded-[3rem] overflow-hidden shadow-2xl border border-slate-100">
+                        <div class="bg-indigo-900 p-8 text-white"><h2 class="text-2xl professional-label">Transaksi MIGO</h2></div>
+                        <div class="p-10 space-y-10">
+                            <form id="form-migo" class="space-y-8">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-50 p-8 rounded-[2rem]">
+                                    <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Requester Name</label><input type="text" id="migo-req-name" required class="input-field border-2 professional-input"></div>
+                                    <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Department</label><input type="text" id="migo-req-dept" readonly class="input-field input-readonly professional-input"></div>
+                                    <div class="space-y-1.5 md:col-span-2">
+                                        <label class="text-[10px] professional-label tracking-widest">Sub Transaksi</label>
+                                        <select id="migo-sub-trx" required class="input-field border-2 bg-white professional-input" onchange="toggleMigoFields()">
+                                            <option value="">-- PILIH SUB TRANSAKSI --</option>
+                                            <option value="Transfer Posting">1. TRANSFER POSTING</option>
+                                            <option value="GR PO Purchasing">2. GR PO PURCHASING</option>
+                                            <option value="GR STO">3. GR STO</option>
+                                            <option value="GI STO">4. GI STO</option>
+                                            <option value="Cancellation">5. CANCELLATION</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div id="migo-tp-fields" class="hidden space-y-8">
+                                    <h4 class="section-header text-indigo-600 border-indigo-100 uppercase tracking-widest"><i class="fas fa-exchange-alt"></i> Detail Transfer Posting</h4>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Material</label><input type="text" id="migo-tp-mat" class="input-field border-2 professional-input font-mono"></div>
+                                        <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Quantity</label><input type="number" id="migo-tp-qty" class="input-field border-2 professional-input" min="1"></div>
+                                        
+                                        <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Plant Asal</label><select id="migo-tp-plant-asal" class="input-field border-2 bg-white professional-input"></select></div>
+                                        <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Plant Tujuan</label><select id="migo-tp-plant-tujuan" class="input-field border-2 bg-white professional-input"></select></div>
+                                        
+                                        <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Sloc Site Asal</label><select id="migo-tp-sloc-asal" class="input-field border-2 bg-white professional-input"></select></div>
+                                        <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Sloc Site Tujuan</label><select id="migo-tp-sloc-tujuan" class="input-field border-2 bg-white professional-input"></select></div>
+                                        
+                                        <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Storage Bin Asal</label><input type="text" id="migo-tp-bin-asal" class="input-field border-2 professional-input"></div>
+                                        <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Storage Bin Tujuan</label><input type="text" id="migo-tp-bin-tujuan" class="input-field border-2 professional-input"></div>
+                                        
+                                        <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Nama Pengirim</label><input type="text" id="migo-tp-pengirim" class="input-field border-2 professional-input"></div>
+                                        <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Nama Penerima</label><input type="text" id="migo-tp-penerima" class="input-field border-2 professional-input"></div>
+                                        
+                                        <div class="space-y-1.5 md:col-span-2"><label class="text-[10px] professional-label tracking-widest">Valuation Type</label><input type="text" id="migo-tp-val-type" class="input-field border-2 professional-input" placeholder="NEW / USED / REKONDISI DLL"></div>
+                                    </div>
+                                </div>
+                                
+                                <div id="migo-grpo-fields" class="hidden space-y-8">
+                                    <h4 class="section-header text-indigo-600 border-indigo-100 uppercase tracking-widest"><i class="fas fa-box-open"></i> Detail GR PO Purchasing</h4>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Material</label><input type="text" id="migo-grpo-mat" class="input-field border-2 professional-input font-mono"></div>
+                                        <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Quantity</label><input type="number" id="migo-grpo-qty" class="input-field border-2 professional-input" min="1"></div>
+                                        <div class="space-y-1.5 md:col-span-2"><label class="text-[10px] professional-label tracking-widest">No Doc GI/GR/PR/PO</label><input type="text" id="migo-grpo-nodoc" class="input-field border-2 professional-input"></div>
+                                        <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Nama Pengirim</label><input type="text" id="migo-grpo-pengirim" class="input-field border-2 professional-input"></div>
+                                        <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Nama Penerima</label><input type="text" id="migo-grpo-penerima" class="input-field border-2 professional-input"></div>
+                                    </div>
+                                </div>
+
+                                <div id="migo-grsto-fields" class="hidden space-y-8">
+                                    <h4 class="section-header text-indigo-600 border-indigo-100 uppercase tracking-widest"><i class="fas fa-truck-loading"></i> Detail GR STO</h4>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Material</label><input type="text" id="migo-grsto-mat" class="input-field border-2 professional-input font-mono"></div>
+                                        <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Quantity</label><input type="number" id="migo-grsto-qty" class="input-field border-2 professional-input" min="1"></div>
+                                        <div class="space-y-1.5 md:col-span-2"><label class="text-[10px] professional-label tracking-widest">No Doc GI/GR/PR/PO/STO</label><input type="text" id="migo-grsto-nodoc" class="input-field border-2 professional-input"></div>
+                                        <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Nama Pengirim</label><input type="text" id="migo-grsto-pengirim" class="input-field border-2 professional-input"></div>
+                                        <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Nama Penerima</label><input type="text" id="migo-grsto-penerima" class="input-field border-2 professional-input"></div>
+                                    </div>
+                                </div>
+
+                                <div id="migo-gisto-fields" class="hidden space-y-8">
+                                    <h4 class="section-header text-indigo-600 border-indigo-100 uppercase tracking-widest"><i class="fas fa-pallet"></i> Detail GI STO</h4>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Material</label><input type="text" id="migo-gisto-mat" class="input-field border-2 professional-input font-mono"></div>
+                                        <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Quantity</label><input type="number" id="migo-gisto-qty" class="input-field border-2 professional-input" min="1"></div>
+                                        <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">No Doc 1 GI STO Khusus GR STO</label><input type="text" id="migo-gisto-nodoc1" class="input-field border-2 professional-input"></div>
+                                        <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">No Doc STO</label><input type="text" id="migo-gisto-nodocsto" class="input-field border-2 professional-input"></div>
+                                        <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Nama Pengirim</label><input type="text" id="migo-gisto-pengirim" class="input-field border-2 professional-input"></div>
+                                        <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Nama Penerima</label><input type="text" id="migo-gisto-penerima" class="input-field border-2 professional-input"></div>
+                                    </div>
+                                </div>
+
+                                <div id="migo-cancel-fields" class="hidden space-y-8">
+                                    <h4 class="section-header text-indigo-600 border-indigo-100 uppercase tracking-widest"><i class="fas fa-times-circle"></i> Detail Cancellation</h4>
+                                    <div class="grid grid-cols-1 gap-6">
+                                        <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">No Doc GI/GR/PR/PO/STO</label><input type="text" id="migo-cancel-nodoc" class="input-field border-2 professional-input"></div>
+                                        <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Alasan Cancel</label><input type="text" id="migo-cancel-alasan" class="input-field border-2 professional-input"></div>
+                                        <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Upload BA (Berita Acara)</label><input type="file" id="migo-cancel-ba" class="input-field border-2 text-[12px] bg-white cursor-pointer" accept="image/*,.pdf,.doc,.docx"></div>
+                                    </div>
+                                </div>
+
+                                <button type="button" id="btn-submit-migo" onclick="handleMigoSubmit()" class="hidden w-full py-5 bg-indigo-600 text-white font-black rounded-3xl uppercase text-lg shadow-2xl hover:bg-indigo-700 transition-all">SUBMIT TRANSAKSI MIGO</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- REALIZE/UNREALIZE PR/PO SECTION -->
+            <section id="relpo-section" class="hidden animate-fade">
+                <div class="max-w-4xl mx-auto">
+                    <button onclick="goToHome()" class="btn-back"><i class="fas fa-chevron-left"></i> Back</button>
+                    <div class="bg-white rounded-[3rem] overflow-hidden shadow-2xl border border-slate-100">
+                        <div class="bg-violet-900 p-8 text-white"><h2 class="text-2xl professional-label">Realize / Unrealize PR & PO</h2></div>
+                        <div class="p-10 space-y-10">
+                            <form id="form-relpo" class="space-y-8">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-50 p-8 rounded-[2rem]">
+                                    <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Requester Name</label><input type="text" id="relpo-req-name" required class="input-field border-2 professional-input"></div>
+                                    <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Department</label><input type="text" id="relpo-req-dept" readonly class="input-field input-readonly professional-input"></div>
+                                </div>
+                                <div class="space-y-8">
+                                    <h4 class="section-header text-violet-600 border-violet-100 uppercase tracking-widest"><i class="fas fa-file-signature"></i> Detail Dokumen</h4>
+                                    <div class="grid grid-cols-1 gap-6">
+                                        <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">No PR/PO</label><input type="text" id="relpo-nodoc" required class="input-field border-2 professional-input"></div>
+                                        <div class="space-y-1.5">
+                                            <label class="text-[10px] professional-label tracking-widest">Alasan / Metadata</label>
+                                            <select id="relpo-metadata" required class="input-field border-2 bg-white professional-input">
+                                                <option value="">-- PILIH METADATA --</option>
+                                                <option value="Realize PR">Realize PR</option>
+                                                <option value="Unrealize PR">Unrealize PR</option>
+                                                <option value="Realize PO">Realize PO</option>
+                                                <option value="Unrealize PO">Unrealize PO</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="button" onclick="handleRelPOSubmit()" class="w-full py-5 bg-violet-600 text-white font-black rounded-3xl uppercase text-lg shadow-2xl hover:bg-violet-700 transition-all">SUBMIT PENGAJUAN</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TRANSAKSI PR SECTION -->
+            <section id="pr-section" class="hidden animate-fade">
+                <div class="max-w-5xl mx-auto">
+                    <button onclick="goToHome()" class="btn-back"><i class="fas fa-chevron-left"></i> Back</button>
+                    <div class="bg-white rounded-[3rem] overflow-hidden shadow-2xl border border-slate-100">
+                        <div class="bg-cyan-900 p-8 text-white"><h2 class="text-2xl professional-label">Transaksi PR</h2></div>
+                        <div class="p-10 space-y-10">
+                            <form id="form-pr" class="space-y-8">
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 bg-slate-50 p-8 rounded-[2rem]">
+                                    <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Requester Name</label><input type="text" id="pr-req-name" required class="input-field border-2 professional-input"></div>
+                                    <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Department</label><input type="text" id="pr-req-dept" readonly class="input-field input-readonly professional-input"></div>
+                                    <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Plant</label><select id="pr-plant" required class="input-field border-2 bg-white professional-input"></select></div>
+                                </div>
+                                <div class="space-y-8">
+                                    <h4 class="section-header text-cyan-600 border-cyan-100 uppercase tracking-widest"><i class="fas fa-paste"></i> Data Material & Quantity</h4>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div class="space-y-1.5 md:col-span-2">
+                                            <label class="text-[10px] professional-label tracking-widest">Material & Qty (Paste dari Excel)</label>
+                                            <textarea id="pr-mat-qty" required placeholder="CONTOH PASTE DARI EXCEL:&#10;MAT-001    10&#10;MAT-002    5" class="w-full input-field border-2 border-cyan-200 py-4 font-mono professional-input h-48 resize-none"></textarea>
+                                            <p class="text-[9px] text-slate-500 font-bold mt-1">Copy 2 kolom berurutan (Material dan Quantity) langsung dari Excel, lalu paste di kotak ini.</p>
+                                        </div>
+                                        <div class="space-y-1.5 md:col-span-2">
+                                            <label class="text-[10px] professional-label tracking-widest">Lampiran BA (Opsional)</label>
+                                            <input type="file" id="pr-ba" class="input-field border-2 text-[12px] bg-white cursor-pointer" accept="image/*,.pdf,.doc,.docx">
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="button" onclick="handlePRSubmit()" class="w-full py-5 bg-cyan-600 text-white font-black rounded-3xl uppercase text-lg shadow-2xl hover:bg-cyan-700 transition-all">SUBMIT TRANSAKSI PR</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ADDITIONAL STORAGE SECTION -->
+            <section id="addsloc-section" class="hidden animate-fade">
+                <div class="max-w-4xl mx-auto">
+                    <button onclick="goToHome()" class="btn-back"><i class="fas fa-chevron-left"></i> Back</button>
+                    <div class="bg-white rounded-[3rem] overflow-hidden shadow-2xl border border-slate-100">
+                        <div class="bg-teal-900 p-8 text-white"><h2 class="text-2xl professional-label">Additional Storage Location</h2></div>
+                        <div class="p-10 space-y-10">
+                            <form id="form-addsloc" class="space-y-8">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-50 p-8 rounded-[2rem]">
+                                    <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Requester Name</label><input type="text" id="addsloc-req-name" required class="input-field border-2 professional-input"></div>
+                                    <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Department</label><input type="text" id="addsloc-req-dept" readonly class="input-field input-readonly professional-input"></div>
+                                    <div class="space-y-1.5 md:col-span-2"><label class="text-[10px] professional-label tracking-widest">Plant</label><select id="addsloc-plant" required class="input-field border-2 bg-white professional-input"></select></div>
+                                </div>
+                                <div class="space-y-8">
+                                    <h4 class="section-header text-teal-600 border-teal-100 uppercase tracking-widest"><i class="fas fa-warehouse"></i> Detail SLoc Baru</h4>
+                                    <div class="grid grid-cols-1 gap-6">
+                                        <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Request SLoc</label><input type="text" id="addsloc-sloc" required class="input-field border-2 professional-input"></div>
+                                        <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Deskripsi SLoc</label><input type="text" id="addsloc-desc" required class="input-field border-2 professional-input"></div>
+                                        <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Alasan Open SLoc</label><input type="text" id="addsloc-alasan" required class="input-field border-2 professional-input"></div>
+                                    </div>
+                                </div>
+                                <button type="button" onclick="handleAddSlocSubmit()" class="w-full py-5 bg-teal-600 text-white font-black rounded-3xl uppercase text-lg shadow-2xl hover:bg-teal-700 transition-all">SUBMIT PENGAJUAN</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SETTING INTRANSIT PO SECTION -->
+            <section id="intransit-section" class="hidden animate-fade">
+                <div class="max-w-4xl mx-auto">
+                    <button onclick="goToHome()" class="btn-back"><i class="fas fa-chevron-left"></i> Back</button>
+                    <div class="bg-white rounded-[3rem] overflow-hidden shadow-2xl border border-slate-100">
+                        <div class="bg-emerald-900 p-8 text-white"><h2 class="text-2xl professional-label">Setting Intransit PO</h2></div>
+                        <div class="p-10 space-y-10">
+                            <form id="form-intransit" class="space-y-8">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-50 p-8 rounded-[2rem]">
+                                    <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Requester Name</label><input type="text" id="intransit-req-name" required class="input-field border-2 professional-input"></div>
+                                    <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Department</label><input type="text" id="intransit-req-dept" readonly class="input-field input-readonly professional-input"></div>
+                                </div>
+                                <div class="space-y-8">
+                                    <h4 class="section-header text-emerald-600 border-emerald-100 uppercase tracking-widest"><i class="fas fa-clock-rotate-left"></i> Detail Setting</h4>
+                                    <div class="grid grid-cols-1 gap-6">
+                                        <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">No PO</label><input type="text" id="intransit-nopo" required class="input-field border-2 professional-input"></div>
+                                        <div class="space-y-1.5">
+                                            <label class="text-[10px] professional-label tracking-widest">Setting</label>
+                                            <select id="intransit-setting" required class="input-field border-2 bg-white professional-input">
+                                                <option value="">-- PILIH SETTING --</option>
+                                                <option value="Transit">Transit</option>
+                                                <option value="Non transit">Non transit</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="button" onclick="handleIntransitSubmit()" class="w-full py-5 bg-emerald-600 text-white font-black rounded-3xl uppercase text-lg shadow-2xl hover:bg-emerald-700 transition-all">SUBMIT PENGAJUAN</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- USER ROLE ACCESS SECTION -->
+            <section id="role-section" class="hidden animate-fade">
+                <div class="max-w-4xl mx-auto">
+                    <button onclick="goToHome()" class="btn-back"><i class="fas fa-chevron-left"></i> Back</button>
+                    <div class="bg-white rounded-[3rem] overflow-hidden shadow-2xl border border-slate-100">
+                        <div class="bg-slate-900 p-8 text-white"><h2 class="text-2xl professional-label">User Log / Role Access</h2></div>
+                        <div class="p-10 space-y-10">
+                            <form id="form-role" class="space-y-8">
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 bg-slate-50 p-8 rounded-[2rem]">
+                                    <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Requester Name</label><input type="text" id="role-req-name" required class="input-field border-2 professional-input"></div>
+                                    <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Department</label><input type="text" id="role-req-dept" readonly class="input-field input-readonly professional-input"></div>
+                                    <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Plant</label><select id="role-plant" required class="input-field border-2 bg-white professional-input"></select></div>
+                                </div>
+                                <div class="space-y-8">
+                                    <h4 class="section-header text-slate-600 border-slate-100 uppercase tracking-widest"><i class="fas fa-user-shield"></i> Detail Autorisasi</h4>
+                                    <div class="grid grid-cols-1 gap-6">
+                                        <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">T-code (Open Autorisasi)</label><input type="text" id="role-tcode" required class="input-field border-2 professional-input"></div>
+                                        <div class="space-y-1.5">
+                                            <label class="text-[10px] professional-label tracking-widest">Capture SU53 (Gambar/File)</label>
+                                            <input type="file" id="role-file" required class="input-field border-2 text-[12px] bg-white cursor-pointer" accept="image/*,.pdf,.doc,.docx">
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="button" onclick="handleRoleSubmit()" class="w-full py-5 bg-slate-900 text-white font-black rounded-3xl uppercase text-lg shadow-2xl hover:bg-slate-800 transition-all">SUBMIT PENGAJUAN</button>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -939,6 +1198,284 @@
             }
         };
 
+        window.openMigoSection = function() {
+            showSection('migo-section');
+            document.getElementById('migo-req-dept').value = currentUserDept;
+        };
+
+        window.openRelPOSection = function() {
+            showSection('relpo-section');
+            document.getElementById('relpo-req-dept').value = currentUserDept;
+        };
+
+        window.openPRSection = function() {
+            showSection('pr-section');
+            document.getElementById('pr-req-dept').value = currentUserDept;
+        };
+
+        window.openAddSlocSection = function() {
+            showSection('addsloc-section');
+            document.getElementById('addsloc-req-dept').value = currentUserDept;
+        };
+
+        window.openRoleAccessSection = function() {
+            showSection('role-section');
+            document.getElementById('role-req-dept').value = currentUserDept;
+        };
+
+        window.openIntransitSection = function() {
+            showSection('intransit-section');
+            document.getElementById('intransit-req-dept').value = currentUserDept;
+        };
+
+        window.toggleMigoFields = function() {
+            const val = document.getElementById('migo-sub-trx').value;
+            const tpFields = document.getElementById('migo-tp-fields');
+            const grpoFields = document.getElementById('migo-grpo-fields');
+            const grstoFields = document.getElementById('migo-grsto-fields');
+            const gistoFields = document.getElementById('migo-gisto-fields');
+            const cancelFields = document.getElementById('migo-cancel-fields');
+            const btnSubmit = document.getElementById('btn-submit-migo');
+            
+            // Hide all fields initially
+            [tpFields, grpoFields, grstoFields, gistoFields, cancelFields].forEach(el => {
+                if(el) el.classList.add('hidden');
+            });
+            btnSubmit.classList.add('hidden');
+
+            // Remove 'required' from all inputs
+            document.querySelectorAll('#migo-section input, #migo-section select').forEach(el => {
+                if (el.id !== 'migo-req-name' && el.id !== 'migo-sub-trx') el.required = false;
+            });
+
+            let activeContainer = null;
+            if (val === 'Transfer Posting') activeContainer = tpFields;
+            else if (val === 'GR PO Purchasing') activeContainer = grpoFields;
+            else if (val === 'GR STO') activeContainer = grstoFields;
+            else if (val === 'GI STO') activeContainer = gistoFields;
+            else if (val === 'Cancellation') activeContainer = cancelFields;
+
+            if (activeContainer) {
+                activeContainer.classList.remove('hidden');
+                btnSubmit.classList.remove('hidden');
+                activeContainer.querySelectorAll('input, select').forEach(el => el.required = true);
+            }
+        };
+
+        const getBase64 = (file) => new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
+        });
+
+        window.handleMigoSubmit = async function() {
+            const form = document.getElementById('form-migo');
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return window.notify('Data Belum Lengkap', 'Silakan lengkapi semua kolom yang diwajibkan.', 'error');
+            }
+
+            const subTrx = document.getElementById('migo-sub-trx').value;
+            if (!subTrx) return;
+
+            const reqName = document.getElementById('migo-req-name').value.toUpperCase();
+            
+            let payload = {
+                request_type: "Transaksi Migo",
+                sub_transaksi: subTrx,
+                requester_name: reqName,
+                department: currentUserDept
+            };
+
+            if (subTrx === 'Transfer Posting') {
+                payload = { ...payload,
+                    material: document.getElementById('migo-tp-mat').value.toUpperCase(),
+                    quantity: document.getElementById('migo-tp-qty').value,
+                    plant_asal: document.getElementById('migo-tp-plant-asal').value,
+                    plant_tujuan: document.getElementById('migo-tp-plant-tujuan').value,
+                    sloc_asal: document.getElementById('migo-tp-sloc-asal').value,
+                    sloc_tujuan: document.getElementById('migo-tp-sloc-tujuan').value,
+                    bin_asal: document.getElementById('migo-tp-bin-asal').value.toUpperCase(),
+                    bin_tujuan: document.getElementById('migo-tp-bin-tujuan').value.toUpperCase(),
+                    pengirim: document.getElementById('migo-tp-pengirim').value.toUpperCase(),
+                    penerima: document.getElementById('migo-tp-penerima').value.toUpperCase(),
+                    val_type: document.getElementById('migo-tp-val-type').value.toUpperCase()
+                };
+            } else if (subTrx === 'GR PO Purchasing') {
+                payload = { ...payload,
+                    material: document.getElementById('migo-grpo-mat').value.toUpperCase(),
+                    quantity: document.getElementById('migo-grpo-qty').value,
+                    no_doc: document.getElementById('migo-grpo-nodoc').value.toUpperCase(),
+                    pengirim: document.getElementById('migo-grpo-pengirim').value.toUpperCase(),
+                    penerima: document.getElementById('migo-grpo-penerima').value.toUpperCase()
+                };
+            } else if (subTrx === 'GR STO') {
+                payload = { ...payload,
+                    material: document.getElementById('migo-grsto-mat').value.toUpperCase(),
+                    quantity: document.getElementById('migo-grsto-qty').value,
+                    no_doc: document.getElementById('migo-grsto-nodoc').value.toUpperCase(),
+                    pengirim: document.getElementById('migo-grsto-pengirim').value.toUpperCase(),
+                    penerima: document.getElementById('migo-grsto-penerima').value.toUpperCase()
+                };
+            } else if (subTrx === 'GI STO') {
+                payload = { ...payload,
+                    material: document.getElementById('migo-gisto-mat').value.toUpperCase(),
+                    quantity: document.getElementById('migo-gisto-qty').value,
+                    no_doc_1: document.getElementById('migo-gisto-nodoc1').value.toUpperCase(),
+                    no_doc_sto: document.getElementById('migo-gisto-nodocsto').value.toUpperCase(),
+                    pengirim: document.getElementById('migo-gisto-pengirim').value.toUpperCase(),
+                    penerima: document.getElementById('migo-gisto-penerima').value.toUpperCase()
+                };
+            } else if (subTrx === 'Cancellation') {
+                const fileInput = document.getElementById('migo-cancel-ba');
+                let fileBase64 = "";
+                let fileName = "";
+                if(fileInput.files.length > 0) {
+                    fileName = fileInput.files[0].name;
+                    try {
+                        fileBase64 = await getBase64(fileInput.files[0]);
+                    } catch (e) {
+                        return window.notify('Error File', 'Gagal memproses file unggahan BA.', 'error');
+                    }
+                }
+
+                payload = { ...payload,
+                    no_doc: document.getElementById('migo-cancel-nodoc').value.toUpperCase(),
+                    alasan_cancel: document.getElementById('migo-cancel-alasan').value.toUpperCase(),
+                    file_name: fileName,
+                    file_base64: fileBase64
+                };
+            }
+
+            document.getElementById('loader').style.display = 'flex';
+            document.querySelector('#loader p').innerText = `Memproses Transaksi MIGO...`;
+            
+            try {
+                await fetchWithRetry(scriptURL, { 
+                    method: 'POST', 
+                    body: JSON.stringify(payload) 
+                });
+                
+                document.querySelector('#loader p').innerText = `Memproses Data...`;
+                window.notify('Berhasil!', 'Transaksi Migo berhasil dikirim.', 'success');
+                
+                form.reset();
+                window.toggleMigoFields();
+                goToHome();
+            } catch (e) { 
+                window.notify('Error', 'Gagal menghubungi server.', 'error'); 
+            } finally { 
+                document.getElementById('loader').style.display = 'none'; 
+            }
+        };
+
+        window.handleAddSlocSubmit = async function() {
+            const form = document.getElementById('form-addsloc');
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return window.notify('Data Belum Lengkap', 'Silakan lengkapi semua kolom yang diwajibkan.', 'error');
+            }
+
+            const payload = {
+                request_type: "Additional Storage",
+                requester_name: document.getElementById('addsloc-req-name').value.toUpperCase(),
+                department: currentUserDept,
+                plant: document.getElementById('addsloc-plant').value,
+                request_sloc: document.getElementById('addsloc-sloc').value.toUpperCase(),
+                deskripsi_sloc: document.getElementById('addsloc-desc').value.toUpperCase(),
+                alasan: document.getElementById('addsloc-alasan').value.toUpperCase()
+            };
+
+            document.getElementById('loader').style.display = 'flex';
+            document.querySelector('#loader p').innerText = `Memproses Pengajuan...`;
+            
+            try {
+                await fetchWithRetry(scriptURL, { method: 'POST', body: JSON.stringify(payload) });
+                window.notify('Berhasil!', 'Pengajuan Additional Storage berhasil dikirim.', 'success');
+                form.reset();
+                goToHome();
+            } catch (e) { 
+                window.notify('Error', 'Gagal menghubungi server.', 'error'); 
+            } finally { 
+                document.getElementById('loader').style.display = 'none'; 
+            }
+        };
+
+        window.handleIntransitSubmit = async function() {
+            const form = document.getElementById('form-intransit');
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return window.notify('Data Belum Lengkap', 'Silakan lengkapi semua kolom yang diwajibkan.', 'error');
+            }
+
+            const payload = {
+                request_type: "Setting Intransit PO",
+                requester_name: document.getElementById('intransit-req-name').value.toUpperCase(),
+                department: currentUserDept,
+                no_po: document.getElementById('intransit-nopo').value.toUpperCase(),
+                setting: document.getElementById('intransit-setting').value
+            };
+
+            document.getElementById('loader').style.display = 'flex';
+            document.querySelector('#loader p').innerText = `Memproses Pengajuan...`;
+            
+            try {
+                await fetchWithRetry(scriptURL, { method: 'POST', body: JSON.stringify(payload) });
+                window.notify('Berhasil!', 'Pengajuan Setting Intransit berhasil dikirim.', 'success');
+                form.reset();
+                goToHome();
+            } catch (e) { 
+                window.notify('Error', 'Gagal menghubungi server.', 'error'); 
+            } finally { 
+                document.getElementById('loader').style.display = 'none'; 
+            }
+        };
+
+        window.handleRoleSubmit = async function() {
+            const form = document.getElementById('form-role');
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return window.notify('Data Belum Lengkap', 'Silakan lengkapi semua kolom yang diwajibkan.', 'error');
+            }
+
+            const fileInput = document.getElementById('role-file');
+            let fileBase64 = "";
+            let fileName = "";
+            if(fileInput.files.length > 0) {
+                fileName = fileInput.files[0].name;
+                try {
+                    fileBase64 = await getBase64(fileInput.files[0]);
+                } catch (e) {
+                    return window.notify('Error File', 'Gagal memproses file.', 'error');
+                }
+            }
+
+            const payload = {
+                request_type: "User Log Access",
+                requester_name: document.getElementById('role-req-name').value.toUpperCase(),
+                department: currentUserDept,
+                plant: document.getElementById('role-plant').value,
+                tcode: document.getElementById('role-tcode').value.toUpperCase(),
+                file_name: fileName,
+                file_base64: fileBase64
+            };
+
+            document.getElementById('loader').style.display = 'flex';
+            document.querySelector('#loader p').innerText = `Memproses Pengajuan...`;
+            
+            try {
+                await fetchWithRetry(scriptURL, { method: 'POST', body: JSON.stringify(payload) });
+                window.notify('Berhasil!', 'Pengajuan User Role Access berhasil dikirim.', 'success');
+                form.reset();
+                goToHome();
+            } catch (e) { 
+                window.notify('Error', 'Gagal menghubungi server.', 'error'); 
+            } finally { 
+                document.getElementById('loader').style.display = 'none'; 
+            }
+        };
+
         window.resumeTransaction = function() {
             document.getElementById('resume-modal').classList.add('hidden');
             if (pendingSectionToOpen === 'create-section') {
@@ -1081,11 +1618,13 @@
                     window.showSection('catalogue-landing-section');
                     document.getElementById('btn-alarm').classList.remove('hidden');
                     document.getElementById('btn-access-cat').classList.remove('hidden');
+                    document.getElementById('btn-manual-refresh').classList.remove('hidden');
                     checkAlarmStats();
                 } else {
                     window.showSection('home-section');
                     document.getElementById('btn-access-cat').classList.add('hidden');
                     document.getElementById('btn-alarm').classList.remove('hidden');
+                    document.getElementById('btn-manual-refresh').classList.remove('hidden');
                     checkAlarmStats();
                 }
                 
@@ -2556,25 +3095,45 @@
 
         function populateSelects() {
             const pS = document.getElementById('f-plant'); const mvpS = document.getElementById('m-f-plant'); const lPS = document.getElementById('login-plant');
+            const migoPA = document.getElementById('migo-tp-plant-asal'); const migoPT = document.getElementById('migo-tp-plant-tujuan');
+            const prPlant = document.getElementById('pr-plant');
+            const addSlocPlant = document.getElementById('addsloc-plant'); const rolePlant = document.getElementById('role-plant');
             
             if(pS) pS.innerHTML = '<option value="">-- PILIH --</option>';
             if(mvpS) mvpS.innerHTML = '<option value="">-- PILIH --</option>';
             if(lPS) lPS.innerHTML = '<option value="">-- OPSIONAL --</option>';
+            if(migoPA) migoPA.innerHTML = '<option value="">-- PILIH --</option>';
+            if(migoPT) migoPT.innerHTML = '<option value="">-- PILIH --</option>';
+            if(prPlant) prPlant.innerHTML = '<option value="">-- PILIH --</option>';
+            if(addSlocPlant) addSlocPlant.innerHTML = '<option value="">-- PILIH --</option>';
+            if(rolePlant) rolePlant.innerHTML = '<option value="">-- PILIH --</option>';
             
             for(let i=1;i<=28;i++) { 
                 let v = `PL${i.toString().padStart(2,'0')}`; 
                 if(pS) pS.innerHTML += `<option value="${v}">${v}</option>`; 
                 if(mvpS) mvpS.innerHTML += `<option value="${v}">${v}</option>`; 
                 if(lPS) lPS.innerHTML += `<option value="${v}">${v}</option>`; 
+                if(migoPA) migoPA.innerHTML += `<option value="${v}">${v}</option>`;
+                if(migoPT) migoPT.innerHTML += `<option value="${v}">${v}</option>`;
+                if(prPlant) prPlant.innerHTML += `<option value="${v}">${v}</option>`;
+                if(addSlocPlant) addSlocPlant.innerHTML += `<option value="${v}">${v}</option>`;
+                if(rolePlant) rolePlant.innerHTML += `<option value="${v}">${v}</option>`;
             }
             
             const sS = document.getElementById('f-sloc'); const mvsS = document.getElementById('m-f-sloc');
+            const migoSA = document.getElementById('migo-tp-sloc-asal'); const migoST = document.getElementById('migo-tp-sloc-tujuan');
+            
             if(sS) sS.innerHTML = '<option value="">-- PILIH --</option>';
             if(mvsS) mvsS.innerHTML = '<option value="">-- PILIH --</option>';
+            if(migoSA) migoSA.innerHTML = '<option value="">-- PILIH --</option>';
+            if(migoST) migoST.innerHTML = '<option value="">-- PILIH --</option>';
+            
             for(let i=1;i<=15;i++) { 
                 let v = `S${i.toString().padStart(3,'0')}`; 
                 if(sS) sS.innerHTML += `<option value="${v}">${v}</option>`; 
                 if(mvsS) mvsS.innerHTML += `<option value="${v}">${v}</option>`; 
+                if(migoSA) migoSA.innerHTML += `<option value="${v}">${v}</option>`;
+                if(migoST) migoST.innerHTML += `<option value="${v}">${v}</option>`;
             }
 
             setupVisualSwap('f-uom', [{code:"EA",display:"EA - EACH"},{code:"PC",display:"PC - PIECE"},{code:"SET",display:"SET - SET"},{code:"UNT",display:"UNT - UNIT"},{code:"ROL",display:"ROL - ROLL"},{code:"M",display:"M - METER"},{code:"KG",display:"KG - KILOGRAM"},{code:"L",display:"L - LITER"},{code:"CAN",display:"CAN - CANISTER"},{code:"DR",display:"DR - DRUM"},{code:"PL",display:"PL - PAIL"}]);
@@ -2667,6 +3226,24 @@
 
         window.closeAlarmModal = function() {
             document.getElementById('alarm-modal').classList.add('hidden');
+        };
+
+        window.manualRefresh = async function() {
+            const icon = document.querySelector('#btn-manual-refresh i');
+            if(icon) icon.classList.add('animate-spin');
+            
+            try {
+                await syncZerpdFromSpreadsheet();
+                await checkAlarmStats(true);
+                if (!document.getElementById('monitor-section').classList.contains('hidden')) {
+                    await syncMonitoringData();
+                }
+                window.notify('Refresh Sukses', 'Data berhasil diperbarui dari server.', 'success');
+            } catch (e) {
+                window.notify('Error', 'Gagal memuat ulang data.', 'error');
+            } finally {
+                if(icon) icon.classList.remove('animate-spin');
+            }
         };
 
         window.checkAlarmStats = async function(isAutoSync = false) {
@@ -2897,11 +3474,25 @@
                 
                 clearCreateDraft();
                 clearMaintDraft();
+
+                const formMigo = document.getElementById('form-migo');
+                if (formMigo) formMigo.reset();
+                const formRelPO = document.getElementById('form-relpo');
+                if (formRelPO) formRelPO.reset();
+                const formPR = document.getElementById('form-pr');
+                if (formPR) formPR.reset();
+                const formAddSloc = document.getElementById('form-addsloc');
+                if (formAddSloc) formAddSloc.reset();
+                const formRole = document.getElementById('form-role');
+                if (formRole) formRole.reset();
+                const formIntransit = document.getElementById('form-intransit');
+                if (formIntransit) formIntransit.reset();
                 
                 if(window.accessPollInterval) clearInterval(window.accessPollInterval);
                 if(window.globalAlarmInterval) clearInterval(window.globalAlarmInterval);
                 document.getElementById('btn-alarm').classList.add('hidden');
                 document.getElementById('btn-access-cat').classList.add('hidden');
+                document.getElementById('btn-manual-refresh').classList.add('hidden');
                 
                 showSection('home-section');
                 
