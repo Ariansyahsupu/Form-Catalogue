@@ -3006,6 +3006,8 @@
                     const cols = parseCSVLine(lines[i]);
                     
                     let reqId = cols[0] ? cols[0].trim() : "";
+                    if (!reqId.match(/^"?\d/)) continue; // Mengabaikan pecahan baris akibat newline pada header
+                    
                     let originalRemarks = "";
                     let originalTime = "";
                     let recordDept = "";
@@ -3014,11 +3016,11 @@
                     let materialCode = "";
 
                     if (currentMonitorMode === 'CREATE') {
-                        recordDept = (cols[29] || "").toUpperCase().trim();
-                        originalRemarks = cols[30] ? cols[30].trim() : "DALAM PROSES";
-                        originalTime = cols[31] ? cols[31].trim() : "";
+                        recordDept = (cols[33] || "").toUpperCase().trim();
+                        originalRemarks = cols[34] ? cols[34].trim() : "DALAM PROSES";
+                        originalTime = cols[35] ? cols[35].trim() : "";
                         materialCode = cols[7] || "-";
-                        reqName = cols[28] || "-";
+                        reqName = cols[32] || "-";
                     } else if (currentMonitorMode === 'MAINTAIN') {
                         recordDept = (cols[7] || "").toUpperCase().trim();
                         originalRemarks = cols[10] ? cols[10].trim() : "DALAM PROSES";
@@ -3423,7 +3425,8 @@
                             if (!lines[i].trim()) continue;
                             const cols = parseCSVLine(lines[i]);
                             const reqId = cols[0] ? cols[0].trim() : "";
-                            const originalTime = cols[31] ? cols[31].trim() : "";
+                            if (!reqId.match(/^"?\d/)) continue; // Mengabaikan pecahan baris
+                            const originalTime = cols[35] ? cols[35].trim() : "";
                             const completionTime = LOCAL_FEEDBACK_TIME.has(reqId) ? LOCAL_FEEDBACK_TIME.get(reqId) : originalTime;
                             
                             if (!completionTime) createPending++;
@@ -3439,6 +3442,7 @@
                             if (!lines[i].trim()) continue;
                             const cols = parseCSVLine(lines[i]);
                             const reqId = cols[0] ? cols[0].trim() : "";
+                            if (!reqId.match(/^"?\d/)) continue; // Mengabaikan pecahan baris
                             const originalTime = cols[8] ? cols[8].trim() : "";
                             const completionTime = LOCAL_FEEDBACK_TIME.has(reqId) ? LOCAL_FEEDBACK_TIME.get(reqId) : originalTime;
                             
@@ -3455,6 +3459,7 @@
                             if (!lines[i].trim()) continue;
                             const cols = parseCSVLine(lines[i]);
                             const reqId = cols[0] ? cols[0].trim() : "";
+                            if (!reqId.match(/^"?\d/)) continue; // Mengabaikan pecahan baris
                             const originalTime = cols[17] ? cols[17].trim() : "";
                             const completionTime = LOCAL_FEEDBACK_TIME.has(reqId) ? LOCAL_FEEDBACK_TIME.get(reqId) : originalTime;
                             if (!completionTime) migoPending++;
@@ -3470,6 +3475,7 @@
                             if (!lines[i].trim()) continue;
                             const cols = parseCSVLine(lines[i]);
                             const reqId = cols[0] ? cols[0].trim() : "";
+                            if (!reqId.match(/^"?\d/)) continue; // Mengabaikan pecahan baris
                             const originalTime = cols[5] ? cols[5].trim() : "";
                             const completionTime = LOCAL_FEEDBACK_TIME.has(reqId) ? LOCAL_FEEDBACK_TIME.get(reqId) : originalTime;
                             if (!completionTime) relpoPending++;
@@ -3485,6 +3491,7 @@
                             if (!lines[i].trim()) continue;
                             const cols = parseCSVLine(lines[i]);
                             const reqId = cols[0] ? cols[0].trim() : "";
+                            if (!reqId.match(/^"?\d/)) continue; // Mengabaikan pecahan baris
                             const originalTime = cols[7] ? cols[7].trim() : "";
                             const completionTime = LOCAL_FEEDBACK_TIME.has(reqId) ? LOCAL_FEEDBACK_TIME.get(reqId) : originalTime;
                             if (!completionTime) prPending++;
@@ -3500,6 +3507,7 @@
                             if (!lines[i].trim()) continue;
                             const cols = parseCSVLine(lines[i]);
                             const reqId = cols[0] ? cols[0].trim() : "";
+                            if (!reqId.match(/^"?\d/)) continue; // Mengabaikan pecahan baris
                             const originalTime = cols[8] ? cols[8].trim() : "";
                             const completionTime = LOCAL_FEEDBACK_TIME.has(reqId) ? LOCAL_FEEDBACK_TIME.get(reqId) : originalTime;
                             if (!completionTime) addslocPending++;
@@ -3515,6 +3523,7 @@
                             if (!lines[i].trim()) continue;
                             const cols = parseCSVLine(lines[i]);
                             const reqId = cols[0] ? cols[0].trim() : "";
+                            if (!reqId.match(/^"?\d/)) continue; // Mengabaikan pecahan baris
                             const originalTime = cols[6] ? cols[6].trim() : "";
                             const completionTime = LOCAL_FEEDBACK_TIME.has(reqId) ? LOCAL_FEEDBACK_TIME.get(reqId) : originalTime;
                             if (!completionTime) intransitPending++;
@@ -3530,6 +3539,7 @@
                             if (!lines[i].trim()) continue;
                             const cols = parseCSVLine(lines[i]);
                             const reqId = cols[0] ? cols[0].trim() : "";
+                            if (!reqId.match(/^"?\d/)) continue; // Mengabaikan pecahan baris
                             const originalTime = cols[7] ? cols[7].trim() : "";
                             const completionTime = LOCAL_FEEDBACK_TIME.has(reqId) ? LOCAL_FEEDBACK_TIME.get(reqId) : originalTime;
                             if (!completionTime) rolePending++;
