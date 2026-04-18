@@ -696,6 +696,10 @@
                                                     </div>
                                                     <div class="space-y-1.5" id="val-class-group"><label class="text-[10px] professional-label tracking-widest">Val. Class</label><select id="create-val-class" name="valuation_class" class="input-field border-2 professional-input"></select></div>
                                                     <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Storage Bin</label><input type="text" name="storage_bin" id="f-bin" class="input-field border-2 professional-input"></div>
+                                                    <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Interchange <span class="text-[8px] text-orange-500 font-bold">(SPRT/MDLE/TYRE)</span></label><input type="text" name="interchange" id="f-interchange" placeholder="PN/CODE MAT" class="input-field border-2 professional-input"></div>
+                                                    <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Compartment <span class="text-red-500 font-black">*</span></label><input type="text" name="compartment" id="f-compartment" required class="input-field border-2 professional-input"></div>
+                                                    <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Model Unit <span class="text-red-500 font-black">*</span></label><input type="text" name="model_unit" id="f-model-unit" required class="input-field border-2 professional-input"></div>
+                                                    <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Brand Sprt <span class="text-red-500 font-black">*</span> <span class="text-[8px] text-slate-400">(BUKAN BRAND UNIT)</span></label><input type="text" name="brand_sprt" id="f-brand-sprt" required placeholder="BRAND SPAREPART" class="input-field border-2 professional-input"></div>
                                                     <div class="space-y-1.5 md:col-span-3">
                                                         <label class="text-[10px] professional-label tracking-widest">Remarks / Note <span class="text-red-500 font-black">(WAJIB: CCP / LINK PART BOOK)</span></label>
                                                         <input type="text" name="remarks" id="f-remarks" placeholder="MASUKKAN CCP ATAU LINK PART BOOK" required class="input-field border-2 professional-input border-orange-200" autocomplete="off">
@@ -1084,7 +1088,7 @@
     </div>
 
     <script type="module">
-        const scriptURL = "https://script.google.com/macros/s/AKfycbyR2spJCAxKQ-DViYl8JI8vMrcTqDTHez67DAHWcufvflC8dbNaBAEaxyGxt2sMqCQ1/exec";
+        const scriptURL = "https://script.google.com/macros/s/AKfycbz3I9M3D2UwSKQySx26_90_tViXrFzrdt7J-WS0WMclIiALU3iEq07VQL_iwO4w5ory/exec";
         const csvPubURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQFR3WLBquvFttCMJlrZQOrK2u8TMm3Dhj2yMukhbakAC5LdUAndnaPn6FesXRWUl5R1IHmAuKDRnER/pub?gid=1089770718&single=true&output=csv";
         const csvAccessURL = "https://docs.google.com/spreadsheets/d/1Bu4_lnZJe-NAezO0Jyw2AkqQk0bdVFTU8VrIlSn3eJY/export?format=csv&gid=242300721";
         const csvCreateMatURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQf_Og1jqJhzDmiLJYNEaL_NK_jYS7-Y9tpNcFaI1qBaI57ql11fRVHAP42anjct-vwvOKw-CGlikLU/pub?gid=1174357410&single=true&output=csv";
@@ -1737,6 +1741,11 @@
             if (!['CONS', 'ASET', 'SEJA'].includes(t) && !m.storage_location) missing.push("SLoc");
             if (t !== 'ASET' && !m.serial_profile) missing.push("Serial");
             
+            if (!m.compartment) missing.push("Compartment");
+            if (!m.model_unit) missing.push("Model Unit");
+            if (!m.brand_sprt) missing.push("Brand Sprt");
+            if (['SPRT', 'MDLE', 'TYRE'].includes(t) && !m.interchange) missing.push("Interchange");
+            
             if (!m.remarks) missing.push("Remarks");
             
             return missing;
@@ -2083,8 +2092,8 @@
             const m = batchMaterials[currentMaterialIdx];
             if (!m) return;
 
-            const fields = ['f-desc', 'f-uom', 'f-type', 'f-group', 'f-plant', 'f-sloc', 'f-purch', 'f-val-cat', 'create-val-class', 'f-bin', 'f-remarks', 'f-serial'];
-            const props = ['description', 'base_uom', 'material_type', 'material_group', 'plant', 'storage_location', 'purchasing_group', 'valuation_cat', 'valuation_class', 'storage_bin', 'remarks', 'serial_profile'];
+            const fields = ['f-desc', 'f-uom', 'f-type', 'f-group', 'f-plant', 'f-sloc', 'f-purch', 'f-val-cat', 'create-val-class', 'f-bin', 'f-remarks', 'f-serial', 'f-interchange', 'f-compartment', 'f-model-unit', 'f-brand-sprt'];
+            const props = ['description', 'base_uom', 'material_type', 'material_group', 'plant', 'storage_location', 'purchasing_group', 'valuation_cat', 'valuation_class', 'storage_bin', 'remarks', 'serial_profile', 'interchange', 'compartment', 'model_unit', 'brand_sprt'];
 
             fields.forEach((f, i) => {
                 const el = document.getElementById(f);
@@ -2172,6 +2181,10 @@
             attemptSet('f-bin', m.storage_bin);
             attemptSet('f-remarks', m.remarks);
             attemptSet('f-serial', m.serial_profile);
+            attemptSet('f-interchange', m.interchange);
+            attemptSet('f-compartment', m.compartment);
+            attemptSet('f-model-unit', m.model_unit);
+            attemptSet('f-brand-sprt', m.brand_sprt);
 
             window.updateValuationClass();
             updateAllFieldsStatus();
@@ -2884,7 +2897,7 @@
 
         window.startBatchForm = function(availablePNs, identicalMode = false) {
             isBatchIdentical = identicalMode;
-            batchMaterials = availablePNs.map(pn => ({ mfg_part: pn, description: "", base_uom: "", material_type: "", material_group: "", plant: (currentUserDept !== "CATALOGUE" && currentUserPlant) ? currentUserPlant : "", storage_location: "", purchasing_group: "", valuation_cat: "", valuation_class: "", storage_bin: "", remarks: "", serial_profile: "" }));
+            batchMaterials = availablePNs.map(pn => ({ mfg_part: pn, description: "", base_uom: "", material_type: "", material_group: "", plant: (currentUserDept !== "CATALOGUE" && currentUserPlant) ? currentUserPlant : "", storage_location: "", purchasing_group: "", valuation_cat: "", valuation_class: "", storage_bin: "", remarks: "", serial_profile: "", interchange: "", compartment: "", model_unit: "", brand_sprt: "" }));
             currentMaterialIdx = 0;
             document.getElementById('pn-res').classList.add('hidden');
             document.getElementById('create-full-form').classList.remove('hidden');
