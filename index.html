@@ -699,7 +699,7 @@
                                                     <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Interchange <span class="text-[8px] text-orange-500 font-bold">(SPRT/MDLE/TYRE)</span></label><input type="text" name="interchange" id="f-interchange" placeholder="PN/CODE MAT" class="input-field border-2 professional-input"></div>
                                                     <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Compartment <span class="text-red-500 font-black">*</span></label><input type="text" name="compartment" id="f-compartment" required class="input-field border-2 professional-input"></div>
                                                     <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Model Unit <span class="text-red-500 font-black">*</span></label><input type="text" name="model_unit" id="f-model-unit" required class="input-field border-2 professional-input"></div>
-                                                    <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Brand Sprt <span class="text-red-500 font-black">*</span> <span class="text-[8px] text-slate-400">(BUKAN BRAND UNIT)</span></label><input type="text" name="brand_sprt" id="f-brand-sprt" required placeholder="BRAND SPAREPART" class="input-field border-2 professional-input"></div>
+                                                    <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Brand atau Merk <span class="text-red-500 font-black">*</span> <span class="text-[8px] text-slate-400">(BUKAN BRAND UNIT)</span></label><input type="text" name="brand_sprt" id="f-brand-sprt" required placeholder="BRAND ATAU MERK" class="input-field border-2 professional-input"></div>
                                                     <div class="space-y-1.5 md:col-span-3">
                                                         <label class="text-[10px] professional-label tracking-widest">Remarks / Note <span class="text-red-500 font-black">(WAJIB: CCP / LINK PART BOOK)</span></label>
                                                         <input type="text" name="remarks" id="f-remarks" placeholder="MASUKKAN CCP ATAU LINK PART BOOK" required class="input-field border-2 professional-input border-orange-200" autocomplete="off">
@@ -1736,15 +1736,17 @@
             if (!m.purchasing_group) missing.push("Purch Grp");
             
             const t = m.material_type;
+            const lockOthers = ['FOGC', 'TYRE', 'CONS', 'GENS', 'ASET', 'SEJA'].includes(t);
+            
             if (t !== 'ASET' && !m.valuation_class) missing.push("Val Class");
             if (!['CONS', 'GENS', 'SEJA', 'ASET'].includes(t) && !m.valuation_cat) missing.push("Val Cat");
             if (!['CONS', 'ASET', 'SEJA'].includes(t) && !m.storage_location) missing.push("SLoc");
-            if (t !== 'ASET' && !m.serial_profile) missing.push("Serial");
+            if (!['ASET', 'GENS', 'FOGC', 'TYRE', 'CONS', 'SEJA'].includes(t) && !m.serial_profile) missing.push("Serial");
             
-            if (!m.compartment) missing.push("Compartment");
-            if (!m.model_unit) missing.push("Model Unit");
-            if (!m.brand_sprt) missing.push("Brand Sprt");
-            if (['SPRT', 'MDLE', 'TYRE'].includes(t) && !m.interchange) missing.push("Interchange");
+            if (!lockOthers && !m.compartment) missing.push("Compartment");
+            if (!lockOthers && !m.model_unit) missing.push("Model Unit");
+            if (t !== 'FOGC' && !m.brand_sprt) missing.push("Brand atau Merk");
+            if (['SPRT', 'MDLE'].includes(t) && !m.interchange) missing.push("Interchange");
             
             if (!m.remarks) missing.push("Remarks");
             
@@ -2199,6 +2201,10 @@
             const serialEl = document.getElementById('f-serial');
             const purchEl = document.getElementById('f-purch');
             const binEl = document.getElementById('f-bin'); // Penambahan target untuk bin (Rak)
+            const interchangeEl = document.getElementById('f-interchange');
+            const compartmentEl = document.getElementById('f-compartment');
+            const modelUnitEl = document.getElementById('f-model-unit');
+            const brandSprtEl = document.getElementById('f-brand-sprt');
             
             if (!tEl) return;
             
@@ -2407,8 +2413,8 @@
             }
 
             // --- 5. STORAGE BIN LOGIC ---
-            if (binEl) { // Rule 23, 24
-                if (t === 'CONS' || t === 'ASET') {
+            if (binEl) { // Rule 23, 24 + SEJA
+                if (t === 'CONS' || t === 'ASET' || t === 'SEJA') {
                     binEl.value = '';
                     binEl.disabled = true;
                     binEl.classList.add('input-readonly');
@@ -2419,8 +2425,8 @@
             }
 
             // --- 6. SERIAL NUMBER PROFILE LOGIC ---
-            if (serialEl) { // Rule 19, 24, 25
-                if (t === 'ASET' || t === 'GENS') {
+            if (serialEl) { // Rule 19, 24, 25 + New Rules
+                if (['ASET', 'GENS', 'FOGC', 'TYRE', 'CONS', 'SEJA'].includes(t)) {
                     serialEl.value = '';
                     serialEl.disabled = true;
                     serialEl.classList.add('input-readonly');
@@ -2475,6 +2481,54 @@
                 if (purchEl.options && purchEl.options[purchEl.selectedIndex]) {
                     const opt = purchEl.options[purchEl.selectedIndex];
                     if (opt && opt.dataset && opt.dataset.short) opt.text = opt.dataset.short;
+                }
+            }
+
+            // --- 8. INTERCHANGE LOGIC ---
+            if (interchangeEl) {
+                if (['FOGC', 'TYRE', 'CONS', 'GENS', 'ASET', 'SEJA'].includes(t)) {
+                    interchangeEl.value = '';
+                    interchangeEl.disabled = true;
+                    interchangeEl.classList.add('input-readonly');
+                } else {
+                    interchangeEl.disabled = false;
+                    interchangeEl.classList.remove('input-readonly');
+                }
+            }
+
+            // --- 9. COMPARTMENT LOGIC ---
+            if (compartmentEl) {
+                if (['FOGC', 'TYRE', 'CONS', 'GENS', 'ASET', 'SEJA'].includes(t)) {
+                    compartmentEl.value = '';
+                    compartmentEl.disabled = true;
+                    compartmentEl.classList.add('input-readonly');
+                } else {
+                    compartmentEl.disabled = false;
+                    compartmentEl.classList.remove('input-readonly');
+                }
+            }
+
+            // --- 10. MODEL UNIT LOGIC ---
+            if (modelUnitEl) {
+                if (['FOGC', 'TYRE', 'CONS', 'GENS', 'ASET', 'SEJA'].includes(t)) {
+                    modelUnitEl.value = '';
+                    modelUnitEl.disabled = true;
+                    modelUnitEl.classList.add('input-readonly');
+                } else {
+                    modelUnitEl.disabled = false;
+                    modelUnitEl.classList.remove('input-readonly');
+                }
+            }
+
+            // --- 11. BRAND ATAU MERK LOGIC ---
+            if (brandSprtEl) {
+                if (t === 'FOGC') {
+                    brandSprtEl.value = '';
+                    brandSprtEl.disabled = true;
+                    brandSprtEl.classList.add('input-readonly');
+                } else {
+                    brandSprtEl.disabled = false;
+                    brandSprtEl.classList.remove('input-readonly');
                 }
             }
             
@@ -3243,7 +3297,7 @@
             if(migoSA) migoSA.innerHTML = '<option value="">-- PILIH --</option>';
             if(migoST) migoST.innerHTML = '<option value="">-- PILIH --</option>';
             
-            for(let i=1;i<=15;i++) { 
+            for(let i=1;i<=44;i++) { 
                 let v = `S${i.toString().padStart(3,'0')}`; 
                 if(sS) sS.innerHTML += `<option value="${v}">${v}</option>`; 
                 if(mvsS) mvsS.innerHTML += `<option value="${v}">${v}</option>`; 
@@ -3802,6 +3856,6 @@
                 }
             });
         };
-    </script>
+</script>
 </body>
 </html>
