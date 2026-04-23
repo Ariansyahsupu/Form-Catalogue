@@ -278,7 +278,22 @@
             <div class="space-y-6">
                 <div class="space-y-2">
                     <label class="text-[10px] professional-label tracking-widest ml-1">Username</label>
-                    <input type="text" id="login-username" placeholder="IT, PLANT, LOG, DLL." class="input-field border-2 font-bold uppercase" oninput="this.value = this.value.toUpperCase()">
+                    <select id="login-username" class="input-field border-2 font-bold uppercase bg-white">
+                        <option value="">-- PILIH USERNAME --</option>
+                        <option value="IT">IT</option>
+                        <option value="PLANT">PLANT</option>
+                        <option value="LOG">LOG</option>
+                        <option value="CVL">CVL</option>
+                        <option value="IA">IA</option>
+                        <option value="PROD">PROD</option>
+                        <option value="CATALOGUE">CATALOGUE</option>
+                        <option value="SHE">SHE</option>
+                        <option value="SM">SM</option>
+                        <option value="DC">DC</option>
+                        <option value="ICGS">ICGS</option>
+                        <option value="FAT">FAT</option>
+                        <option value="ENG">ENG</option>
+                    </select>
                 </div>
                 <div class="space-y-2">
                     <label class="text-[10px] professional-label tracking-widest ml-1">Password</label>
@@ -479,43 +494,43 @@
                             <h2 class="text-2xl font-black text-slate-900 tracking-tight mb-2">Pilih Modul Monitoring</h2>
                             <p class="text-slate-400 font-bold uppercase text-[10px] tracking-[0.2em]">Pilih jenis pengajuan yang ingin dipantau</p>
                         </div>
-                        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                            <div onclick="openMonitorView('CREATE')" class="premium-card p-6 text-orange-500 cursor-pointer">
+                        <div id="monitor-card-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                            <div id="mon-card-create" onclick="openMonitorView('CREATE')" class="premium-card p-6 text-orange-500 cursor-pointer">
                                 <div class="icon-box bg-orange-50 text-orange-500 border border-orange-100"><i class="fas fa-plus-circle"></i></div>
                                 <h3 class="text-[11px] professional-label mb-1">Create Material</h3>
                                 <button class="w-full mt-auto py-2 bg-orange-500 text-white rounded-xl font-black text-[9px] uppercase shadow-sm pointer-events-none">Buka Data</button>
                             </div>
-                            <div onclick="openMonitorView('MAINTAIN')" class="premium-card p-6 text-blue-600 cursor-pointer">
+                            <div id="mon-card-maint" onclick="openMonitorView('MAINTAIN')" class="premium-card p-6 text-blue-600 cursor-pointer">
                                 <div class="icon-box bg-blue-50 text-blue-600 border border-blue-100"><i class="fas fa-screwdriver-wrench"></i></div>
                                 <h3 class="text-[11px] professional-label mb-1">Maintain Material</h3>
                                 <button class="w-full mt-auto py-2 bg-blue-600 text-white rounded-xl font-black text-[9px] uppercase shadow-sm pointer-events-none">Buka Data</button>
                             </div>
-                            <div onclick="openMonitorView('MIGO')" class="premium-card p-6 text-indigo-600 cursor-pointer">
+                            <div id="mon-card-migo" onclick="openMonitorView('MIGO')" class="premium-card p-6 text-indigo-600 cursor-pointer">
                                 <div class="icon-box bg-indigo-50 text-indigo-600 border border-indigo-100"><i class="fas fa-truck-ramp-box"></i></div>
                                 <h3 class="text-[11px] professional-label mb-1">Transaksi Migo</h3>
                                 <button class="w-full mt-auto py-2 bg-indigo-600 text-white rounded-xl font-black text-[9px] uppercase shadow-sm pointer-events-none">Buka Data</button>
                             </div>
-                            <div onclick="openMonitorView('RELPO')" class="premium-card p-6 text-violet-600 cursor-pointer">
+                            <div id="mon-card-relpo" onclick="openMonitorView('RELPO')" class="premium-card p-6 text-violet-600 cursor-pointer">
                                 <div class="icon-box bg-violet-50 text-violet-600 border border-violet-100"><i class="fas fa-file-signature"></i></div>
                                 <h3 class="text-[11px] professional-label mb-1">Rel / Unrel PR/PO</h3>
                                 <button class="w-full mt-auto py-2 bg-violet-600 text-white rounded-xl font-black text-[9px] uppercase shadow-sm pointer-events-none">Buka Data</button>
                             </div>
-                            <div onclick="openMonitorView('PR')" class="premium-card p-6 text-cyan-600 cursor-pointer">
+                            <div id="mon-card-pr" onclick="openMonitorView('PR')" class="premium-card p-6 text-cyan-600 cursor-pointer">
                                 <div class="icon-box bg-cyan-50 text-cyan-600 border border-cyan-100"><i class="fas fa-file-invoice"></i></div>
                                 <h3 class="text-[11px] professional-label mb-1">Transaksi PR</h3>
                                 <button class="w-full mt-auto py-2 bg-cyan-600 text-white rounded-xl font-black text-[9px] uppercase shadow-sm pointer-events-none">Buka Data</button>
                             </div>
-                            <div onclick="openMonitorView('ADDSLOC')" class="premium-card p-6 text-teal-600 cursor-pointer">
+                            <div id="mon-card-addsloc" onclick="openMonitorView('ADDSLOC')" class="premium-card p-6 text-teal-600 cursor-pointer">
                                 <div class="icon-box bg-teal-50 text-teal-600 border border-teal-100"><i class="fas fa-warehouse"></i></div>
                                 <h3 class="text-[11px] professional-label mb-1">Additional Storage</h3>
                                 <button class="w-full mt-auto py-2 bg-teal-600 text-white rounded-xl font-black text-[9px] uppercase shadow-sm pointer-events-none">Buka Data</button>
                             </div>
-                            <div onclick="openMonitorView('INTRANSIT')" class="premium-card p-6 text-emerald-500 cursor-pointer">
+                            <div id="mon-card-intransit" onclick="openMonitorView('INTRANSIT')" class="premium-card p-6 text-emerald-500 cursor-pointer">
                                 <div class="icon-box bg-emerald-50 text-emerald-500 border border-emerald-100"><i class="fas fa-clock-rotate-left"></i></div>
                                 <h3 class="text-[11px] professional-label mb-1">Intransit PO</h3>
                                 <button class="w-full mt-auto py-2 bg-emerald-500 text-white rounded-xl font-black text-[9px] uppercase shadow-sm pointer-events-none">Buka Data</button>
                             </div>
-                            <div onclick="openMonitorView('ROLE')" class="premium-card p-6 text-slate-600 cursor-pointer">
+                            <div id="mon-card-role" onclick="openMonitorView('ROLE')" class="premium-card p-6 text-slate-600 cursor-pointer">
                                 <div class="icon-box bg-slate-50 text-slate-600 border border-slate-100"><i class="fas fa-user-shield"></i></div>
                                 <h3 class="text-[11px] professional-label mb-1">User Role Access</h3>
                                 <button class="w-full mt-auto py-2 bg-slate-600 text-white rounded-xl font-black text-[9px] uppercase shadow-sm pointer-events-none">Buka Data</button>
@@ -537,6 +552,14 @@
                                 </div>
                             </div>
                             <div class="flex items-center gap-3">
+                                <div id="bulk-action-container" class="hidden flex items-center gap-2">
+                                    <button id="btn-bulk-update" onclick="bulkOpenFeedback()" class="hidden bg-blue-600 text-white px-4 py-2.5 rounded-xl text-[10px] font-black uppercase flex items-center gap-2 hover:bg-blue-700 transition-colors shadow-md border border-blue-700">
+                                        <i class="fas fa-edit"></i> Bulk Update
+                                    </button>
+                                    <button id="btn-bulk-done" onclick="bulkDirectDone()" class="hidden bg-emerald-600 text-white px-4 py-2.5 rounded-xl text-[10px] font-black uppercase flex items-center gap-2 hover:bg-emerald-700 transition-colors shadow-md border border-emerald-700">
+                                        <i class="fas fa-check-double"></i> Bulk Done
+                                    </button>
+                                </div>
                                 <div id="monitor-sync-stat" class="bg-emerald-50 px-4 py-2.5 rounded-xl border border-emerald-100 text-emerald-600 text-[10px] font-black uppercase flex items-center gap-3">
                                     <div class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div> SINKRONISASI AKTIF
                                 </div>
@@ -869,8 +892,9 @@
                                             <p class="text-[9px] text-slate-500 font-bold mt-1">Copy 2 kolom berurutan (Material dan Quantity) langsung dari Excel, lalu paste di kotak ini.</p>
                                         </div>
                                         <div class="space-y-1.5 md:col-span-2">
-                                            <label class="text-[10px] professional-label tracking-widest">Lampiran BA (Opsional)</label>
-                                            <input type="file" id="pr-ba" class="input-field border-2 text-[12px] bg-white cursor-pointer" accept="image/*,.pdf,.doc,.docx">
+                                            <label class="text-[10px] professional-label tracking-widest">Link Lampiran BA (Opsional)</label>
+                                            <input type="text" id="pr-ba" placeholder="PASTE LINK FILE BA DI SINI" class="input-field border-2 professional-input bg-white">
+                                            <p class="text-[9px] text-slate-500 font-bold mt-1">Remark: BA menggunakan Format TGL terupdate agar PR terproses.<br>Upload BA ke: <a href="https://drive.google.com/drive/folders/1FcLn8r77VW-h3szv1xSjA6OQZqWgjl68" target="_blank" class="text-blue-600 underline">https://drive.google.com/drive/folders/1FcLn8r77VW-h3szv1xSjA6OQZqWgjl68</a></p>
                                         </div>
                                     </div>
                                 </div>
@@ -960,8 +984,9 @@
                                     <div class="grid grid-cols-1 gap-6">
                                         <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">T-code (Open Autorisasi)</label><input type="text" id="role-tcode" required class="input-field border-2 professional-input"></div>
                                         <div class="space-y-1.5">
-                                            <label class="text-[10px] professional-label tracking-widest">Capture SU53 (Gambar/File)</label>
-                                            <input type="file" id="role-file" required class="input-field border-2 text-[12px] bg-white cursor-pointer" accept="image/*,.pdf,.doc,.docx">
+                                            <label class="text-[10px] professional-label tracking-widest">Link Capture SU53 (Gambar/File)</label>
+                                            <input type="text" id="role-file" required placeholder="PASTE LINK GAMBAR/FILE DI SINI" class="input-field border-2 professional-input bg-white">
+                                            <p class="text-[9px] text-slate-500 font-bold mt-1">Upload Capture SU53 ke: <a href="https://drive.google.com/drive/folders/1YIhYaD-apVZEzmJCy_P5-_8tdSC0Nu02" target="_blank" class="text-blue-600 underline">https://drive.google.com/drive/folders/1YIhYaD-apVZEzmJCy_P5-_8tdSC0Nu02</a></p>
                                         </div>
                                     </div>
                                 </div>
@@ -1220,7 +1245,18 @@
         // --- PENANGANAN TRANSAKSI DRAF (RESUME / DISCARD) ---
         window.openCreateSection = function() {
             const draftStr = localStorage.getItem('catlog_create_draft');
-            if ((batchMaterials && batchMaterials.length > 0) || (draftStr && JSON.parse(draftStr).length > 0)) {
+            let hasDraft = false;
+            if (batchMaterials && batchMaterials.length > 0) {
+                hasDraft = true;
+            } else if (draftStr) {
+                try {
+                    const parsed = JSON.parse(draftStr);
+                    if (parsed && parsed.length > 0) hasDraft = true;
+                } catch(e) {
+                    localStorage.removeItem('catlog_create_draft');
+                }
+            }
+            if (hasDraft) {
                 pendingSectionToOpen = 'create-section';
                 document.getElementById('resume-modal').classList.remove('hidden');
             } else {
@@ -1230,7 +1266,18 @@
 
         window.openMaintainSection = function() {
             const draftStr = localStorage.getItem('catlog_maint_draft');
-            if ((maintBatchMaterials && maintBatchMaterials.length > 0) || (draftStr && JSON.parse(draftStr).length > 0)) {
+            let hasDraft = false;
+            if (maintBatchMaterials && maintBatchMaterials.length > 0) {
+                hasDraft = true;
+            } else if (draftStr) {
+                try {
+                    const parsed = JSON.parse(draftStr);
+                    if (parsed && parsed.length > 0) hasDraft = true;
+                } catch(e) {
+                    localStorage.removeItem('catlog_maint_draft');
+                }
+            }
+            if (hasDraft) {
                 pendingSectionToOpen = 'maintain-section';
                 document.getElementById('resume-modal').classList.remove('hidden');
             } else {
@@ -1472,23 +1519,118 @@
             }
         };
 
-        window.handleRoleSubmit = async function() {
-            const form = document.getElementById('form-role');
+        window.handlePRSubmit = async function() {
+            const form = document.getElementById('form-pr');
             if (!form.checkValidity()) {
                 form.reportValidity();
                 return window.notify('Data Belum Lengkap', 'Silakan lengkapi semua kolom yang diwajibkan.', 'error');
             }
 
-            const fileInput = document.getElementById('role-file');
-            let fileBase64 = "";
-            let fileName = "";
-            if(fileInput.files.length > 0) {
-                fileName = fileInput.files[0].name;
-                try {
-                    fileBase64 = await getBase64(fileInput.files[0]);
-                } catch (e) {
-                    return window.notify('Error File', 'Gagal memproses file.', 'error');
+            const rawText = document.getElementById('pr-mat-qty').value.trim();
+            if (!rawText) return window.notify('Input Kosong', 'Silakan isi Material & Quantity.', 'error');
+
+            // Memproses inputan Paste dari Excel (memisahkan baris, lalu memisahkan kolom Mat & Qty)
+            const lines = rawText.split(/\r?\n/).filter(line => line.trim() !== '');
+            const parsedData = [];
+
+            for (let line of lines) {
+                // Excel biasanya memisahkan kolom dengan karakter Tab (\t) atau spasi banyak
+                const parts = line.trim().split(/\t+|\s{2,}/);
+                let mat = parts[0] ? parts[0].toUpperCase() : "-";
+                let qty = parts[1] ? parts[1].toUpperCase() : "0";
+                
+                // Fallback jika pemisah hanya satu spasi biasa
+                if (parts.length === 1 && line.includes(' ')) {
+                     const spaceParts = line.trim().split(' ');
+                     mat = spaceParts[0].toUpperCase();
+                     qty = spaceParts.slice(1).join('').toUpperCase();
                 }
+
+                parsedData.push({ material: mat, quantity: qty });
+            }
+
+            const reqName = document.getElementById('pr-req-name').value.toUpperCase();
+            const plant = document.getElementById('pr-plant').value;
+            const fileLink = document.getElementById('pr-ba').value;
+
+            document.getElementById('loader').style.display = 'flex';
+            try {
+                let completedCount = 0;
+                const CHUNK_SIZE = 15; // Menggunakan batch 15 agar proses pengiriman massal cepat dan smooth
+                
+                for (let i = 0; i < parsedData.length; i += CHUNK_SIZE) {
+                    const chunk = parsedData.slice(i, i + CHUNK_SIZE);
+                    const promises = chunk.map(async (item) => {
+                        await fetchWithRetry(scriptURL, { 
+                            method: 'POST', 
+                            body: JSON.stringify({
+                                request_type: "Transaksi PR",
+                                requester_name: reqName,
+                                department: currentUserDept,
+                                plant: plant,
+                                material: item.material,
+                                quantity: item.quantity,
+                                file_link: fileLink,
+                                file_base64: "" 
+                            }) 
+                        });
+                        completedCount++;
+                        requestAnimationFrame(() => {
+                            document.querySelector('#loader p').innerText = `Memproses Data ${completedCount} dari ${parsedData.length}...`;
+                        });
+                    });
+                    
+                    await Promise.all(promises);
+                    await new Promise(r => setTimeout(r, 100)); // Jeda responsif
+                }
+                
+                document.querySelector('#loader p').innerText = `Memproses Data...`;
+                window.notify('Berhasil!', `${parsedData.length} Pengajuan Transaksi PR berhasil dikirim.`, 'success');
+                form.reset();
+                goToHome();
+            } catch (e) { 
+                window.notify('Error', 'Gagal menghubungi server.', 'error'); 
+            } finally { 
+                document.getElementById('loader').style.display = 'none'; 
+            }
+        };
+
+        window.handleRelPOSubmit = async function() {
+            const form = document.getElementById('form-relpo');
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return window.notify('Data Belum Lengkap', 'Silakan lengkapi semua kolom yang diwajibkan.', 'error');
+            }
+
+            // Pastikan request_type persis seperti ini agar dikenali oleh Backend
+            const payload = {
+                request_type: "Realize/Unrealize PR/PO",
+                requester_name: document.getElementById('relpo-req-name').value.toUpperCase(),
+                department: currentUserDept,
+                no_doc: document.getElementById('relpo-nodoc').value.toUpperCase(),
+                metadata: document.getElementById('relpo-metadata').value
+            };
+
+            document.getElementById('loader').style.display = 'flex';
+            document.querySelector('#loader p').innerText = `Memproses Pengajuan...`;
+            
+            try {
+                await fetchWithRetry(scriptURL, { method: 'POST', body: JSON.stringify(payload) });
+                window.notify('Berhasil!', 'Pengajuan Realize/Unrealize berhasil dikirim.', 'success');
+                form.reset();
+                goToHome();
+            } catch (e) { 
+                window.notify('Error', 'Gagal menghubungi server.', 'error'); 
+            } finally { 
+                document.getElementById('loader').style.display = 'none'; 
+            }
+        };
+
+        window.handleRoleSubmit = async function() {
+            const form = document.getElementById('form-role');
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return window.notify('Data Belum Lengkap', 'Silakan lengkapi semua kolom yang diwajibkan.', 'error');
             }
 
             const payload = {
@@ -1497,8 +1639,8 @@
                 department: currentUserDept,
                 plant: document.getElementById('role-plant').value,
                 tcode: document.getElementById('role-tcode').value.toUpperCase(),
-                file_name: fileName,
-                file_base64: fileBase64
+                file_link: document.getElementById('role-file').value, // Link SU53
+                file_base64: "" // Dikosongkan karena tidak lagi mengunggah file
             };
 
             document.getElementById('loader').style.display = 'flex';
@@ -1521,22 +1663,30 @@
             if (pendingSectionToOpen === 'create-section') {
                 const draftStr = localStorage.getItem('catlog_create_draft');
                 if (draftStr) {
-                    batchMaterials = JSON.parse(draftStr);
-                    isBatchIdentical = localStorage.getItem('catlog_create_identical') === 'true';
-                    currentMaterialIdx = 0;
-                    document.getElementById('create-full-form').classList.remove('hidden');
-                    renderNav();
-                    loadMaterialToForm(0);
+                    try {
+                        batchMaterials = JSON.parse(draftStr);
+                        isBatchIdentical = localStorage.getItem('catlog_create_identical') === 'true';
+                        currentMaterialIdx = 0;
+                        document.getElementById('create-full-form').classList.remove('hidden');
+                        renderNav();
+                        loadMaterialToForm(0);
+                    } catch(e) {
+                        clearCreateDraft();
+                    }
                 }
             } else if (pendingSectionToOpen === 'maintain-section') {
                 const draftStr = localStorage.getItem('catlog_maint_draft');
                 if (draftStr) {
-                    maintBatchMaterials = JSON.parse(draftStr);
-                    maintBatchMode = parseInt(localStorage.getItem('catlog_maint_mode')) || 1;
-                    currentMaintIdx = 0;
-                    document.getElementById('maint-full-form').classList.remove('hidden');
-                    renderMaintNav();
-                    loadMaintMaterialToForm(0);
+                    try {
+                        maintBatchMaterials = JSON.parse(draftStr);
+                        maintBatchMode = parseInt(localStorage.getItem('catlog_maint_mode')) || 1;
+                        currentMaintIdx = 0;
+                        document.getElementById('maint-full-form').classList.remove('hidden');
+                        renderMaintNav();
+                        loadMaintMaterialToForm(0);
+                    } catch(e) {
+                        clearMaintDraft();
+                    }
                 }
             }
             showSection(pendingSectionToOpen);
@@ -1608,6 +1758,20 @@
                 if (el) el.style.display = 'flex';
             });
 
+            // --- ADDED LOGIC FOR MONITOR CARD FILTERING ---
+            const restrictedMonitorCards = ['mon-card-migo', 'mon-card-relpo', 'mon-card-pr', 'mon-card-addsloc', 'mon-card-intransit', 'mon-card-role'];
+            const monitorCardGrid = document.getElementById('monitor-card-grid');
+
+            restrictedMonitorCards.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.style.display = 'flex';
+            });
+
+            if (monitorCardGrid) {
+                monitorCardGrid.className = "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4";
+                Array.from(monitorCardGrid.children).forEach(card => card.classList.remove('large-mode'));
+            }
+
             // Reset Activity Monitor & Back Button for Catalogue
             const actMon = document.getElementById('card-activity-monitor');
             if(actMon) actMon.style.display = 'flex';
@@ -1636,6 +1800,23 @@
                     if (cardGrid) {
                         cardGrid.className = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto min-h-[65vh] content-center";
                         Array.from(cardGrid.children).forEach(card => {
+                            if (card.style.display !== 'none') {
+                                card.classList.add('large-mode');
+                            }
+                        });
+                    }
+                }
+
+                // Hide khusus untuk Menu Monitor (Sisakan Create & Maintain saja untuk selain LOG, LOGHO, CATALOGUE)
+                if (currentUserDept !== "LOG" && currentUserDept !== "LOGHO" && currentUserDept !== "CATALOGUE") {
+                    restrictedMonitorCards.forEach(id => {
+                        const el = document.getElementById(id);
+                        if (el) el.style.display = 'none';
+                    });
+
+                    if (monitorCardGrid) {
+                        monitorCardGrid.className = "grid grid-cols-1 sm:grid-cols-2 gap-8 max-w-4xl mx-auto mt-8";
+                        Array.from(monitorCardGrid.children).forEach(card => {
                             if (card.style.display !== 'none') {
                                 card.classList.add('large-mode');
                             }
@@ -2008,24 +2189,37 @@
             
             document.getElementById('loader').style.display = 'flex';
             try {
-                for (let i = 0; i < maintBatchMaterials.length; i++) {
-                    const m = maintBatchMaterials[i];
-                    document.querySelector('#loader p').innerText = `Memproses Data ${i + 1} dari ${maintBatchMaterials.length}...`;
-                    await fetchWithRetry(scriptURL, { 
-                        method: 'POST', 
-                        body: JSON.stringify({ 
-                            material: m.material,
-                            plant: m.plant,
-                            storage_location: m.storage_location,
-                            storage_bin: m.storage_bin,
-                            remarks: m.remarks,
-                            requester_name: reqName, 
-                            department: currentUserDept, 
-                            request_type: "Maintain Material" 
-                        }) 
+                let completedCount = 0;
+                const CHUNK_SIZE = 20; // Diperbesar menjadi 20 agar pemrosesan hingga 100 item lebih cepat
+                
+                for (let i = 0; i < maintBatchMaterials.length; i += CHUNK_SIZE) {
+                    const chunk = maintBatchMaterials.slice(i, i + CHUNK_SIZE);
+                    const promises = chunk.map(async (m) => {
+                        await fetchWithRetry(scriptURL, { 
+                            method: 'POST', 
+                            body: JSON.stringify({ 
+                                material: m.material,
+                                plant: m.plant,
+                                storage_location: m.storage_location,
+                                storage_bin: m.storage_bin,
+                                remarks: m.remarks,
+                                requester_name: reqName, 
+                                department: currentUserDept, 
+                                request_type: "Maintain Material" 
+                            }) 
+                        });
+                        completedCount++;
+                        // Gunakan requestAnimationFrame agar render teks loading sangat smooth di layar
+                        requestAnimationFrame(() => {
+                            document.querySelector('#loader p').innerText = `Memproses Data ${completedCount} dari ${maintBatchMaterials.length}...`;
+                        });
                     });
-                    await new Promise(r => setTimeout(r, 400)); // Jeda 400ms antar request untuk hindari limit Google Script
+                    
+                    // Tunggu 20 request dalam batch ini selesai bersamaan
+                    await Promise.all(promises);
+                    await new Promise(r => setTimeout(r, 100)); // Jeda 100ms agar server tetap stabil
                 }
+                
                 document.querySelector('#loader p').innerText = `Memproses Data...`; // Reset
                 window.notify('Berhasil!', `${maintBatchMaterials.length} Pengajuan Maintain dikirim.`, 'success');
                 
@@ -2292,8 +2486,8 @@
                     groupEl.value = currentGroupVal;
                 }
                 
-                // Show short code
-                if (groupEl.options && groupEl.options[groupEl.selectedIndex]) {
+                // Show short code secara aman
+                if (groupEl.options && groupEl.selectedIndex > -1 && groupEl.options[groupEl.selectedIndex]) {
                     const opt = groupEl.options[groupEl.selectedIndex];
                     if (opt && opt.dataset && opt.dataset.short) opt.text = opt.dataset.short;
                 }
@@ -2373,8 +2567,8 @@
                     }
                 }
                 
-                // Show short code
-                if (vEl.options && vEl.options[vEl.selectedIndex]) {
+                // Show short code secara aman
+                if (vEl.options && vEl.selectedIndex > -1 && vEl.options[vEl.selectedIndex]) {
                     const opt = vEl.options[vEl.selectedIndex];
                     if (opt && opt.dataset && opt.dataset.short) opt.text = opt.dataset.short;
                 }
@@ -2383,20 +2577,27 @@
             // --- 3. VALUATION CATEGORY LOGIC ---
             if (valCatEl) { 
                 if (t === 'CONS' || t === 'GENS' || t === 'SEJA' || t === 'ASET') { // Rule 12, 19, 23, 24, 25
+                    valCatEl.innerHTML = '<option value=""></option>';
                     valCatEl.value = '';
                     valCatEl.disabled = true;
                     valCatEl.classList.add('input-readonly');
                 } else if (t === 'SPRT' || t === 'MDLE' || t === 'TYRE') {
+                    valCatEl.innerHTML = '<option value="S">S</option>';
                     valCatEl.value = 'S';
                     valCatEl.disabled = true;
                     valCatEl.classList.add('input-readonly');
                 } else if (t === 'FOGC') {
+                    valCatEl.innerHTML = '<option value="O">O</option>';
                     valCatEl.value = 'O';
                     valCatEl.disabled = true;
                     valCatEl.classList.add('input-readonly');
                 } else {
                     valCatEl.disabled = false;
                     valCatEl.classList.remove('input-readonly');
+                    setupVisualSwap('f-val-cat', [
+                        {code: "S", display: "S - SPAREPART/TYRE/MODULE"},
+                        {code: "O", display: "O - OIL"}
+                    ]);
                 }
             }
 
@@ -2426,13 +2627,47 @@
 
             // --- 6. SERIAL NUMBER PROFILE LOGIC ---
             if (serialEl) { // Rule 19, 24, 25 + New Rules
-                if (['ASET', 'GENS', 'FOGC', 'TYRE', 'CONS', 'SEJA'].includes(t)) {
+                const currentSerialVal = serialEl.value;
+                if (t === 'TYRE') {
+                    serialEl.disabled = false;
+                    serialEl.classList.remove('input-readonly');
+                    setupVisualSwap('f-serial', [
+                        {code: "NON SN", display: "NON SN - Tanpa Serial Number"},
+                        {code: "SNI1", display: "SNI1 - SN FOR TYRE"}
+                    ]);
+                    if (currentSerialVal === 'NON SN' || currentSerialVal === 'SNI1') serialEl.value = currentSerialVal;
+                } else if (t === 'MDLE') {
+                    serialEl.disabled = false;
+                    serialEl.classList.remove('input-readonly');
+                    setupVisualSwap('f-serial', [
+                        {code: "NON SN", display: "NON SN - Tanpa Serial Number"},
+                        {code: "SNI2", display: "SNI2 - SN FOR MODULE"}
+                    ]);
+                    if (currentSerialVal === 'NON SN' || currentSerialVal === 'SNI2') serialEl.value = currentSerialVal;
+                } else if (['ASET', 'GENS', 'FOGC', 'CONS', 'SEJA'].includes(t)) {
+                    setupVisualSwap('f-serial', [
+                        {code: "NON SN", display: "NON SN - Tanpa Serial Number"}
+                    ]);
                     serialEl.value = '';
                     serialEl.disabled = true;
                     serialEl.classList.add('input-readonly');
                 } else {
                     serialEl.disabled = false;
                     serialEl.classList.remove('input-readonly');
+                    setupVisualSwap('f-serial', [
+                        {code: "NON SN", display: "NON SN - Tanpa Serial Number"}
+                    ]);
+                    if (currentSerialVal !== 'SNI1' && currentSerialVal !== 'SNI2') {
+                        serialEl.value = currentSerialVal;
+                    } else {
+                        serialEl.value = 'NON SN';
+                    }
+                }
+                
+                // Show short code secara aman
+                if (serialEl.options && serialEl.selectedIndex > -1 && serialEl.options[serialEl.selectedIndex]) {
+                    const opt = serialEl.options[serialEl.selectedIndex];
+                    if (opt && opt.dataset && opt.dataset.short) opt.text = opt.dataset.short;
                 }
             }
 
@@ -2477,8 +2712,8 @@
                     if (currentPurchVal) purchEl.value = currentPurchVal;
                 }
 
-                // Show short code
-                if (purchEl.options && purchEl.options[purchEl.selectedIndex]) {
+                // Show short code secara aman
+                if (purchEl.options && purchEl.selectedIndex > -1 && purchEl.options[purchEl.selectedIndex]) {
                     const opt = purchEl.options[purchEl.selectedIndex];
                     if (opt && opt.dataset && opt.dataset.short) opt.text = opt.dataset.short;
                 }
@@ -2563,20 +2798,35 @@
 
             document.getElementById('loader').style.display = 'flex';
             try {
-                for (let i = 0; i < batchMaterials.length; i++) {
-                    const m = batchMaterials[i];
-                    document.querySelector('#loader p').innerText = `Memproses Data ${i + 1} dari ${batchMaterials.length}...`;
-                    await fetchWithRetry(scriptURL, {
-                        method: 'POST',
-                        body: JSON.stringify({
-                            ...m,
-                            requester_name: reqName,
-                            department: currentUserDept,
-                            request_type: "Create Material"
-                        })
+                let completedCount = 0;
+                const CHUNK_SIZE = 20; // Diperbesar menjadi 20 agar pemrosesan massal lebih cepat
+
+                for (let i = 0; i < batchMaterials.length; i += CHUNK_SIZE) {
+                    const chunk = batchMaterials.slice(i, i + CHUNK_SIZE);
+                    const promises = chunk.map(async (m) => {
+                        let finalValCat = m.valuation_cat === "-" ? "" : m.valuation_cat;
+                        await fetchWithRetry(scriptURL, {
+                            method: 'POST',
+                            body: JSON.stringify({
+                                ...m,
+                                valuation_cat: finalValCat,
+                                requester_name: reqName,
+                                department: currentUserDept,
+                                request_type: "Create Material"
+                            })
+                        });
+                        completedCount++;
+                        // Gunakan requestAnimationFrame agar render teks loading sangat smooth di layar
+                        requestAnimationFrame(() => {
+                            document.querySelector('#loader p').innerText = `Memproses Data ${completedCount} dari ${batchMaterials.length}...`;
+                        });
                     });
-                    await new Promise(r => setTimeout(r, 400)); // Jeda aman
+
+                    // Tunggu 20 request dalam batch ini selesai
+                    await Promise.all(promises);
+                    await new Promise(r => setTimeout(r, 100)); // Jeda responsif
                 }
+                
                 document.querySelector('#loader p').innerText = `Memproses Data...`; // Reset
                 window.notify('Berhasil!', `${batchMaterials.length} Pengajuan Create dikirim.`, 'success');
                 
@@ -3002,28 +3252,48 @@
 
             const thead = document.getElementById('monitor-table-head');
             let theadHtml = '';
+            
+            let checkboxTh = (currentUserDept === "CATALOGUE") ? `<th class="w-10 text-center"><input type="checkbox" id="checkAllMonitor" class="cursor-pointer w-4 h-4" onclick="toggleAllMonitorChecks(this)"></th>` : '';
 
             if (mode === 'CREATE') {
-                theadHtml = `<tr><th>Tanggal Request</th><th>Pengaju</th><th>Departemen</th><th>Part Number</th><th>Nomor Material</th><th>Deskripsi Material</th><th>Progress / Remarks</th><th>Waktu Penyelesaian</th></tr>`;
+                theadHtml = `<tr>${checkboxTh}<th>Tanggal Request</th><th>Pengaju</th><th>Departemen</th><th>Part Number</th><th>Nomor Material</th><th>Deskripsi Material</th><th>Progress / Remarks</th><th>Waktu Penyelesaian</th></tr>`;
             } else if (mode === 'MAINTAIN') {
-                theadHtml = `<tr><th>Tanggal Request</th><th>Pengaju</th><th>Departemen</th><th>Material Code</th><th>Target (Plant/SLoc/Bin)</th><th>Progress / Remarks</th><th>Waktu Penyelesaian</th></tr>`;
+                theadHtml = `<tr>${checkboxTh}<th>Tanggal Request</th><th>Pengaju</th><th>Departemen</th><th>Material Code</th><th>Target (Plant/SLoc/Bin)</th><th>Progress / Remarks</th><th>Waktu Penyelesaian</th></tr>`;
             } else if (mode === 'MIGO') {
-                theadHtml = `<tr><th>Tanggal Request</th><th>Pengaju</th><th>Dept</th><th>Sub Transaksi</th><th>Detail Transaksi</th><th>Progress / Remarks</th><th>Waktu Penyelesaian</th></tr>`;
+                theadHtml = `<tr>${checkboxTh}<th>Tanggal Request</th><th>Pengaju</th><th>Dept</th><th>Sub Transaksi</th><th>Detail Transaksi</th><th>Progress / Remarks</th><th>Waktu Penyelesaian</th></tr>`;
             } else if (mode === 'RELPO') {
-                theadHtml = `<tr><th>Tanggal Request</th><th>Pengaju</th><th>Dept</th><th>No PR/PO</th><th>Metadata</th><th>Progress / Remarks</th><th>Waktu Penyelesaian</th></tr>`;
+                theadHtml = `<tr>${checkboxTh}<th>Tanggal Request</th><th>Pengaju</th><th>Dept</th><th>No PR/PO</th><th>Metadata</th><th>Progress / Remarks</th><th>Waktu Penyelesaian</th></tr>`;
             } else if (mode === 'PR') {
-                theadHtml = `<tr><th>Tanggal Request</th><th>Pengaju</th><th>Dept</th><th>Plant</th><th>Material (Qty)</th><th>Progress / Remarks</th><th>Waktu Penyelesaian</th></tr>`;
+                theadHtml = `<tr>${checkboxTh}<th>Tanggal Request</th><th>Pengaju</th><th>Dept</th><th>Plant</th><th>Material (Qty)</th><th>Progress / Remarks</th><th>Waktu Penyelesaian</th></tr>`;
             } else if (mode === 'ADDSLOC') {
-                theadHtml = `<tr><th>Tanggal Request</th><th>Pengaju</th><th>Dept</th><th>Plant</th><th>Request SLoc</th><th>Progress / Remarks</th><th>Waktu Penyelesaian</th></tr>`;
+                theadHtml = `<tr>${checkboxTh}<th>Tanggal Request</th><th>Pengaju</th><th>Dept</th><th>Plant</th><th>Request SLoc</th><th>Progress / Remarks</th><th>Waktu Penyelesaian</th></tr>`;
             } else if (mode === 'INTRANSIT') {
-                theadHtml = `<tr><th>Tanggal Request</th><th>Pengaju</th><th>Dept</th><th>No PO</th><th>Setting</th><th>Progress / Remarks</th><th>Waktu Penyelesaian</th></tr>`;
+                theadHtml = `<tr>${checkboxTh}<th>Tanggal Request</th><th>Pengaju</th><th>Dept</th><th>No PO</th><th>Setting</th><th>Progress / Remarks</th><th>Waktu Penyelesaian</th></tr>`;
             } else if (mode === 'ROLE') {
-                theadHtml = `<tr><th>Tanggal Request</th><th>Pengaju</th><th>Dept</th><th>Plant</th><th>T-code</th><th>Progress / Remarks</th><th>Waktu Penyelesaian</th></tr>`;
+                theadHtml = `<tr>${checkboxTh}<th>Tanggal Request</th><th>Pengaju</th><th>Dept</th><th>Plant</th><th>T-code</th><th>Progress / Remarks</th><th>Waktu Penyelesaian</th></tr>`;
             }
             
             thead.innerHTML = theadHtml;
 
-            const colCount = modeConfig[mode].colCount;
+            // Atur tombol Bulk Action untuk Catalogue
+            const bulkContainer = document.getElementById('bulk-action-container');
+            const btnBulkUpd = document.getElementById('btn-bulk-update');
+            const btnBulkDone = document.getElementById('btn-bulk-done');
+            
+            if (currentUserDept === "CATALOGUE") {
+                bulkContainer.classList.remove('hidden');
+                if (mode === 'CREATE') {
+                    btnBulkUpd.classList.remove('hidden');
+                    btnBulkDone.classList.add('hidden');
+                } else {
+                    btnBulkUpd.classList.add('hidden');
+                    btnBulkDone.classList.remove('hidden');
+                }
+            } else {
+                bulkContainer.classList.add('hidden');
+            }
+
+            const colCount = modeConfig[mode].colCount + (currentUserDept === "CATALOGUE" ? 1 : 0);
             document.getElementById('monitor-list').innerHTML = `<tr><td colspan="${colCount}" class="px-8 py-24 text-center text-slate-400 text-[12px] font-bold uppercase tracking-widest">Menyinkronkan Aktivitas Terbaru...</td></tr>`;
 
             syncMonitoringData();
@@ -3032,6 +3302,11 @@
         window.backToMonitorMenu = function() {
             document.getElementById('monitor-data-view').classList.add('hidden');
             document.getElementById('monitor-selection-menu').classList.remove('hidden');
+        };
+
+        window.toggleAllMonitorChecks = function(source) {
+            const checkboxes = document.querySelectorAll('.mon-chk');
+            checkboxes.forEach(cb => cb.checked = source.checked);
         };
 
         async function syncMonitoringData() {
@@ -3053,11 +3328,16 @@
                 const lines = csvText.split(/\r?\n/);
                 let html = "";
                 const isCatalogue = currentUserDept === "CATALOGUE";
-                const colCount = modeConfig[currentMonitorMode].colCount;
+                const colCount = modeConfig[currentMonitorMode].colCount + (isCatalogue ? 1 : 0);
                 
+                const checkAllBtn = document.getElementById('checkAllMonitor');
+                if (checkAllBtn) checkAllBtn.checked = false;
+
                 for (let i = lines.length - 1; i >= 1; i--) {
                     if (!lines[i].trim()) continue;
                     const cols = parseCSVLine(lines[i]);
+                    
+                    if (cols.length < 5) continue;
                     
                     let reqId = cols[0] ? cols[0].trim() : "";
                     if (!reqId.match(/^"?\d/)) continue; // Mengabaikan pecahan baris akibat newline pada header
@@ -3150,7 +3430,7 @@
                         if (match) {
                             let p1 = parseInt(match[1]), p2 = parseInt(match[2]), p3 = parseInt(match[3]);
                             reqY = p3;
-                            reqM = (p1 > 12) ? p2 - 1 : p2 - 1; 
+                            reqM = (p1 > 12) ? p2 - 1 : p1 - 1; 
                         } else {
                             const d = new Date(reqId);
                             if (!isNaN(d.getTime())) { reqM = d.getMonth(); reqY = d.getFullYear(); }
@@ -3164,40 +3444,47 @@
                     // --- HTML STATUS BADGE ---
                     let actionHtml = `<div class="status-badge ${remarks.toUpperCase().includes('REJECT') ? 'bg-red-50 text-red-600' : (remarks.toUpperCase().includes('DONE') ? 'bg-emerald-50 text-emerald-600' : 'bg-blue-50 text-blue-600')}">${remarks}</div>`;
                     
-                    if (isCatalogue && !completionTime) {
-                        const safeId = encodeURIComponent(reqId);
-                        const safePn = encodeURIComponent(materialCode);
-                        if (currentMonitorMode === 'CREATE') {
-                            const safeRemarks = encodeURIComponent(remarks);
-                            actionHtml += `<button onclick="openFeedback('${safeId}', '${safePn}', '${safeRemarks}', 'CREATE')" class="ml-3 bg-slate-900 text-white px-3 py-1.5 rounded-lg text-[9px] font-black uppercase hover:bg-blue-600 transition-colors shadow-sm"><i class="fas fa-edit"></i> Update</button>`;
+                    let checkboxTd = '';
+                    if (isCatalogue) {
+                        if (!completionTime) {
+                            const safeId = encodeURIComponent(reqId);
+                            const safePn = encodeURIComponent(materialCode);
+                            checkboxTd = `<td class="text-center"><input type="checkbox" class="mon-chk cursor-pointer w-4 h-4" data-id="${safeId}" data-pn="${safePn}" data-mode="${currentMonitorMode}"></td>`;
+                            
+                            if (currentMonitorMode === 'CREATE') {
+                                const safeRemarks = encodeURIComponent(remarks);
+                                actionHtml += `<button onclick="openFeedback('${safeId}', '${safePn}', '${safeRemarks}', 'CREATE')" class="ml-3 bg-slate-900 text-white px-3 py-1.5 rounded-lg text-[9px] font-black uppercase hover:bg-blue-600 transition-colors shadow-sm"><i class="fas fa-edit"></i> Update</button>`;
+                            } else {
+                                actionHtml += `<button onclick="directDoneUpdate('${safeId}', '${safePn}', '${currentMonitorMode}')" class="ml-3 bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-[9px] font-black uppercase hover:bg-emerald-700 transition-colors shadow-sm shadow-emerald-100"><i class="fas fa-check"></i> DONE</button>`;
+                            }
                         } else {
-                            actionHtml += `<button onclick="directDoneUpdate('${safeId}', '${safePn}', '${currentMonitorMode}')" class="ml-3 bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-[9px] font-black uppercase hover:bg-emerald-700 transition-colors shadow-sm shadow-emerald-100"><i class="fas fa-check"></i> DONE</button>`;
+                            checkboxTd = `<td></td>`;
                         }
                     }
 
                     // --- RENDER BARIS TABEL ---
                     if (currentMonitorMode === 'CREATE') {
-                        html += `<tr><td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${reqName}</td><td class="font-bold">${recordDept}</td><td class="text-blue-600 font-black">${materialCode}</td><td class="text-emerald-600 font-black">${cols[1] || "-"}</td><td class="text-[10px]">${cols[2]}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`;
+                        html += `<tr>${checkboxTd}<td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${reqName}</td><td class="font-bold">${recordDept}</td><td class="text-blue-600 font-black">${materialCode}</td><td class="text-emerald-600 font-black">${cols[1] || "-"}</td><td class="text-[10px]">${cols[2]}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`;
                     } else if (currentMonitorMode === 'MAINTAIN') {
                         const targetLoc = `${cols[2] || "-"} / ${cols[3] || "-"} / ${cols[4] || "-"}`;
-                        html += `<tr><td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${reqName}</td><td class="font-bold">${recordDept}</td><td class="text-blue-600 font-black">${materialCode}</td><td class="text-[10px] font-bold">${targetLoc}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`;
+                        html += `<tr>${checkboxTd}<td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${reqName}</td><td class="font-bold">${recordDept}</td><td class="text-blue-600 font-black">${materialCode}</td><td class="text-[10px] font-bold">${targetLoc}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`;
                     } else if (currentMonitorMode === 'MIGO') {
                         const subTrx = cols[14] || "-";
                         let detail = `MAT: ${materialCode} | QTY: ${cols[2]||'-'} | DOC: ${cols[13]||cols[12]||'-'}`;
-                        html += `<tr><td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${reqName}</td><td class="font-bold">${recordDept}</td><td class="font-bold text-indigo-600">${subTrx}</td><td class="text-[10px] font-bold">${detail}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`;
+                        html += `<tr>${checkboxTd}<td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${reqName}</td><td class="font-bold">${recordDept}</td><td class="font-bold text-indigo-600">${subTrx}</td><td class="text-[10px] font-bold">${detail}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`;
                     } else if (currentMonitorMode === 'RELPO') {
                         const metadata = cols[2] || "-";
-                        html += `<tr><td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${reqName}</td><td class="font-bold">${recordDept}</td><td class="font-bold text-violet-600">${materialCode}</td><td class="text-[10px] font-bold">${metadata}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`;
+                        html += `<tr>${checkboxTd}<td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${reqName}</td><td class="font-bold">${recordDept}</td><td class="font-bold text-violet-600">${materialCode}</td><td class="text-[10px] font-bold">${metadata}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`;
                     } else if (currentMonitorMode === 'PR') {
                         const detail = `${materialCode} (${cols[2]||'-'})`;
-                        html += `<tr><td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${reqName}</td><td class="font-bold">${recordDept}</td><td class="font-bold text-cyan-600">${plantVal}</td><td class="text-[10px] font-bold">${detail}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`;
+                        html += `<tr>${checkboxTd}<td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${reqName}</td><td class="font-bold">${recordDept}</td><td class="font-bold text-cyan-600">${plantVal}</td><td class="text-[10px] font-bold">${detail}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`;
                     } else if (currentMonitorMode === 'ADDSLOC') {
-                        html += `<tr><td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${reqName}</td><td class="font-bold">${recordDept}</td><td class="font-bold text-teal-600">${plantVal}</td><td class="text-[10px] font-bold">${materialCode}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`;
+                        html += `<tr>${checkboxTd}<td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${reqName}</td><td class="font-bold">${recordDept}</td><td class="font-bold text-teal-600">${plantVal}</td><td class="text-[10px] font-bold">${materialCode}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`;
                     } else if (currentMonitorMode === 'INTRANSIT') {
                         const setting = cols[2] || "-";
-                        html += `<tr><td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${reqName}</td><td class="font-bold">${recordDept}</td><td class="font-bold text-emerald-600">${materialCode}</td><td class="text-[10px] font-bold">${setting}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`;
+                        html += `<tr>${checkboxTd}<td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${reqName}</td><td class="font-bold">${recordDept}</td><td class="font-bold text-emerald-600">${materialCode}</td><td class="text-[10px] font-bold">${setting}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`;
                     } else if (currentMonitorMode === 'ROLE') {
-                        html += `<tr><td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${reqName}</td><td class="font-bold">${recordDept}</td><td class="font-bold text-slate-600">${plantVal}</td><td class="text-[10px] font-bold">${materialCode}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`;
+                        html += `<tr>${checkboxTd}<td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${reqName}</td><td class="font-bold">${recordDept}</td><td class="font-bold text-slate-600">${plantVal}</td><td class="text-[10px] font-bold">${materialCode}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`;
                     }
                 }
                 monitorList.innerHTML = html || `<tr><td colspan="${colCount}" class="py-10 text-center text-slate-400">Belum ada aktivitas untuk ${isCatalogue ? 'semua departemen' : 'Dept ' + currentUserDept}</td></tr>`;
@@ -3209,8 +3496,14 @@
 
         // FUNGSI BARU: Langsung update status ke DONE khusus Maintain
         window.directDoneUpdate = async function(id, pn, modeOverride) {
-            const decodedId = decodeURIComponent(id).trim();
-            const decodedPn = decodeURIComponent(pn).trim();
+            let decodedId, decodedPn;
+            try {
+                decodedId = decodeURIComponent(id).trim();
+                decodedPn = decodeURIComponent(pn).trim();
+            } catch(e) {
+                decodedId = id.trim();
+                decodedPn = pn.trim();
+            }
             const remarks = "DONE";
             const modeToUse = modeOverride || currentMonitorMode;
 
@@ -3262,6 +3555,88 @@
             }
         };
 
+        // FUNGSI BARU: Bulk Eksekusi
+        window.bulkDirectDone = async function() {
+            const checkboxes = document.querySelectorAll('.mon-chk:checked');
+            if (checkboxes.length === 0) return window.notify('Error', 'Pilih minimal satu item untuk di-Done.', 'error');
+            
+            document.getElementById('loader').style.display = 'flex';
+            let completed = 0;
+            
+            try {
+                const now = new Date();
+                const timeString = now.toLocaleDateString('id-ID', {day: '2-digit', month: '2-digit', year: 'numeric'}) + " " + now.toLocaleTimeString('id-ID', {hour: '2-digit', minute: '2-digit'});
+                
+                const cbArray = Array.from(checkboxes);
+                const CHUNK_SIZE = 20; // Implementasi Chunk Batching paralel agar cepat
+                
+                for (let i = 0; i < cbArray.length; i += CHUNK_SIZE) {
+                    const chunk = cbArray.slice(i, i + CHUNK_SIZE);
+                    const promises = chunk.map(async (cb) => {
+                        const id = decodeURIComponent(cb.getAttribute('data-id'));
+                        const pn = decodeURIComponent(cb.getAttribute('data-pn'));
+                        const mode = cb.getAttribute('data-mode');
+                        
+                        await fetchWithRetry(scriptURL, {
+                            method: 'POST',
+                            body: JSON.stringify({
+                                request_type: "Update Feedback",
+                                mode: mode,
+                                timestamp: id,
+                                material: pn,
+                                mfg_part: pn, // backup key
+                                remarks: "DONE",
+                                completion_time: timeString,
+                                department: currentUserDept
+                            })
+                        });
+                        
+                        LOCAL_FEEDBACK.set(id, "DONE");
+                        LOCAL_FEEDBACK_TIME.set(id, timeString);
+                        completed++;
+                        
+                        requestAnimationFrame(() => {
+                            document.querySelector('#loader p').innerText = `Memproses Bulk Done ${completed} dari ${cbArray.length}...`;
+                        });
+                    });
+                    
+                    await Promise.all(promises);
+                    await new Promise(r => setTimeout(r, 100));
+                }
+                
+                document.querySelector('#loader p').innerText = `Memproses Data...`;
+                window.notify('Berhasil', `${completed} item berhasil di-Done secara massal.`, 'success');
+                syncMonitoringData();
+                checkAlarmStats();
+            } catch (e) {
+                window.notify('Error', 'Proses bulk done gagal atau terputus.', 'error');
+                syncMonitoringData();
+            } finally {
+                document.getElementById('loader').style.display = 'none';
+            }
+        };
+
+        window.bulkOpenFeedback = function() {
+            const checkboxes = document.querySelectorAll('.mon-chk:checked');
+            if (checkboxes.length === 0) return window.notify('Error', 'Pilih minimal satu item untuk Update Feedback.', 'error');
+            
+            currentFeedbackMode = 'CREATE';
+            
+            const ids = [];
+            const pns = [];
+            checkboxes.forEach(cb => {
+                ids.push(decodeURIComponent(cb.getAttribute('data-id')));
+                pns.push(decodeURIComponent(cb.getAttribute('data-pn')));
+            });
+            
+            document.getElementById('fb-id').value = JSON.stringify(ids); 
+            document.getElementById('fb-pn').value = "BULK UPDATE";
+            document.getElementById('fb-pn-label').innerText = `${ids.length} Item Terpilih (Bulk Update)`;
+            document.getElementById('fb-remarks').value = "";
+            
+            document.getElementById('feedback-modal').classList.remove('hidden');
+        };
+
         function populateSelects() {
             const pS = document.getElementById('f-plant'); const mvpS = document.getElementById('m-f-plant'); const lPS = document.getElementById('login-plant');
             const migoPA = document.getElementById('migo-tp-plant-asal'); const migoPT = document.getElementById('migo-tp-plant-tujuan');
@@ -3277,11 +3652,20 @@
             if(addSlocPlant) addSlocPlant.innerHTML = '<option value="">-- PILIH --</option>';
             if(rolePlant) rolePlant.innerHTML = '<option value="">-- PILIH --</option>';
             
+            const plantData = [
+                "PL01 MSJ", "PL02 TDM", "PL03 SBB", "PL04 AGM", "PL05 PMSS", "PL06 MAS", "PL07 COMEX MSJ",
+                "PL08 COMEX PALARAN", "PL09 COMEX AGM", "PL10 BSSR 2", "PL11 PKM", "PL12 SMD", "PL13 JKT",
+                "PL14 KUP", "PL15 TAJ", "PL16 MME", "PL17 MBL MINING", "PL18 COMEX-MAS", "PL19 COMEX CILEGON",
+                "PL20 SAS", "PL21 BSEE", "PL22 BRN", "PL23 KUD", "PL24 BYN", "PL25 PT. CITRA DAYAK INDAH",
+                "PL26 MHU", "PL27 MBL HAULING", "PL28 DC PALARAN"
+            ];
+
             for(let i=1;i<=28;i++) { 
                 let v = `PL${i.toString().padStart(2,'0')}`; 
+                let desc = plantData[i-1];
                 if(pS) pS.innerHTML += `<option value="${v}">${v}</option>`; 
                 if(mvpS) mvpS.innerHTML += `<option value="${v}">${v}</option>`; 
-                if(lPS) lPS.innerHTML += `<option value="${v}">${v}</option>`; 
+                if(lPS) lPS.innerHTML += `<option value="${v}">${desc}</option>`; 
                 if(migoPA) migoPA.innerHTML += `<option value="${v}">${v}</option>`;
                 if(migoPT) migoPT.innerHTML += `<option value="${v}">${v}</option>`;
                 if(prPlant) prPlant.innerHTML += `<option value="${v}">${v}</option>`;
@@ -3312,8 +3696,8 @@
 
             setupVisualSwap('f-serial', [
                 {code: "NON SN", display: "NON SN - Tanpa Serial Number"},
-                {code: "0001", display: "0001 - Serial Number Profile 1"},
-                {code: "0002", display: "0002 - Serial Number Profile 2"}
+                {code: "SNI1", display: "SNI1 - SN FOR TYRE"},
+                {code: "SNI2", display: "SNI2 - SN FOR MODULE"}
             ]);
 
             setupVisualSwap('f-val-cat', [
@@ -3346,7 +3730,7 @@
         };
 
         window.submitFeedback = async function() {
-            const id = document.getElementById('fb-id').value;
+            const idVal = document.getElementById('fb-id').value;
             const pn = document.getElementById('fb-pn').value;
             const remarks = document.getElementById('fb-remarks').value.toUpperCase();
 
@@ -3359,23 +3743,48 @@
                 const now = new Date();
                 const timeString = now.toLocaleDateString('id-ID', {day: '2-digit', month: '2-digit', year: 'numeric'}) + " " + now.toLocaleTimeString('id-ID', {hour: '2-digit', minute: '2-digit'});
                 
-                await fetchWithRetry(scriptURL, {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        request_type: "Update Feedback",
-                        mode: "CREATE",
-                        timestamp: id,
-                        mfg_part: pn,
-                        remarks: remarks,
-                        completion_time: timeString,
-                        department: currentUserDept
-                    })
-                });
+                let ids = [];
+                try {
+                    ids = JSON.parse(idVal);
+                    if (!Array.isArray(ids)) ids = [idVal]; 
+                } catch(e) {
+                    ids = [idVal]; 
+                }
 
-                LOCAL_FEEDBACK.set(id, remarks);
-                LOCAL_FEEDBACK_TIME.set(id, timeString);
+                let completed = 0;
+                const CHUNK_SIZE = 20; // Implementasi Chunk Batching paralel agar cepat
                 
-                window.notify('Berhasil', 'Feedback berhasil dikirim ke sistem utama.', 'success');
+                for (let i = 0; i < ids.length; i += CHUNK_SIZE) {
+                    const chunk = ids.slice(i, i + CHUNK_SIZE);
+                    const promises = chunk.map(async (id) => {
+                        await fetchWithRetry(scriptURL, {
+                            method: 'POST',
+                            body: JSON.stringify({
+                                request_type: "Update Feedback",
+                                mode: currentFeedbackMode,
+                                timestamp: id,
+                                mfg_part: pn === "BULK UPDATE" ? "" : pn, 
+                                remarks: remarks,
+                                completion_time: timeString,
+                                department: currentUserDept
+                            })
+                        });
+                        
+                        LOCAL_FEEDBACK.set(id, remarks);
+                        LOCAL_FEEDBACK_TIME.set(id, timeString);
+                        completed++;
+                        
+                        requestAnimationFrame(() => {
+                            document.querySelector('#loader p').innerText = `Update Feedback ${completed} dari ${ids.length}...`;
+                        });
+                    });
+                    
+                    await Promise.all(promises);
+                    await new Promise(r => setTimeout(r, 100));
+                }
+
+                document.querySelector('#loader p').innerText = `Memproses Data...`;
+                window.notify('Berhasil', 'Feedback berhasil dikirim.', 'success');
                 syncMonitoringData(); 
                 if (currentUserDept === "CATALOGUE") checkAlarmStats();
             } catch (e) {
@@ -3478,6 +3887,7 @@
                         for (let i = 1; i < lines.length; i++) {
                             if (!lines[i].trim()) continue;
                             const cols = parseCSVLine(lines[i]);
+                            if (cols.length < 5) continue;
                             const reqId = cols[0] ? cols[0].trim() : "";
                             if (!reqId.match(/^"?\d/)) continue; // Mengabaikan pecahan baris
                             const originalTime = cols[35] ? cols[35].trim() : "";
@@ -3495,6 +3905,7 @@
                         for (let i = 1; i < lines.length; i++) {
                             if (!lines[i].trim()) continue;
                             const cols = parseCSVLine(lines[i]);
+                            if (cols.length < 5) continue;
                             const reqId = cols[0] ? cols[0].trim() : "";
                             if (!reqId.match(/^"?\d/)) continue; // Mengabaikan pecahan baris
                             const originalTime = cols[8] ? cols[8].trim() : "";
@@ -3512,6 +3923,7 @@
                         for (let i = 1; i < lines.length; i++) {
                             if (!lines[i].trim()) continue;
                             const cols = parseCSVLine(lines[i]);
+                            if (cols.length < 5) continue;
                             const reqId = cols[0] ? cols[0].trim() : "";
                             if (!reqId.match(/^"?\d/)) continue; // Mengabaikan pecahan baris
                             const originalTime = cols[17] ? cols[17].trim() : "";
@@ -3528,6 +3940,7 @@
                         for (let i = 1; i < lines.length; i++) {
                             if (!lines[i].trim()) continue;
                             const cols = parseCSVLine(lines[i]);
+                            if (cols.length < 5) continue;
                             const reqId = cols[0] ? cols[0].trim() : "";
                             if (!reqId.match(/^"?\d/)) continue; // Mengabaikan pecahan baris
                             const originalTime = cols[5] ? cols[5].trim() : "";
@@ -3544,6 +3957,7 @@
                         for (let i = 1; i < lines.length; i++) {
                             if (!lines[i].trim()) continue;
                             const cols = parseCSVLine(lines[i]);
+                            if (cols.length < 5) continue;
                             const reqId = cols[0] ? cols[0].trim() : "";
                             if (!reqId.match(/^"?\d/)) continue; // Mengabaikan pecahan baris
                             const originalTime = cols[7] ? cols[7].trim() : "";
@@ -3560,6 +3974,7 @@
                         for (let i = 1; i < lines.length; i++) {
                             if (!lines[i].trim()) continue;
                             const cols = parseCSVLine(lines[i]);
+                            if (cols.length < 5) continue;
                             const reqId = cols[0] ? cols[0].trim() : "";
                             if (!reqId.match(/^"?\d/)) continue; // Mengabaikan pecahan baris
                             const originalTime = cols[8] ? cols[8].trim() : "";
@@ -3576,6 +3991,7 @@
                         for (let i = 1; i < lines.length; i++) {
                             if (!lines[i].trim()) continue;
                             const cols = parseCSVLine(lines[i]);
+                            if (cols.length < 5) continue;
                             const reqId = cols[0] ? cols[0].trim() : "";
                             if (!reqId.match(/^"?\d/)) continue; // Mengabaikan pecahan baris
                             const originalTime = cols[6] ? cols[6].trim() : "";
@@ -3592,6 +4008,7 @@
                         for (let i = 1; i < lines.length; i++) {
                             if (!lines[i].trim()) continue;
                             const cols = parseCSVLine(lines[i]);
+                            if (cols.length < 5) continue;
                             const reqId = cols[0] ? cols[0].trim() : "";
                             if (!reqId.match(/^"?\d/)) continue; // Mengabaikan pecahan baris
                             const originalTime = cols[7] ? cols[7].trim() : "";
