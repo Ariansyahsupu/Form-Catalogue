@@ -1922,7 +1922,7 @@
             if (t !== 'ASET' && !m.valuation_class) missing.push("Val Class");
             if (!['CONS', 'GENS', 'SEJA', 'ASET'].includes(t) && !m.valuation_cat) missing.push("Val Cat");
             if (!['CONS', 'ASET', 'SEJA'].includes(t) && !m.storage_location) missing.push("SLoc");
-            if (!['ASET', 'GENS', 'FOGC', 'TYRE', 'CONS', 'SEJA'].includes(t) && !m.serial_profile) missing.push("Serial");
+            if (['MDLE', 'TYRE'].includes(t) && !m.serial_profile) missing.push("Serial");
             
             if (!lockOthers && !m.compartment) missing.push("Compartment");
             if (!lockOthers && !m.model_unit) missing.push("Model Unit");
@@ -2294,7 +2294,11 @@
             fields.forEach((f, i) => {
                 const el = document.getElementById(f);
                 if (el) {
-                    m[props[i]] = el.value.toUpperCase();
+                    if (f === 'f-remarks') {
+                        m[props[i]] = el.value;
+                    } else {
+                        m[props[i]] = el.value.toUpperCase();
+                    }
                 }
             });
 
@@ -2648,7 +2652,7 @@
                     setupVisualSwap('f-serial', [
                         {code: "NON SN", display: "NON SN - Tanpa Serial Number"}
                     ]);
-                    serialEl.value = '';
+                    serialEl.value = 'NON SN';
                     serialEl.disabled = true;
                     serialEl.classList.add('input-readonly');
                 } else {
@@ -2657,11 +2661,7 @@
                     setupVisualSwap('f-serial', [
                         {code: "NON SN", display: "NON SN - Tanpa Serial Number"}
                     ]);
-                    if (currentSerialVal !== 'SNI1' && currentSerialVal !== 'SNI2') {
-                        serialEl.value = currentSerialVal;
-                    } else {
-                        serialEl.value = 'NON SN';
-                    }
+                    serialEl.value = 'NON SN';
                 }
                 
                 // Show short code secara aman
@@ -2842,6 +2842,8 @@
         // ==========================================
         function initFormListeners() {
             const inputs = document.querySelectorAll('.input-field');
+            let typingTimer; // Variabel untuk Debounce (Mencegah Lag saat mengetik)
+            
             inputs.forEach(input => {
                 const updateCSS = () => {
                     if (!input.classList.contains('input-readonly')) {
@@ -2849,6 +2851,7 @@
                         else input.classList.remove('field-filled');
                     }
                 };
+                
                 input.addEventListener('input', () => {
                     if (input.id === 'f-desc') {
                         let orig = input.value;
@@ -2856,9 +2859,15 @@
                         if (orig !== repl) { input.value = repl; }
                     }
                     updateCSS();
-                    if (batchMaterials.length > 0) { saveCurrentToBatch(); renderNav(); }
-                    if (maintBatchMaterials.length > 0) { saveCurrentToMaintBatch(); renderMaintNav(); }
+                    
+                    // Optimasi Render (Menunggu user selesai mengetik baru di-render agar tidak freeze)
+                    clearTimeout(typingTimer);
+                    typingTimer = setTimeout(() => {
+                        if (batchMaterials.length > 0) { saveCurrentToBatch(); renderNav(); }
+                        if (maintBatchMaterials.length > 0) { saveCurrentToMaintBatch(); renderMaintNav(); }
+                    }, 300);
                 });
+                
                 input.addEventListener('change', () => {
                     updateCSS();
                     if (batchMaterials.length > 0) { saveCurrentToBatch(); renderNav(); }
@@ -3660,18 +3669,23 @@
                 "PL26 MHU", "PL27 MBL HAULING", "PL28 DC PALARAN"
             ];
 
+            // Optimasi Render Plant (Mencegah ratusan DOM updates yang bikin berat/lag)
+            let plantBaseStr = '';
+            let plantLoginStr = '';
             for(let i=1;i<=28;i++) { 
                 let v = `PL${i.toString().padStart(2,'0')}`; 
                 let desc = plantData[i-1];
-                if(pS) pS.innerHTML += `<option value="${v}">${v}</option>`; 
-                if(mvpS) mvpS.innerHTML += `<option value="${v}">${v}</option>`; 
-                if(lPS) lPS.innerHTML += `<option value="${v}">${desc}</option>`; 
-                if(migoPA) migoPA.innerHTML += `<option value="${v}">${v}</option>`;
-                if(migoPT) migoPT.innerHTML += `<option value="${v}">${v}</option>`;
-                if(prPlant) prPlant.innerHTML += `<option value="${v}">${v}</option>`;
-                if(addSlocPlant) addSlocPlant.innerHTML += `<option value="${v}">${v}</option>`;
-                if(rolePlant) rolePlant.innerHTML += `<option value="${v}">${v}</option>`;
+                plantBaseStr += `<option value="${v}">${v}</option>`;
+                plantLoginStr += `<option value="${v}">${desc}</option>`;
             }
+            if(pS) pS.innerHTML += plantBaseStr;
+            if(mvpS) mvpS.innerHTML += plantBaseStr;
+            if(lPS) lPS.innerHTML += plantLoginStr;
+            if(migoPA) migoPA.innerHTML += plantBaseStr;
+            if(migoPT) migoPT.innerHTML += plantBaseStr;
+            if(prPlant) prPlant.innerHTML += plantBaseStr;
+            if(addSlocPlant) addSlocPlant.innerHTML += plantBaseStr;
+            if(rolePlant) rolePlant.innerHTML += plantBaseStr;
             
             const sS = document.getElementById('f-sloc'); const mvsS = document.getElementById('m-f-sloc');
             const migoSA = document.getElementById('migo-tp-sloc-asal'); const migoST = document.getElementById('migo-tp-sloc-tujuan');
@@ -3681,13 +3695,16 @@
             if(migoSA) migoSA.innerHTML = '<option value="">-- PILIH --</option>';
             if(migoST) migoST.innerHTML = '<option value="">-- PILIH --</option>';
             
+            // Optimasi Render SLoc
+            let slocStr = '';
             for(let i=1;i<=44;i++) { 
                 let v = `S${i.toString().padStart(3,'0')}`; 
-                if(sS) sS.innerHTML += `<option value="${v}">${v}</option>`; 
-                if(mvsS) mvsS.innerHTML += `<option value="${v}">${v}</option>`; 
-                if(migoSA) migoSA.innerHTML += `<option value="${v}">${v}</option>`;
-                if(migoST) migoST.innerHTML += `<option value="${v}">${v}</option>`;
+                slocStr += `<option value="${v}">${v}</option>`;
             }
+            if(sS) sS.innerHTML += slocStr;
+            if(mvsS) mvsS.innerHTML += slocStr;
+            if(migoSA) migoSA.innerHTML += slocStr;
+            if(migoST) migoST.innerHTML += slocStr;
 
             setupVisualSwap('f-uom', [{code:"EA",display:"EA - EACH"},{code:"PC",display:"PC - PIECE"},{code:"SET",display:"SET - SET"},{code:"UNT",display:"UNT - UNIT"},{code:"ROL",display:"ROL - ROLL"},{code:"M",display:"M - METER"},{code:"KG",display:"KG - KILOGRAM"},{code:"L",display:"L - LITER"},{code:"CAN",display:"CAN - CANISTER"},{code:"DR",display:"DR - DRUM"},{code:"PL",display:"PL - PAIL"}]);
             setupVisualSwap('f-type', [{code:"SPRT",display:"SPRT - Sparepart"},{code:"FOGC",display:"FOGC - FOGC"},{code:"TYRE",display:"TYRE - Tyre"},{code:"CONS",display:"CONS - Consumable"},{code:"GENS",display:"GENS - General Supply"},{code:"ASET",display:"ASET - Asset"},{code:"SEJA",display:"SEJA - Service & Jasa"},{code:"MDLE",display:"MDLE - Module"},{code:"BOMM",display:"BOMM - Bom Material"},{code:"FFF",display:"FFF - FFF Class"}]);
