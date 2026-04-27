@@ -3718,7 +3718,7 @@
                 if (resData.result === 'success') {
                     // Setelah background sukses, barulah set ke memori dan refresh tabel menjadi DONE
                     LOCAL_FEEDBACK.set(decodedId, remarks);
-                    LOCAL_FEEDBACK_TIME.set(decodedId, timeString);
+                    // LOCAL_FEEDBACK_TIME.set(decodedId, timeString); // Dihapus sesuai instruksi agar tombol tetap muncul sebelum spreadsheet terupdate
                     window.notify('Berhasil', 'Status terupdate di Spreadsheet.', 'success');
                 } else {
                     window.notify('Gagal Update', resData.error || 'Server menolak pembaruan.', 'error');
@@ -3770,7 +3770,7 @@
                         });
                         
                         LOCAL_FEEDBACK.set(id, "DONE");
-                        LOCAL_FEEDBACK_TIME.set(id, timeString);
+                        // LOCAL_FEEDBACK_TIME.set(id, timeString); // Dihapus sesuai instruksi agar tombol tetap muncul sebelum spreadsheet terupdate
                         completed++;
                         
                         requestAnimationFrame(() => {
@@ -3957,7 +3957,7 @@
                         });
                         
                         LOCAL_FEEDBACK.set(id, remarks);
-                        LOCAL_FEEDBACK_TIME.set(id, timeString);
+                        // LOCAL_FEEDBACK_TIME.set(id, timeString); // Dihapus sesuai instruksi agar tombol tetap muncul sebelum spreadsheet terupdate
                         completed++;
                         
                         requestAnimationFrame(() => {
