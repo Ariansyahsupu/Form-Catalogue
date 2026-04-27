@@ -720,8 +720,123 @@
                                                     <div class="space-y-1.5" id="val-class-group"><label class="text-[10px] professional-label tracking-widest">Val. Class</label><select id="create-val-class" name="valuation_class" class="input-field border-2 professional-input"></select></div>
                                                     <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Storage Bin</label><input type="text" name="storage_bin" id="f-bin" class="input-field border-2 professional-input"></div>
                                                     <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Interchange <span class="text-[8px] text-orange-500 font-bold">(SPRT/MDLE/TYRE)</span></label><input type="text" name="interchange" id="f-interchange" placeholder="PN/CODE MAT" class="input-field border-2 professional-input"></div>
-                                                    <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Compartment <span class="text-red-500 font-black">*</span></label><input type="text" name="compartment" id="f-compartment" required class="input-field border-2 professional-input"></div>
-                                                    <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Model Unit <span class="text-red-500 font-black">*</span></label><input type="text" name="model_unit" id="f-model-unit" required class="input-field border-2 professional-input"></div>
+                                                    <div class="space-y-1.5">
+                                                        <label class="text-[10px] professional-label tracking-widest">Compartment <span class="text-red-500 font-black">*</span></label>
+                                                        <select id="f-compartment-select" required class="input-field border-2 bg-white professional-input" onchange="const manualInput = document.getElementById('f-compartment'); if(this.value === 'LAINNYA') { manualInput.classList.remove('hidden'); manualInput.value = ''; manualInput.required = true; manualInput.focus(); } else { manualInput.classList.add('hidden'); manualInput.required = false; manualInput.value = this.value; const event = new Event('input', { bubbles: true }); manualInput.dispatchEvent(event); }">
+                                                            <option value="">-- PILIH COMPARTMENT --</option>
+                                                            <option value="ENGINE SYSTEM">ENGINE SYSTEM</option>
+                                                            <option value="HYDRAULIC SYSTEM">HYDRAULIC SYSTEM</option>
+                                                            <option value="TRANSMISSION / POWERTRAIN">TRANSMISSION / POWERTRAIN</option>
+                                                            <option value="FINAL DRIVE">FINAL DRIVE</option>
+                                                            <option value="AXLE & SUSPENSION">AXLE & SUSPENSION</option>
+                                                            <option value="BRAKE SYSTEM">BRAKE SYSTEM</option>
+                                                            <option value="STEERING SYSTEM">STEERING SYSTEM</option>
+                                                            <option value="UNDERCARRIAGE">UNDERCARRIAGE</option>
+                                                            <option value="ELECTRICAL SYSTEM">ELECTRICAL SYSTEM</option>
+                                                            <option value="CABIN & AC SYSTEM">CABIN & AC SYSTEM</option>
+                                                            <option value="ATTACHMENT / WORKING TOOLS">ATTACHMENT / WORKING TOOLS</option>
+                                                            <option value="FRAME & CHASSIS">FRAME & CHASSIS</option>
+                                                            <option value="PNEUMATIC / AIR SYSTEM">PNEUMATIC / AIR SYSTEM</option>
+                                                            <option value="RNI">RNI (RUNNING MAINTENANCE)</option>
+                                                            <option value="GENERAL / CONSUMABLE">GENERAL / CONSUMABLE</option>
+                                                            <option value="LAINNYA">LAINNYA (ISI MANUAL)</option>
+                                                        </select>
+                                                        <input type="text" name="compartment" id="f-compartment" placeholder="ISI COMPARTMENT MANUAL" class="input-field border-2 professional-input hidden mt-2">
+                                                    </div>
+                                                    <div class="space-y-1.5">
+                                                        <label class="text-[10px] professional-label tracking-widest">Model Unit <span class="text-red-500 font-black">*</span></label>
+                                                        <select id="f-model-unit-select" required class="input-field border-2 bg-white professional-input" onchange="const manualInput = document.getElementById('f-model-unit'); if(this.value === 'LAINNYA') { manualInput.classList.remove('hidden'); manualInput.value = ''; manualInput.required = true; manualInput.focus(); } else { manualInput.classList.add('hidden'); manualInput.required = false; manualInput.value = this.value; const event = new Event('input', { bubbles: true }); manualInput.dispatchEvent(event); }">
+                                                            <option value="">-- PILIH MODEL UNIT --</option>
+                                                            <option value="XE1250">XE1250</option>
+                                                            <option value="XE900D">XE900D</option>
+                                                            <option value="XE2000">XE2000</option>
+                                                            <option value="XE700D">XE700D</option>
+                                                            <option value="GR3505T">GR3505T</option>
+                                                            <option value="GR3005T">GR3005T</option>
+                                                            <option value="GR2605II">GR2605II</option>
+                                                            <option value="ME105">ME105</option>
+                                                            <option value="CMT96 SINO">CMT96 SINO</option>
+                                                            <option value="CMT96">CMT96</option>
+                                                            <option value="CMT106">CMT106</option>
+                                                            <option value="CMT96S">CMT96S</option>
+                                                            <option value="CMS50">CMS50</option>
+                                                            <option value="RTH100">RTH100</option>
+                                                            <option value="CMT96A">CMT96A</option>
+                                                            <option value="H1840">H1840</option>
+                                                            <option value="ME109">ME109</option>
+                                                            <option value="ZX200-5G">ZX200-5G</option>
+                                                            <option value="ZX210F-5G">ZX210F-5G</option>
+                                                            <option value="ZX350H-5G">ZX350H-5G</option>
+                                                            <option value="ZX470H-5G">ZX470H-5G</option>
+                                                            <option value="ZX470LC-5G">ZX470LC-5G</option>
+                                                            <option value="ZX870H-5G">ZX870H-5G</option>
+                                                            <option value="E6210F">E6210F</option>
+                                                            <option value="E6215H">E6215H</option>
+                                                            <option value="E6350H">E6350H</option>
+                                                            <option value="E6360F">E6360F</option>
+                                                            <option value="E6500F">E6500F</option>
+                                                            <option value="E6550F">E6550F</option>
+                                                            <option value="E6650F">E6650F</option>
+                                                            <option value="E6780H">E6780H</option>
+                                                            <option value="E6920H">E6920H</option>
+                                                            <option value="E680F">E680F</option>
+                                                            <option value="G9380H">G9380H</option>
+                                                            <option value="L968H">L968H</option>
+                                                            <option value="L989H">L989H</option>
+                                                            <option value="RS7120H">RS7120H</option>
+                                                            <option value="RS7220H">RS7220H</option>
+                                                            <option value="RS8200H">RS8200H</option>
+                                                            <option value="RS8260H">RS8260H</option>
+                                                            <option value="G9220F">G9220F</option>
+                                                            <option value="DFH3250A82">DFH3250A82</option>
+                                                            <option value="DFH3310A12">DFH3310A12</option>
+                                                            <option value="DFH3310A12-K55Y">DFH3310A12-K55Y</option>
+                                                            <option value="DH24-C3 RS">DH24-C3 RS</option>
+                                                            <option value="DH24-B2 XL">DH24-B2 XL</option>
+                                                            <option value="SD26-C3 XL">SD26-C3 XL</option>
+                                                            <option value="SD32W">SD32W</option>
+                                                            <option value="SD34-C3 XL">SD34-C3 XL</option>
+                                                            <option value="SD60">SD60</option>
+                                                            <option value="SE980LCW">SE980LCW</option>
+                                                            <option value="D155A-6R">D155A-6R</option>
+                                                            <option value="D375A-5">D375A-5</option>
+                                                            <option value="D375A-6R">D375A-6R</option>
+                                                            <option value="D85E-SS-2">D85E-SS-2</option>
+                                                            <option value="GD705A-4">GD705A-4</option>
+                                                            <option value="GD705A-5">GD705A-5</option>
+                                                            <option value="HD465-7R">HD465-7R</option>
+                                                            <option value="HD785-7">HD785-7</option>
+                                                            <option value="PC2000-8">PC2000-8</option>
+                                                            <option value="PC2000-11R">PC2000-11R</option>
+                                                            <option value="PC1250SP-8R">PC1250SP-8R</option>
+                                                            <option value="PC1250SP-11R">PC1250SP-11R</option>
+                                                            <option value="PC400LC-8">PC400LC-8</option>
+                                                            <option value="PC850-SE">PC850-SE</option>
+                                                            <option value="PC500LC-10R SE">PC500LC-10R SE</option>
+                                                            <option value="WA380-6">WA380-6</option>
+                                                            <option value="WA450-3">WA450-3</option>
+                                                            <option value="ZZ2356V455ME2">ZZ2356V455ME2</option>
+                                                            <option value="ZZ2356V455ME1">ZZ2356V455ME1</option>
+                                                            <option value="ZZ1168F4625E1R">ZZ1168F4625E1R</option>
+                                                            <option value="ZZ3316V466MC1R">ZZ3316V466MC1R</option>
+                                                            <option value="ACTROS-3939K">ACTROS-3939K</option>
+                                                            <option value="ACTROS-4043K">ACTROS-4043K</option>
+                                                            <option value="ACTROS-3331 K">ACTROS-3331 K</option>
+                                                            <option value="ACTROS-4843 K">ACTROS-4843 K</option>
+                                                            <option value="ACTROS-4846 K">ACTROS-4846 K</option>
+                                                            <option value="ACTROS-4046 K">ACTROS-4046 K</option>
+                                                            <option value="ACTROS-4045 K">ACTROS-4045 K</option>
+                                                            <option value="ACTROS-4054 K">ACTROS-4054 K</option>
+                                                            <option value="ZZ4256V324HF1B">ZZ4256V324HF1B</option>
+                                                            <option value="D245S">D245S</option>
+                                                            <option value="D50KS">D50KS</option>
+                                                            <option value="WA500-3">WA500-3</option>
+                                                            <option value="GD755-5R">GD755-5R</option>
+                                                            <option value="GD825A-2">GD825A-2</option>
+                                                            <option value="LAINNYA">LAINNYA (ISI MANUAL)</option>
+                                                        </select>
+                                                        <input type="text" name="model_unit" id="f-model-unit" placeholder="ISI MODEL UNIT MANUAL" class="input-field border-2 professional-input hidden mt-2">
+                                                    </div>
                                                     <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Brand atau Merk <span class="text-red-500 font-black">*</span> <span class="text-[8px] text-slate-400">(BUKAN BRAND UNIT)</span></label><input type="text" name="brand_sprt" id="f-brand-sprt" required placeholder="BRAND ATAU MERK" class="input-field border-2 professional-input"></div>
                                                     <div class="space-y-1.5 md:col-span-3">
                                                         <label class="text-[10px] professional-label tracking-widest">Remarks / Note <span class="text-red-500 font-black">(WAJIB: CCP / LINK PART BOOK)</span></label>
@@ -2386,8 +2501,47 @@
             attemptSet('f-remarks', m.remarks);
             attemptSet('f-serial', m.serial_profile);
             attemptSet('f-interchange', m.interchange);
+            
             attemptSet('f-compartment', m.compartment);
+            const compSel = document.getElementById('f-compartment-select');
+            const compManual = document.getElementById('f-compartment');
+            if(compSel && compManual) {
+                let found = Array.from(compSel.options).some(o => o.value === m.compartment);
+                if(found && m.compartment !== "") {
+                    compSel.value = m.compartment;
+                    compManual.classList.add('hidden');
+                    compManual.required = false;
+                } else if (m.compartment) {
+                    compSel.value = 'LAINNYA';
+                    compManual.classList.remove('hidden');
+                    compManual.required = true;
+                } else {
+                    compSel.value = '';
+                    compManual.classList.add('hidden');
+                    compManual.required = false;
+                }
+            }
+            
             attemptSet('f-model-unit', m.model_unit);
+            const modelUnitSel = document.getElementById('f-model-unit-select');
+            const manualInput = document.getElementById('f-model-unit');
+            if(modelUnitSel && manualInput) {
+                let found = Array.from(modelUnitSel.options).some(o => o.value === m.model_unit);
+                if(found && m.model_unit !== "") {
+                    modelUnitSel.value = m.model_unit;
+                    manualInput.classList.add('hidden');
+                    manualInput.required = false;
+                } else if (m.model_unit) {
+                    modelUnitSel.value = 'LAINNYA';
+                    manualInput.classList.remove('hidden');
+                    manualInput.required = true;
+                } else {
+                    modelUnitSel.value = '';
+                    manualInput.classList.add('hidden');
+                    manualInput.required = false;
+                }
+            }
+
             attemptSet('f-brand-sprt', m.brand_sprt);
 
             window.updateValuationClass();
@@ -2736,14 +2890,25 @@
             }
 
             // --- 9. COMPARTMENT LOGIC ---
+            const compSelectEl = document.getElementById('f-compartment-select');
             if (compartmentEl) {
                 if (['FOGC', 'TYRE', 'CONS', 'GENS', 'ASET', 'SEJA'].includes(t)) {
                     compartmentEl.value = '';
                     compartmentEl.disabled = true;
                     compartmentEl.classList.add('input-readonly');
+                    if (compSelectEl) {
+                        compSelectEl.value = '';
+                        compSelectEl.disabled = true;
+                        compSelectEl.classList.add('input-readonly');
+                        compartmentEl.classList.add('hidden');
+                    }
                 } else {
                     compartmentEl.disabled = false;
                     compartmentEl.classList.remove('input-readonly');
+                    if (compSelectEl) {
+                        compSelectEl.disabled = false;
+                        compSelectEl.classList.remove('input-readonly');
+                    }
                 }
             }
 
