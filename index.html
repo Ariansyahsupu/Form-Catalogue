@@ -2305,7 +2305,11 @@
             if (isBatchIdentical) {
                 batchMaterials.forEach((item, idx) => {
                     if (idx !== currentMaterialIdx) {
-                        props.forEach(p => item[p] = m[p]);
+                        props.forEach(p => {
+                            if (p !== 'description') {
+                                item[p] = m[p];
+                            }
+                        });
                     }
                 });
             }
