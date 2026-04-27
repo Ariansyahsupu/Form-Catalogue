@@ -3084,7 +3084,7 @@
         async function syncZerpdFromSpreadsheet() {
             const stat = document.getElementById('zerpd-status-bar');
             try {
-                const response = await fetchWithRetry(csvPubURL);
+                const response = await fetchWithRetry(csvPubURL + '&t=' + new Date().getTime());
                 const csvText = await response.text();
                 const lines = csvText.split(/\r?\n/);
                 const cleanMap = new Map();
@@ -3501,7 +3501,7 @@
                 else if (currentMonitorMode === 'INTRANSIT') targetURL = csvIntransitURL;
                 else if (currentMonitorMode === 'ROLE') targetURL = csvRoleURL;
 
-                const response = await fetchWithRetry(targetURL);
+                const response = await fetchWithRetry(targetURL + '&t=' + new Date().getTime());
                 const csvText = await response.text();
                 const lines = csvText.split(/\r?\n/);
                 let html = "";
@@ -4067,7 +4067,7 @@
                     
                     // Fetch Create
                     try {
-                        const resCreate = await fetchWithRetry(csvCreateMatURL);
+                        const resCreate = await fetchWithRetry(csvCreateMatURL + '&t=' + new Date().getTime());
                         const textCreate = await resCreate.text();
                         const lines = textCreate.split(/\r?\n/);
                         for (let i = 1; i < lines.length; i++) {
@@ -4085,7 +4085,7 @@
 
                     // Fetch Maintain
                     try {
-                        const resMaintain = await fetchWithRetry(csvMaintainMatURL);
+                        const resMaintain = await fetchWithRetry(csvMaintainMatURL + '&t=' + new Date().getTime());
                         const textMaintain = await resMaintain.text();
                         const lines = textMaintain.split(/\r?\n/);
                         for (let i = 1; i < lines.length; i++) {
@@ -4103,7 +4103,7 @@
 
                     // Fetch Migo
                     try {
-                        const resMigo = await fetchWithRetry(csvMigoURL);
+                        const resMigo = await fetchWithRetry(csvMigoURL + '&t=' + new Date().getTime());
                         const textMigo = await resMigo.text();
                         const lines = textMigo.split(/\r?\n/);
                         for (let i = 1; i < lines.length; i++) {
@@ -4120,7 +4120,7 @@
 
                     // Fetch RELPO
                     try {
-                        const resRelpo = await fetchWithRetry(csvRelpoURL);
+                        const resRelpo = await fetchWithRetry(csvRelpoURL + '&t=' + new Date().getTime());
                         const textRelpo = await resRelpo.text();
                         const lines = textRelpo.split(/\r?\n/);
                         for (let i = 1; i < lines.length; i++) {
@@ -4137,7 +4137,7 @@
 
                     // Fetch PR
                     try {
-                        const resPr = await fetchWithRetry(csvPrURL);
+                        const resPr = await fetchWithRetry(csvPrURL + '&t=' + new Date().getTime());
                         const textPr = await resPr.text();
                         const lines = textPr.split(/\r?\n/);
                         for (let i = 1; i < lines.length; i++) {
@@ -4154,7 +4154,7 @@
 
                     // Fetch ADDSLOC
                     try {
-                        const resAddsloc = await fetchWithRetry(csvAddslocURL);
+                        const resAddsloc = await fetchWithRetry(csvAddslocURL + '&t=' + new Date().getTime());
                         const textAddsloc = await resAddsloc.text();
                         const lines = textAddsloc.split(/\r?\n/);
                         for (let i = 1; i < lines.length; i++) {
@@ -4171,7 +4171,7 @@
 
                     // Fetch INTRANSIT
                     try {
-                        const resIntransit = await fetchWithRetry(csvIntransitURL);
+                        const resIntransit = await fetchWithRetry(csvIntransitURL + '&t=' + new Date().getTime());
                         const textIntransit = await resIntransit.text();
                         const lines = textIntransit.split(/\r?\n/);
                         for (let i = 1; i < lines.length; i++) {
@@ -4188,7 +4188,7 @@
 
                     // Fetch ROLE
                     try {
-                        const resRole = await fetchWithRetry(csvRoleURL);
+                        const resRole = await fetchWithRetry(csvRoleURL + '&t=' + new Date().getTime());
                         const textRole = await resRole.text();
                         const lines = textRole.split(/\r?\n/);
                         for (let i = 1; i < lines.length; i++) {
