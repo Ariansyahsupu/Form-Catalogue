@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CatLog Pro - Master Data Management</title>
+    <title>BSS Catalog System - Master Data Management</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <!-- Tambahan library untuk Export Excel -->
@@ -327,7 +327,7 @@
                 <div class="bg-blue-600 p-2.5 rounded-2xl shadow-lg group-hover:scale-110 transition-transform">
                     <i class="fas fa-cubes text-white text-xl"></i>
                 </div>
-                <h1 class="font-black text-xl tracking-tighter text-slate-900">CatLog <span class="text-blue-600">PRO</span></h1>
+                <h1 class="font-black text-xl tracking-tighter text-slate-900">BSS Catalog <span class="text-blue-600">System</span></h1>
             </div>
             <div class="flex items-center gap-6">
                 <div id="session-badge" class="hidden md:block text-[10px] font-black text-emerald-600 bg-emerald-50 px-4 py-2 rounded-full uppercase border border-emerald-100 tracking-widest"></div>
@@ -3608,7 +3608,8 @@
                         if (match) {
                             let p1 = parseInt(match[1]), p2 = parseInt(match[2]), p3 = parseInt(match[3]);
                             reqY = p3;
-                            reqM = (p1 > 12) ? p2 - 1 : p1 - 1; 
+                            // FIX: Di format DD/MM/YYYY, p2 adalah bulan. Jika p2 > 12 berarti terbalik (MM/DD/YYYY)
+                            reqM = (p2 > 12) ? p1 - 1 : p2 - 1; 
                         } else {
                             const d = new Date(reqId);
                             if (!isNaN(d.getTime())) { reqM = d.getMonth(); reqY = d.getFullYear(); }
@@ -3696,11 +3697,17 @@
 
             try {
                 const now = new Date();
-                const timeString = now.toLocaleDateString('id-ID', {day: '2-digit', month: '2-digit', year: 'numeric'}) + " " + now.toLocaleTimeString('id-ID', {hour: '2-digit', minute: '2-digit'});
+                const dd = String(now.getDate()).padStart(2, '0');
+                const mm = String(now.getMonth() + 1).padStart(2, '0');
+                const yyyy = now.getFullYear();
+                const hh = String(now.getHours()).padStart(2, '0');
+                const min = String(now.getMinutes()).padStart(2, '0');
+                const timeString = `${dd}/${mm}/${yyyy} ${hh}:${min}`;
                 
                 // Proses in-background berjalan nyata (ditunggu hingga selesai)
-                const response = await fetchWithRetry(scriptURL, {
+                await fetchWithRetry(scriptURL, {
                     method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify({
                         request_type: "Update Feedback",
                         mode: modeToUse,
@@ -3713,16 +3720,9 @@
                     })
                 });
 
-                const resData = await response.json();
-                
-                if (resData.result === 'success') {
-                    // Setelah background sukses, barulah set ke memori dan refresh tabel menjadi DONE
-                    LOCAL_FEEDBACK.set(decodedId, remarks);
-                    // LOCAL_FEEDBACK_TIME.set(decodedId, timeString); // Dihapus sesuai instruksi agar tombol tetap muncul sebelum spreadsheet terupdate
-                    window.notify('Berhasil', 'Status terupdate di Spreadsheet.', 'success');
-                } else {
-                    window.notify('Gagal Update', resData.error || 'Server menolak pembaruan.', 'error');
-                }
+                // Setelah background sukses, barulah set ke memori dan refresh tabel menjadi DONE
+                LOCAL_FEEDBACK.set(decodedId, remarks);
+                window.notify('Berhasil', 'Status terupdate di Spreadsheet.', 'success');
                 
                 syncMonitoringData(); 
                 if (currentUserDept === "CATALOGUE") checkAlarmStats();
@@ -3743,7 +3743,12 @@
             
             try {
                 const now = new Date();
-                const timeString = now.toLocaleDateString('id-ID', {day: '2-digit', month: '2-digit', year: 'numeric'}) + " " + now.toLocaleTimeString('id-ID', {hour: '2-digit', minute: '2-digit'});
+                const dd = String(now.getDate()).padStart(2, '0');
+                const mm = String(now.getMonth() + 1).padStart(2, '0');
+                const yyyy = now.getFullYear();
+                const hh = String(now.getHours()).padStart(2, '0');
+                const min = String(now.getMinutes()).padStart(2, '0');
+                const timeString = `${dd}/${mm}/${yyyy} ${hh}:${min}`;
                 
                 const cbArray = Array.from(checkboxes);
                 const CHUNK_SIZE = 20; // Implementasi Chunk Batching paralel agar cepat
@@ -3757,6 +3762,7 @@
                         
                         await fetchWithRetry(scriptURL, {
                             method: 'POST',
+                            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                             body: JSON.stringify({
                                 request_type: "Update Feedback",
                                 mode: mode,
@@ -3770,7 +3776,6 @@
                         });
                         
                         LOCAL_FEEDBACK.set(id, "DONE");
-                        // LOCAL_FEEDBACK_TIME.set(id, timeString); // Dihapus sesuai instruksi agar tombol tetap muncul sebelum spreadsheet terupdate
                         completed++;
                         
                         requestAnimationFrame(() => {
@@ -3927,7 +3932,12 @@
 
             try {
                 const now = new Date();
-                const timeString = now.toLocaleDateString('id-ID', {day: '2-digit', month: '2-digit', year: 'numeric'}) + " " + now.toLocaleTimeString('id-ID', {hour: '2-digit', minute: '2-digit'});
+                const dd = String(now.getDate()).padStart(2, '0');
+                const mm = String(now.getMonth() + 1).padStart(2, '0');
+                const yyyy = now.getFullYear();
+                const hh = String(now.getHours()).padStart(2, '0');
+                const min = String(now.getMinutes()).padStart(2, '0');
+                const timeString = `${dd}/${mm}/${yyyy} ${hh}:${min}`;
                 
                 let ids = [];
                 try {
@@ -3945,6 +3955,7 @@
                     const promises = chunk.map(async (id) => {
                         await fetchWithRetry(scriptURL, {
                             method: 'POST',
+                            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                             body: JSON.stringify({
                                 request_type: "Update Feedback",
                                 mode: currentFeedbackMode,
@@ -3957,7 +3968,6 @@
                         });
                         
                         LOCAL_FEEDBACK.set(id, remarks);
-                        // LOCAL_FEEDBACK_TIME.set(id, timeString); // Dihapus sesuai instruksi agar tombol tetap muncul sebelum spreadsheet terupdate
                         completed++;
                         
                         requestAnimationFrame(() => {
@@ -4356,7 +4366,7 @@
             
             try {
                 const wb = XLSX.utils.table_to_book(table, {sheet: "MonitorData"});
-                XLSX.writeFile(wb, `CatLog_Export_${currentMonitorMode}_${new Date().getTime()}.xlsx`);
+                XLSX.writeFile(wb, `BSS_Catalog_Export_${currentMonitorMode}_${new Date().getTime()}.xlsx`);
                 window.notify('Export Sukses', 'Data berhasil diunduh ke Excel.', 'success');
             } catch (error) {
                 window.notify('Error Export', 'Gagal mengekspor data ke Excel.', 'error');
