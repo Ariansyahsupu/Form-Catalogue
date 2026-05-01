@@ -896,7 +896,20 @@
                                         <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Nama Pengirim</label><input type="text" id="migo-tp-pengirim" class="input-field border-2 professional-input"></div>
                                         <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Nama Penerima</label><input type="text" id="migo-tp-penerima" class="input-field border-2 professional-input"></div>
                                         
-                                        <div class="space-y-1.5 md:col-span-2"><label class="text-[10px] professional-label tracking-widest">Valuation Type</label><input type="text" id="migo-tp-val-type" class="input-field border-2 professional-input" placeholder="NEW / USED / REKONDISI DLL"></div>
+                                        <div class="space-y-1.5">
+                                            <label class="text-[10px] professional-label tracking-widest">Valuation Type</label>
+                                            <select id="migo-tp-val-type" class="input-field border-2 bg-white professional-input">
+                                                <option value="">-- PILIH VALUATION TYPE --</option>
+                                                <option value="NEW">NEW</option>
+                                                <option value="DAMAGED">DAMAGED</option>
+                                                <option value="REPAIRED">REPAIRED</option>
+                                                <option value="USED">USED</option>
+                                                <option value="TRIAL">TRIAL</option>
+                                                <option value="BARU">BARU</option>
+                                                <option value="BEKAS">BEKAS</option>
+                                            </select>
+                                        </div>
+                                        <div class="space-y-1.5"><label class="text-[10px] professional-label tracking-widest">Serial Number</label><input type="text" id="migo-tp-serial" class="input-field border-2 professional-input" placeholder="ISI SERIAL NUMBER"></div>
                                     </div>
                                 </div>
                                 
@@ -1502,7 +1515,8 @@
                     bin_tujuan: document.getElementById('migo-tp-bin-tujuan').value.toUpperCase(),
                     pengirim: document.getElementById('migo-tp-pengirim').value.toUpperCase(),
                     penerima: document.getElementById('migo-tp-penerima').value.toUpperCase(),
-                    val_type: document.getElementById('migo-tp-val-type').value.toUpperCase()
+                    val_type: document.getElementById('migo-tp-val-type').value.toUpperCase(),
+                    serial_number: document.getElementById('migo-tp-serial').value.toUpperCase()
                 };
             } else if (subTrx === 'GR PO Purchasing') {
                 payload = { ...payload,
@@ -1883,8 +1897,11 @@
             });
 
             if (monitorCardGrid) {
-                monitorCardGrid.className = "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4";
-                Array.from(monitorCardGrid.children).forEach(card => card.classList.remove('large-mode'));
+                monitorCardGrid.className = "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 max-w-6xl mx-auto";
+                Array.from(monitorCardGrid.children).forEach(card => {
+                    card.classList.remove('large-mode');
+                    card.classList.add('min-h-[180px]'); // Menambah tinggi minimal agar proporsional
+                });
             }
 
             // Reset Activity Monitor & Back Button for Catalogue
@@ -1894,8 +1911,14 @@
             if(btnBackCat) btnBackCat.classList.add('hidden');
 
             if (cardGrid) {
-                cardGrid.className = "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5 gap-3";
-                Array.from(cardGrid.children).forEach(card => card.classList.remove('large-mode'));
+                // PERBAIKAN: Ubah grid dari 5 kolom ke maksimal 4 kolom dan beri jarak (gap) yang lebih lapang
+                cardGrid.className = "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 max-w-7xl mx-auto pb-6";
+                Array.from(cardGrid.children).forEach(card => {
+                    card.classList.remove('large-mode');
+                    // Hapus padding lama yang terlalu kecil, ganti dengan padding lebih besar dan tinggi minimal
+                    card.classList.remove('p-3');
+                    card.classList.add('p-5', 'min-h-[210px]');
+                });
             }
 
             // Hide for non-LOG and non-CATALOGUE
