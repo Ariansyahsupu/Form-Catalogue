@@ -3402,7 +3402,7 @@
         const modeConfig = {
             'CREATE': { colCount: 8 },
             'MAINTAIN': { colCount: 7 },
-            'MIGO': { colCount: 7 },
+            'MIGO': { colCount: 8 },
             'RELPO': { colCount: 7 },
             'PR': { colCount: 7 },
             'ADDSLOC': { colCount: 7 },
@@ -3438,7 +3438,7 @@
             } else if (mode === 'MAINTAIN') {
                 theadHtml = `<tr>${checkboxTh}<th>Tanggal Request</th><th>Pengaju</th><th>Departemen</th><th>Material Code</th><th>Target (Plant/SLoc/Bin)</th><th>Progress / Remarks</th><th>Waktu Penyelesaian</th></tr>`;
             } else if (mode === 'MIGO') {
-                theadHtml = `<tr>${checkboxTh}<th>Tanggal Request</th><th>Pengaju</th><th>Dept</th><th>Sub Transaksi</th><th>Detail Transaksi</th><th>Progress / Remarks</th><th>Waktu Penyelesaian</th></tr>`;
+                theadHtml = `<tr>${checkboxTh}<th>Tanggal Request</th><th>Pengaju</th><th>Dept</th><th>Sub Transaksi</th><th>Detail Transaksi</th><th>No Document Feedback</th><th>Progress / Remarks</th><th>Waktu Penyelesaian</th></tr>`;
             } else if (mode === 'RELPO') {
                 theadHtml = `<tr>${checkboxTh}<th>Tanggal Request</th><th>Pengaju</th><th>Dept</th><th>No PR/PO</th><th>Metadata</th><th>Progress / Remarks</th><th>Waktu Penyelesaian</th></tr>`;
             } else if (mode === 'PR') {
@@ -3650,7 +3650,8 @@
                     } else if (currentMonitorMode === 'MIGO') {
                         const subTrx = cols[14] || "-";
                         let detail = `MAT: ${materialCode} | QTY: ${cols[2]||'-'} | DOC: ${cols[13]||cols[12]||'-'}`;
-                        html += `<tr>${checkboxTd}<td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${reqName}</td><td class="font-bold">${recordDept}</td><td class="font-bold text-indigo-600">${subTrx}</td><td class="text-[10px] font-bold">${detail}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`;
+                        let noDocFeedback = cols[21] || "-";
+                        html += `<tr>${checkboxTd}<td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${reqName}</td><td class="font-bold">${recordDept}</td><td class="font-bold text-indigo-600">${subTrx}</td><td class="text-[10px] font-bold">${detail}</td><td class="text-[10px] font-bold text-blue-600">${noDocFeedback}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`;
                     } else if (currentMonitorMode === 'RELPO') {
                         const metadata = cols[2] || "-";
                         html += `<tr>${checkboxTd}<td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${reqName}</td><td class="font-bold">${recordDept}</td><td class="font-bold text-violet-600">${materialCode}</td><td class="text-[10px] font-bold">${metadata}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`;
