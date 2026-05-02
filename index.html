@@ -3461,7 +3461,7 @@
             } else if (mode === 'MAINTAIN') {
                 theadHtml = `<tr>${checkboxTh}<th>Tanggal Request</th><th>Pengaju</th><th>Departemen</th><th>Material Code</th><th>Target (Plant/SLoc/Bin)</th><th>Progress / Remarks</th><th>Waktu Penyelesaian</th></tr>`;
             } else if (mode === 'MIGO') {
-                theadHtml = `<tr>${checkboxTh}<th>Tanggal Request</th><th>Pengaju</th><th>Dept</th><th>Sub Transaksi</th><th>Detail Transaksi</th><th>No Document Feedback</th><th>Progress / Remarks</th><th>Waktu Penyelesaian</th></tr>`;
+                theadHtml = `<tr>${checkboxTh}<th class="min-w-[100px]">Tanggal Request</th><th class="min-w-[120px]">Pengaju</th><th class="min-w-[60px]">Dept</th><th class="min-w-[140px]">Sub Transaksi</th><th class="min-w-[220px]">Detail Transaksi</th><th class="min-w-[150px]">No Document Feedback</th><th class="min-w-[140px]">Progress / Remarks</th><th class="min-w-[120px]">Waktu Penyelesaian</th></tr>`;
             } else if (mode === 'RELPO') {
                 theadHtml = `<tr>${checkboxTh}<th>Tanggal Request</th><th>Pengaju</th><th>Dept</th><th>No PR/PO</th><th>Metadata</th><th>Progress / Remarks</th><th>Waktu Penyelesaian</th></tr>`;
             } else if (mode === 'PR') {
@@ -3480,9 +3480,12 @@
             const bulkContainer = document.getElementById('bulk-action-container');
             const btnBulkUpd = document.getElementById('btn-bulk-update');
             const btnBulkDone = document.getElementById('btn-bulk-done');
+            const btnBulkCopy = document.getElementById('btn-bulk-copy');
             
             if (currentUserDept === "CATALOGUE") {
                 bulkContainer.classList.remove('hidden');
+                if (btnBulkCopy) btnBulkCopy.classList.remove('hidden');
+                
                 if (mode === 'CREATE') {
                     btnBulkUpd.classList.remove('hidden');
                     btnBulkDone.classList.add('hidden');
@@ -3563,11 +3566,12 @@
                         materialCode = cols[1] || "-";
                         reqName = cols[6] || "-";
                     } else if (currentMonitorMode === 'MIGO') {
-                        recordDept = (cols[16] || "").toUpperCase().trim();
-                        originalRemarks = cols[20] ? cols[20].trim() : "DALAM PROSES";
-                        originalTime = cols[17] ? cols[17].trim() : "";
+                        // PERBAIKAN: Semua indeks digeser +1 akibat penambahan Serial Number
+                        recordDept = (cols[17] || "").toUpperCase().trim(); 
+                        originalRemarks = cols[21] ? cols[21].trim() : "DALAM PROSES";
+                        originalTime = cols[18] ? cols[18].trim() : "";
                         materialCode = cols[1] || "-";
-                        reqName = cols[15] || "-";
+                        reqName = cols[16] || "-";
                         plantVal = (cols[3] || "") + (cols[4] || "");
                     } else if (currentMonitorMode === 'RELPO') {
                         recordDept = (cols[4] || "").toUpperCase().trim();
@@ -3631,7 +3635,7 @@
                         if (match) {
                             let p1 = parseInt(match[1]), p2 = parseInt(match[2]), p3 = parseInt(match[3]);
                             reqY = p3;
-                            // FIX: Di format DD/MM/YYYY, p2 adalah bulan. Jika p2 > 12 berarti terbalik (MM/DD/YYYY)
+                            // PERBAIKAN 1: Logika penanggalan yang benar untuk membaca Bulan pada format DD/MM/YYYY
                             reqM = (p2 > 12) ? p1 - 1 : p2 - 1; 
                         } else {
                             const d = new Date(reqId);
@@ -3648,16 +3652,29 @@
                     
                     let checkboxTd = '';
                     if (isCatalogue) {
-                        if (!completionTime) {
+                        // PERBAIKAN: Gunakan !completionTime (gabungan waktu spreadsheet & lokal) alih-alih !originalTime
+                        // Ini mencegah munculnya tanda "SINKRON..." yang membingungkan setelah tombol ditekan.
+                        if (!completionTime) { 
                             const safeId = encodeURIComponent(reqId);
                             const safePn = encodeURIComponent(materialCode);
                             checkboxTd = `<td class="text-center"><input type="checkbox" class="mon-chk cursor-pointer w-4 h-4" data-id="${safeId}" data-pn="${safePn}" data-mode="${currentMonitorMode}"></td>`;
                             
+                            // Deteksi jika tombol sedang ditekan namun Spreadsheet belum merespons
+                            let isLocallyProcessing = (LOCAL_FEEDBACK.has(reqId) && !originalTime);
+
                             if (currentMonitorMode === 'CREATE') {
                                 const safeRemarks = encodeURIComponent(remarks);
-                                actionHtml += `<button onclick="openFeedback('${safeId}', '${safePn}', '${safeRemarks}', 'CREATE')" class="ml-3 bg-slate-900 text-white px-3 py-1.5 rounded-lg text-[9px] font-black uppercase hover:bg-blue-600 transition-colors shadow-sm"><i class="fas fa-edit"></i> Update</button>`;
+                                if (isLocallyProcessing) {
+                                     actionHtml += `<div class="ml-3 status-badge bg-orange-50 text-orange-600 border-orange-200 shadow-sm"><i class="fas fa-circle-notch animate-spin mr-1"></i> SINKRON...</div>`;
+                                } else {
+                                     actionHtml += `<button onclick="openFeedback('${safeId}', '${safePn}', '${safeRemarks}', 'CREATE')" class="ml-3 bg-slate-900 text-white px-3 py-1.5 rounded-lg text-[9px] font-black uppercase hover:bg-blue-600 transition-colors shadow-sm"><i class="fas fa-edit"></i> Update</button>`;
+                                }
                             } else {
-                                actionHtml += `<button onclick="directDoneUpdate('${safeId}', '${safePn}', '${currentMonitorMode}')" class="ml-3 bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-[9px] font-black uppercase hover:bg-emerald-700 transition-colors shadow-sm shadow-emerald-100"><i class="fas fa-check"></i> DONE</button>`;
+                                if (isLocallyProcessing) {
+                                     actionHtml += `<div class="ml-3 status-badge bg-orange-50 text-orange-600 border-orange-200 shadow-sm"><i class="fas fa-circle-notch animate-spin mr-1"></i> SINKRON...</div>`;
+                                } else {
+                                     actionHtml += `<button onclick="directDoneUpdate('${safeId}', '${safePn}', '${currentMonitorMode}')" class="ml-3 bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-[9px] font-black uppercase hover:bg-emerald-700 transition-colors shadow-sm shadow-emerald-100"><i class="fas fa-check"></i> DONE</button>`;
+                                }
                             }
                         } else {
                             checkboxTd = `<td></td>`;
@@ -3665,29 +3682,33 @@
                     }
 
                     // --- RENDER BARIS TABEL ---
+                    // MAGIC TRICK: Nonaktifkan text-selection di seluruh baris tabel, dan aktifkan KUSUS di kolom Material Code agar saat di-blok mouse hanya meng-copy Material Code.
+                    let trClass = isCatalogue ? 'select-none' : '';
+                    let matClass = isCatalogue ? 'select-text cursor-text bg-blue-50/50 border-x border-blue-100 px-2' : '';
+
                     if (currentMonitorMode === 'CREATE') {
-                        html += `<tr>${checkboxTd}<td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${reqName}</td><td class="font-bold">${recordDept}</td><td class="text-blue-600 font-black">${materialCode}</td><td class="text-emerald-600 font-black">${cols[1] || "-"}</td><td class="text-[10px]">${cols[2]}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`;
+                        html += `<tr class="${trClass}">${checkboxTd}<td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${reqName}</td><td class="font-bold">${recordDept}</td><td class="text-blue-600 font-black ${matClass}">${materialCode}</td><td class="text-emerald-600 font-black">${cols[1] || "-"}</td><td class="text-[10px]">${cols[2]}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`;
                     } else if (currentMonitorMode === 'MAINTAIN') {
                         const targetLoc = `${cols[2] || "-"} / ${cols[3] || "-"} / ${cols[4] || "-"}`;
-                        html += `<tr>${checkboxTd}<td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${reqName}</td><td class="font-bold">${recordDept}</td><td class="text-blue-600 font-black">${materialCode}</td><td class="text-[10px] font-bold">${targetLoc}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`;
+                        html += `<tr class="${trClass}">${checkboxTd}<td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${reqName}</td><td class="font-bold">${recordDept}</td><td class="text-blue-600 font-black ${matClass}">${materialCode}</td><td class="text-[10px] font-bold">${targetLoc}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`;
                     } else if (currentMonitorMode === 'MIGO') {
-                        const subTrx = cols[14] || "-";
-                        let detail = `MAT: ${materialCode} | QTY: ${cols[2]||'-'} | DOC: ${cols[13]||cols[12]||'-'}`;
-                        let noDocFeedback = cols[21] || "-";
-                        html += `<tr>${checkboxTd}<td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${reqName}</td><td class="font-bold">${recordDept}</td><td class="font-bold text-indigo-600">${subTrx}</td><td class="text-[10px] font-bold">${detail}</td><td class="text-[10px] font-bold text-blue-600">${noDocFeedback}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`;
+                        const subTrx = cols[15] || "-";
+                        let detail = `MAT: ${materialCode} | QTY: ${cols[2]||'-'} | DOC: ${cols[14]||cols[13]||'-'}`;
+                        let noDocFeedback = cols[22] || "-";
+                        html += `<tr class="${trClass}">${checkboxTd}<td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${reqName}</td><td class="font-bold">${recordDept}</td><td class="font-bold text-indigo-600">${subTrx}</td><td class="text-[10px] font-bold ${matClass}">${detail}</td><td class="text-[10px] font-bold text-blue-600">${noDocFeedback}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`;
                     } else if (currentMonitorMode === 'RELPO') {
                         const metadata = cols[2] || "-";
-                        html += `<tr>${checkboxTd}<td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${reqName}</td><td class="font-bold">${recordDept}</td><td class="font-bold text-violet-600">${materialCode}</td><td class="text-[10px] font-bold">${metadata}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`;
+                        html += `<tr class="${trClass}">${checkboxTd}<td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${reqName}</td><td class="font-bold">${recordDept}</td><td class="font-bold text-violet-600 ${matClass}">${materialCode}</td><td class="text-[10px] font-bold">${metadata}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`;
                     } else if (currentMonitorMode === 'PR') {
                         const detail = `${materialCode} (${cols[2]||'-'})`;
-                        html += `<tr>${checkboxTd}<td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${reqName}</td><td class="font-bold">${recordDept}</td><td class="font-bold text-cyan-600">${plantVal}</td><td class="text-[10px] font-bold">${detail}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`;
+                        html += `<tr class="${trClass}">${checkboxTd}<td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${reqName}</td><td class="font-bold">${recordDept}</td><td class="font-bold text-cyan-600">${plantVal}</td><td class="text-[10px] font-bold ${matClass}">${detail}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`;
                     } else if (currentMonitorMode === 'ADDSLOC') {
-                        html += `<tr>${checkboxTd}<td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${reqName}</td><td class="font-bold">${recordDept}</td><td class="font-bold text-teal-600">${plantVal}</td><td class="text-[10px] font-bold">${materialCode}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`;
+                        html += `<tr class="${trClass}">${checkboxTd}<td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${reqName}</td><td class="font-bold">${recordDept}</td><td class="font-bold text-teal-600">${plantVal}</td><td class="text-[10px] font-bold ${matClass}">${materialCode}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`;
                     } else if (currentMonitorMode === 'INTRANSIT') {
                         const setting = cols[2] || "-";
-                        html += `<tr>${checkboxTd}<td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${reqName}</td><td class="font-bold">${recordDept}</td><td class="font-bold text-emerald-600">${materialCode}</td><td class="text-[10px] font-bold">${setting}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`;
+                        html += `<tr class="${trClass}">${checkboxTd}<td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${reqName}</td><td class="font-bold">${recordDept}</td><td class="font-bold text-emerald-600 ${matClass}">${materialCode}</td><td class="text-[10px] font-bold">${setting}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`;
                     } else if (currentMonitorMode === 'ROLE') {
-                        html += `<tr>${checkboxTd}<td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${reqName}</td><td class="font-bold">${recordDept}</td><td class="font-bold text-slate-600">${plantVal}</td><td class="text-[10px] font-bold">${materialCode}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`;
+                        html += `<tr class="${trClass}">${checkboxTd}<td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${reqName}</td><td class="font-bold">${recordDept}</td><td class="font-bold text-slate-600">${plantVal}</td><td class="text-[10px] font-bold ${matClass}">${materialCode}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`;
                     }
                 }
                 monitorList.innerHTML = html || `<tr><td colspan="${colCount}" class="py-10 text-center text-slate-400">Belum ada aktivitas untuk ${isCatalogue ? 'semua departemen' : 'Dept ' + currentUserDept}</td></tr>`;
@@ -3729,9 +3750,9 @@
                 const timeString = `${dd}/${mm}/${yyyy} ${hh}:${min}`;
                 
                 // Proses in-background berjalan nyata (ditunggu hingga selesai)
+                // PERBAIKAN: Menghapus deklarasi headers agar tidak diblokir CORS Google Script
                 await fetchWithRetry(scriptURL, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify({
                         request_type: "Update Feedback",
                         mode: modeToUse,
@@ -3746,6 +3767,7 @@
 
                 // Setelah background sukses, barulah set ke memori dan refresh tabel menjadi DONE
                 LOCAL_FEEDBACK.set(decodedId, remarks);
+                LOCAL_FEEDBACK_TIME.set(decodedId, timeString); // Memori waktu dikembalikan agar langsung tampil
                 window.notify('Berhasil', 'Status terupdate di Spreadsheet.', 'success');
                 
                 syncMonitoringData(); 
@@ -3784,9 +3806,9 @@
                         const pn = decodeURIComponent(cb.getAttribute('data-pn'));
                         const mode = cb.getAttribute('data-mode');
                         
+                        // PERBAIKAN: Menghapus deklarasi headers
                         await fetchWithRetry(scriptURL, {
                             method: 'POST',
-                            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                             body: JSON.stringify({
                                 request_type: "Update Feedback",
                                 mode: mode,
@@ -3800,6 +3822,7 @@
                         });
                         
                         LOCAL_FEEDBACK.set(id, "DONE");
+                        LOCAL_FEEDBACK_TIME.set(id, timeString); // Memori waktu dikembalikan agar langsung tampil
                         completed++;
                         
                         requestAnimationFrame(() => {
@@ -3977,9 +4000,9 @@
                 for (let i = 0; i < ids.length; i += CHUNK_SIZE) {
                     const chunk = ids.slice(i, i + CHUNK_SIZE);
                     const promises = chunk.map(async (id) => {
+                        // PERBAIKAN: Menghapus deklarasi headers
                         await fetchWithRetry(scriptURL, {
                             method: 'POST',
-                            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                             body: JSON.stringify({
                                 request_type: "Update Feedback",
                                 mode: currentFeedbackMode,
@@ -3992,6 +4015,7 @@
                         });
                         
                         LOCAL_FEEDBACK.set(id, remarks);
+                        LOCAL_FEEDBACK_TIME.set(id, timeString); // Memori waktu dikembalikan agar langsung tampil
                         completed++;
                         
                         requestAnimationFrame(() => {
@@ -4447,12 +4471,35 @@
             }, 800);
         };
 
+        let lastCheckedMonitor = null; // Tambahan untuk memori shift-click (Block Selection)
+
         window.onload = () => {
             if (document.getElementById('header-date')) document.getElementById('header-date').innerText = new Date().toLocaleDateString('id-ID', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
             populateSelects(); 
             syncZerpdFromSpreadsheet(); 
             initFormListeners(); 
             
+            // --- SHIFT-CLICK LOGIC UNTUK MONITORING (BLOCK SELECTION) ---
+            const monitorList = document.getElementById('monitor-list');
+            if (monitorList) {
+                monitorList.addEventListener('click', function(e) {
+                    if (e.target && e.target.classList.contains('mon-chk')) {
+                        if (e.shiftKey && lastCheckedMonitor) {
+                            const checkboxes = Array.from(document.querySelectorAll('.mon-chk'));
+                            const start = checkboxes.indexOf(e.target);
+                            const end = checkboxes.indexOf(lastCheckedMonitor);
+                            const min = Math.min(start, end);
+                            const max = Math.max(start, end);
+                            
+                            for (let i = min; i <= max; i++) {
+                                checkboxes[i].checked = lastCheckedMonitor.checked;
+                            }
+                        }
+                        lastCheckedMonitor = e.target;
+                    }
+                });
+            }
+
             document.getElementById('login-username').focus();
             
             document.addEventListener('keydown', function(e) {
