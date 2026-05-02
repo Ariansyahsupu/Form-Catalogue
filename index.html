@@ -3457,7 +3457,8 @@
             let checkboxTh = (currentUserDept === "CATALOGUE") ? `<th class="w-10 text-center"><input type="checkbox" id="checkAllMonitor" class="cursor-pointer w-4 h-4" onclick="toggleAllMonitorChecks(this)"></th>` : '';
 
             if (mode === 'CREATE') {
-                theadHtml = `<tr>${checkboxTh}<th>Tanggal Request</th><th>Pengaju</th><th>Departemen</th><th>Part Number</th><th>Nomor Material</th><th>Deskripsi Material</th><th>Progress / Remarks</th><th>Waktu Penyelesaian</th></tr>`;
+                let ccpTh = (currentUserDept === "CATALOGUE") ? `<th class="min-w-[120px]">CCP / Link</th>` : '';
+                theadHtml = `<tr>${checkboxTh}<th class="min-w-[100px]">Tanggal Request</th><th class="min-w-[120px]">Pengaju</th><th class="min-w-[80px]">Departemen</th><th class="min-w-[120px]">Part Number</th><th class="min-w-[120px]">Nomor Material</th><th class="min-w-[200px]">Deskripsi Material</th>${ccpTh}<th class="min-w-[140px]">Progress / Remarks</th><th class="min-w-[120px]">Waktu Penyelesaian</th></tr>`;
             } else if (mode === 'MAINTAIN') {
                 theadHtml = `<tr>${checkboxTh}<th>Tanggal Request</th><th>Pengaju</th><th>Departemen</th><th>Material Code</th><th>Target (Plant/SLoc/Bin)</th><th>Progress / Remarks</th><th>Waktu Penyelesaian</th></tr>`;
             } else if (mode === 'MIGO') {
@@ -3497,7 +3498,7 @@
                 bulkContainer.classList.add('hidden');
             }
 
-            const colCount = modeConfig[mode].colCount + (currentUserDept === "CATALOGUE" ? 1 : 0);
+            const colCount = modeConfig[mode].colCount + (currentUserDept === "CATALOGUE" ? (mode === 'CREATE' ? 2 : 1) : 0);
             document.getElementById('monitor-list').innerHTML = `<tr><td colspan="${colCount}" class="px-8 py-24 text-center text-slate-400 text-[12px] font-bold uppercase tracking-widest">Menyinkronkan Aktivitas Terbaru...</td></tr>`;
 
             syncMonitoringData();
@@ -3532,7 +3533,7 @@
                 const lines = csvText.split(/\r?\n/);
                 let html = "";
                 const isCatalogue = currentUserDept === "CATALOGUE";
-                const colCount = modeConfig[currentMonitorMode].colCount + (isCatalogue ? 1 : 0);
+                const colCount = modeConfig[currentMonitorMode].colCount + (isCatalogue ? (currentMonitorMode === 'CREATE' ? 2 : 1) : 0);
                 
                 const checkAllBtn = document.getElementById('checkAllMonitor');
                 if (checkAllBtn) checkAllBtn.checked = false;
@@ -3552,6 +3553,7 @@
                     let reqName = "";
                     let plantVal = "";
                     let materialCode = "";
+                    let ccpData = ""; // Menyimpan data CCP khusus CREATE
 
                     if (currentMonitorMode === 'CREATE') {
                         recordDept = (cols[33] || "").toUpperCase().trim();
@@ -3559,6 +3561,7 @@
                         originalTime = cols[35] ? cols[35].trim() : "";
                         materialCode = cols[7] || "-";
                         reqName = cols[32] || "-";
+                        ccpData = cols[36] || "-";
                     } else if (currentMonitorMode === 'MAINTAIN') {
                         recordDept = (cols[7] || "").toUpperCase().trim();
                         originalRemarks = cols[10] ? cols[10].trim() : "DALAM PROSES";
@@ -3687,7 +3690,13 @@
                     let matClass = isCatalogue ? 'select-text cursor-text bg-blue-50/50 border-x border-blue-100 px-2' : '';
 
                     if (currentMonitorMode === 'CREATE') {
-                        html += `<tr class="${trClass}">${checkboxTd}<td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${reqName}</td><td class="font-bold">${recordDept}</td><td class="text-blue-600 font-black ${matClass}">${materialCode}</td><td class="text-emerald-600 font-black">${cols[1] || "-"}</td><td class="text-[10px]">${cols[2]}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`;
+                        let ccpTd = '';
+                        if (isCatalogue) {
+                            let isUrl = ccpData.startsWith('http');
+                            let displayCcp = isUrl ? `<a href="${ccpData}" target="_blank" class="underline hover:text-blue-800"><i class="fas fa-external-link-alt mr-1"></i>Buka Link</a>` : ccpData;
+                            ccpTd = `<td class="text-[10px] text-blue-600 font-bold break-all min-w-[100px]">${displayCcp}</td>`;
+                        }
+                        html += `<tr class="${trClass}">${checkboxTd}<td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${reqName}</td><td class="font-bold">${recordDept}</td><td class="text-blue-600 font-black ${matClass}">${materialCode}</td><td class="text-emerald-600 font-black">${cols[1] || "-"}</td><td class="text-[10px]">${cols[2]}</td>${ccpTd}<td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`;
                     } else if (currentMonitorMode === 'MAINTAIN') {
                         const targetLoc = `${cols[2] || "-"} / ${cols[3] || "-"} / ${cols[4] || "-"}`;
                         html += `<tr class="${trClass}">${checkboxTd}<td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${reqName}</td><td class="font-bold">${recordDept}</td><td class="text-blue-600 font-black ${matClass}">${materialCode}</td><td class="text-[10px] font-bold">${targetLoc}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`;
@@ -4408,7 +4417,64 @@
             window.open(url, '_blank');
         };
 
-        window.showExportModal = function() {
+        window.showExportModal = async function() {
+            // CUSTOM EXPORT: Khusus untuk User Catalogue pada Monitor Create Material
+            if (currentUserDept === "CATALOGUE" && currentMonitorMode === 'CREATE') {
+                document.getElementById('loader').style.display = 'flex';
+                document.querySelector('#loader p').innerText = "Menyiapkan Export...";
+                try {
+                    const response = await fetchWithRetry(csvCreateMatURL + '&t=' + new Date().getTime());
+                    const csvText = await response.text();
+                    const lines = csvText.split(/\r?\n/);
+                    
+                    const exportData = [];
+                    // Header Sesuai Instruksi
+                    exportData.push([
+                        "Material", "Description", "Old Material", "Material Type", "Base UoM", 
+                        "Material Group", "Mfg PN", "Mfg Profile", "Plant", "Purch Group", "Auto PO", 
+                        "MRP Type", "Reorder Point", "MRP Controller", "Lot Sizing", "Max Stock", 
+                        "Proc Type", "Spec Proc", "Deliv Time", "Safety Stock", "Serial Profile", 
+                        "Val Cat", "Val Class", "SLoc", "Storage Bin"
+                    ]);
+                    
+                    for (let i = 1; i < lines.length; i++) {
+                        if (!lines[i].trim()) continue;
+                        const cols = parseCSVLine(lines[i]);
+                        if (cols.length < 34) continue; // Skip baris tidak lengkap
+                        
+                        const status = cols[34] ? cols[34].trim().toUpperCase() : "";
+                        // HANYA MENGAMBIL YANG MASIH "DALAM PROSES"
+                        if (status.indexOf("DONE") === -1 && status.indexOf("REJECT") === -1) {
+                            const row = [];
+                            row.push(""); // Kolom Material di-blank-kan sesuai instruksi
+                            
+                            // Mengambil dari Description (Index 2) sampai Storage Bin (Index 25)
+                            for(let c = 2; c <= 25; c++) {
+                                row.push(cols[c] ? cols[c].trim() : "");
+                            }
+                            exportData.push(row);
+                        }
+                    }
+                    
+                    if (exportData.length === 1) {
+                        window.notify('Export Kosong', 'Tidak ada data dengan status DALAM PROSES.', 'error');
+                        return;
+                    }
+
+                    const ws = XLSX.utils.aoa_to_sheet(exportData);
+                    const wb = XLSX.utils.book_new();
+                    XLSX.utils.book_append_sheet(wb, ws, "Create_Material_Proses");
+                    XLSX.writeFile(wb, `Template_Upload_CreateMat_${new Date().getTime()}.xlsx`);
+                    window.notify('Export Sukses', 'Data berhasil diunduh sesuai Template SAP.', 'success');
+                } catch(e) {
+                    window.notify('Error Export', 'Gagal menarik data mentah untuk export.', 'error');
+                } finally {
+                    document.getElementById('loader').style.display = 'none';
+                }
+                return; // Hentikan fungsi agar tidak menjalankan export default
+            }
+
+            // EXPORT DEFAULT: Untuk Modul dan User Lainnya
             const table = document.querySelector('.monitor-table');
             if(!table) return window.notify('Error', 'Tabel tidak ditemukan.', 'error');
             
