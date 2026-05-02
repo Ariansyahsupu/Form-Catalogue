@@ -3271,7 +3271,7 @@
                         }
                     }
                 } catch(e) {}
-            }, 10000); // Tiap 10 detik
+            }, 20000); // PERBAIKAN: Diubah dari 10 detik ke 20 detik agar tidak terkena blokir Google 429
         };
 
         window.closeAccessModal = function() {
@@ -3342,7 +3342,8 @@
                     const cols = parseCSVLine(lines[i]);
                     if (cols.length < 6) continue;
                     
-                    const ts = cols[0].trim();
+                    // PERBAIKAN: Menambahkan pengaman ( ? : ) agar tidak crash jika Google mengirimkan baris kosong
+                    const ts = cols[0] ? cols[0].trim() : "";
                     const reqName = cols[1] ? cols[1].trim() : "Unknown";
                     const deptCol = cols[2] ? cols[2].trim() : "";
                     const plCol = cols[4] ? cols[4].trim() : "-";
@@ -3360,9 +3361,14 @@
                 
                 let html = '';
                 for (const [key, data] of Object.entries(pendingReqs)) {
+                    // PERBAIKAN: Mencegah error fungsi terputus jika ada tanda kutip tunggal pada nama/teks
+                    const safeReqName = data.reqName.replace(/'/g, "\\'");
+                    const safeDept = data.dept.replace(/'/g, "\\'");
+                    const safePl = data.pl.replace(/'/g, "\\'");
+
                     html += `<div class="bg-blue-50 border border-blue-100 p-4 rounded-xl flex items-center justify-between mb-2">
                         <div><p class="professional-label text-[11px] text-blue-600">DEPT: ${data.dept} | PL: ${data.pl}</p><p class="text-[10px] text-slate-500 font-bold">${data.reqName} - ${data.time}</p></div>
-                        <button onclick="generateAccessCode('${data.dept}', '${data.reqName}', '${data.pl}')" class="bg-blue-600 text-white px-3 py-2 rounded-lg text-[9px] font-black uppercase hover:bg-blue-700 shadow-sm">REALIZE</button>
+                        <button onclick="generateAccessCode('${safeDept}', '${safeReqName}', '${safePl}')" class="bg-blue-600 text-white px-3 py-2 rounded-lg text-[9px] font-black uppercase hover:bg-blue-700 shadow-sm">REALIZE</button>
                     </div>`;
                 }
                 
@@ -3370,7 +3376,8 @@
                 listEl.innerHTML = html;
                 
             } catch(e) {
-                listEl.innerHTML = `<div class="text-center text-sm text-red-500 py-4 font-bold">Gagal memuat data.</div>`;
+                console.error("Error memuat modal akses:", e);
+                listEl.innerHTML = `<div class="text-center text-sm text-red-500 py-4 font-bold">Gagal memuat data. (Sistem Google sibuk / Terlalu banyak permintaan). Silakan tutup dan coba lagi dalam 1 menit.</div>`;
             }
         };
 
@@ -3458,7 +3465,7 @@
 
             if (mode === 'CREATE') {
                 let ccpTh = (currentUserDept === "CATALOGUE") ? `<th class="min-w-[120px]">CCP / Link</th>` : '';
-                theadHtml = `<tr>${checkboxTh}<th class="min-w-[100px]">Tanggal Request</th><th class="min-w-[120px]">Pengaju</th><th class="min-w-[80px]">Departemen</th><th class="min-w-[120px]">Part Number</th><th class="min-w-[120px]">Nomor Material</th><th class="min-w-[200px]">Deskripsi Material</th>${ccpTh}<th class="min-w-[140px]">Progress / Remarks</th><th class="min-w-[120px]">Waktu Penyelesaian</th></tr>`;
+                theadHtml = `<tr>${checkboxTh}<th class="min-w-[100px]">Tanggal Request</th><th class="min-w-[120px]">Pengaju</th><th class="min-w-[80px]">Departemen</th><th class="min-w-[120px]">Part Number</th><th class="min-w-[200px]">Deskripsi Material</th>${ccpTh}<th class="min-w-[140px]">Progress / Remarks</th><th class="min-w-[120px]">Waktu Penyelesaian</th></tr>`;
             } else if (mode === 'MAINTAIN') {
                 theadHtml = `<tr>${checkboxTh}<th>Tanggal Request</th><th>Pengaju</th><th>Departemen</th><th>Material Code</th><th>Target (Plant/SLoc/Bin)</th><th>Progress / Remarks</th><th>Waktu Penyelesaian</th></tr>`;
             } else if (mode === 'MIGO') {
@@ -3693,10 +3700,10 @@
                         let ccpTd = '';
                         if (isCatalogue) {
                             let isUrl = ccpData.startsWith('http');
-                            let displayCcp = isUrl ? `<a href="${ccpData}" target="_blank" class="underline hover:text-blue-800"><i class="fas fa-external-link-alt mr-1"></i>Buka Link</a>` : ccpData;
-                            ccpTd = `<td class="text-[10px] text-blue-600 font-bold break-all min-w-[100px]">${displayCcp}</td>`;
+                            let displayCcp = isUrl ? `<a href="${ccpData}" target="_blank" class="underline hover:text-blue-800 whitespace-nowrap"><i class="fas fa-external-link-alt mr-1"></i>Buka Link</a>` : ccpData;
+                            ccpTd = `<td class="text-[10px] text-blue-600 font-bold max-w-[150px] truncate" title="${ccpData}">${displayCcp}</td>`;
                         }
-                        html += `<tr class="${trClass}">${checkboxTd}<td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${reqName}</td><td class="font-bold">${recordDept}</td><td class="text-blue-600 font-black ${matClass}">${materialCode}</td><td class="text-emerald-600 font-black">${cols[1] || "-"}</td><td class="text-[10px]">${cols[2]}</td>${ccpTd}<td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`;
+                        html += `<tr class="${trClass}">${checkboxTd}<td class="font-mono text-[10px] whitespace-nowrap">${cols[0]}</td><td class="font-black uppercase whitespace-nowrap">${reqName}</td><td class="font-bold">${recordDept}</td><td class="text-blue-600 font-black whitespace-nowrap ${matClass}">${materialCode}</td><td class="text-[10px] min-w-[200px]">${cols[2]}</td>${ccpTd}<td><div class="flex items-center whitespace-nowrap">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600 whitespace-nowrap">${completionTime || "-"}</td></tr>`;
                     } else if (currentMonitorMode === 'MAINTAIN') {
                         const targetLoc = `${cols[2] || "-"} / ${cols[3] || "-"} / ${cols[4] || "-"}`;
                         html += `<tr class="${trClass}">${checkboxTd}<td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${reqName}</td><td class="font-bold">${recordDept}</td><td class="text-blue-600 font-black ${matClass}">${materialCode}</td><td class="text-[10px] font-bold">${targetLoc}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`;
