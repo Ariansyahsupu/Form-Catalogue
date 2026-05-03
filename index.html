@@ -3302,7 +3302,7 @@
                     if (codeCol === inputCode && deptCol === currentUserDept && statusCol === "REALIZE") {
                         const tsStr = cols[0];
                         const ts = parseSheetDate(tsStr);
-                        const diffMins = (new Date().getTime() - ts.getTime()) / 60000;
+                        const diffMins = (getWitaDate().getTime() - ts.getTime()) / 60000;
                         
                         if (diffMins <= 30 && diffMins >= 0) {
                             isValid = true;
@@ -3992,7 +3992,7 @@
             closeFeedback();
 
             try {
-                const now = getWitaDate();
+                const now = new Date();
                 const dd = String(now.getDate()).padStart(2, '0');
                 const mm = String(now.getMonth() + 1).padStart(2, '0');
                 const yyyy = now.getFullYear();
@@ -4021,8 +4021,7 @@
                                 request_type: "Update Feedback",
                                 mode: currentFeedbackMode,
                                 timestamp: id,
-                                material: pn === "BULK UPDATE" ? "" : pn, // PERBAIKAN: Menambahkan key material yang sebelumnya hilang
-                                mfg_part: pn === "BULK UPDATE" ? "" : pn, // backup key
+                                mfg_part: pn === "BULK UPDATE" ? "" : pn, 
                                 remarks: remarks,
                                 completion_time: timeString,
                                 department: currentUserDept
