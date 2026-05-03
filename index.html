@@ -4021,7 +4021,8 @@
                                 request_type: "Update Feedback",
                                 mode: currentFeedbackMode,
                                 timestamp: id,
-                                mfg_part: pn === "BULK UPDATE" ? "" : pn, 
+                                material: pn === "BULK UPDATE" ? "" : pn, // PERBAIKAN: Menambahkan key material yang sebelumnya hilang
+                                mfg_part: pn === "BULK UPDATE" ? "" : pn, // backup key
                                 remarks: remarks,
                                 completion_time: timeString,
                                 department: currentUserDept
