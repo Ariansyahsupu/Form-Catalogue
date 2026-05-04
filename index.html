@@ -2445,7 +2445,8 @@
                 batchMaterials.forEach((item, idx) => {
                     if (idx !== currentMaterialIdx) {
                         props.forEach(p => {
-                            if (p !== 'description') {
+                            // PERBAIKAN: Mengecualikan interchange dan remarks agar tetap diinput manual 1 per 1
+                            if (p !== 'description' && p !== 'interchange' && p !== 'remarks') {
                                 item[p] = m[p];
                             }
                         });
