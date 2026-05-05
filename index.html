@@ -1952,8 +1952,14 @@
                         if (el) el.style.display = 'none';
                     });
 
+                    // Specific override for SM (Monitor PR)
+                    if (currentUserDept === "SM") {
+                        const monPrCard = document.getElementById('mon-card-pr');
+                        if (monPrCard) monPrCard.style.display = 'flex';
+                    }
+
                     if (monitorCardGrid) {
-                        monitorCardGrid.className = "grid grid-cols-1 sm:grid-cols-2 gap-8 max-w-4xl mx-auto mt-8";
+                        monitorCardGrid.className = currentUserDept === "SM" ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto mt-8" : "grid grid-cols-1 sm:grid-cols-2 gap-8 max-w-4xl mx-auto mt-8";
                         Array.from(monitorCardGrid.children).forEach(card => {
                             if (card.style.display !== 'none') {
                                 card.classList.add('large-mode');
