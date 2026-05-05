@@ -1183,7 +1183,7 @@
                 </div>
 
                 <div class="space-y-4">
-                    <p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Masukkan Kode (Berlaku 30 Menit):</p>
+                    <p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Masukkan Kode (Berlaku 120 Menit):</p>
                     <input type="password" id="access-code-input" maxlength="4" class="input-field border-2 professional-input text-center text-2xl tracking-[0.5em]" placeholder="••••">
                     <div class="flex gap-3">
                         <button onclick="closeAccessModal()" class="flex-1 py-3 bg-slate-100 text-slate-600 font-black rounded-xl uppercase text-xs hover:bg-slate-200">Batal</button>
@@ -3261,7 +3261,7 @@
                             const ts = parseSheetDate(tsStr);
                             const diffMins = (new Date().getTime() - ts.getTime()) / 60000;
                             
-                            if (diffMins <= 30 && diffMins >= 0) {
+                            if (diffMins <= 120 && diffMins >= 0) {
                                 window.notify('Kode Diterima!', 'Catalogue menerbitkan kode: ' + codeCol, 'success');
                                 document.getElementById('access-code-input').value = codeCol;
                                 clearInterval(window.accessPollInterval);
@@ -3303,7 +3303,7 @@
                         const ts = parseSheetDate(tsStr);
                         const diffMins = (new Date().getTime() - ts.getTime()) / 60000;
                         
-                        if (diffMins <= 30 && diffMins >= 0) {
+                        if (diffMins <= 120 && diffMins >= -120) {
                             isValid = true;
                             break;
                         }
@@ -3315,7 +3315,7 @@
                     closeAccessModal();
                     startBatchForm(pendingBypassPNs, false); // Form terbuka
                 } else {
-                    window.notify('Akses Ditolak', 'Kode akses salah atau kadaluarsa (Max 30 Menit).', 'error');
+                    window.notify('Akses Ditolak', 'Kode akses salah atau kadaluarsa (Max 120 Menit).', 'error');
                     document.getElementById('access-code-input').value = '';
                 }
             } catch (e) {
@@ -3692,9 +3692,8 @@
                     }
 
                     // --- RENDER BARIS TABEL ---
-                    // MAGIC TRICK: Nonaktifkan text-selection di seluruh baris tabel, dan aktifkan KUSUS di kolom Material Code agar saat di-blok mouse hanya meng-copy Material Code.
-                    let trClass = isCatalogue ? 'select-none' : '';
-                    let matClass = isCatalogue ? 'select-text cursor-text bg-blue-50/50 border-x border-blue-100 px-2' : '';
+                    let trClass = '';
+                    let matClass = '';
 
                     if (currentMonitorMode === 'CREATE') {
                         let ccpTd = '';
@@ -4368,9 +4367,10 @@
                             if (deptCol === currentUserDept && plantMatch) {
                                 const tsStr = cols[0];
                                 const ts = parseSheetDate(tsStr);
+                                // PERBAIKAN: Kembali menggunakan new Date() bawaan browser dan beri toleransi 24 jam (1440 menit)
                                 const diffMins = (new Date().getTime() - ts.getTime()) / 60000;
                                 
-                                if (diffMins <= 30 && diffMins >= 0) {
+                                if (diffMins <= 1440 && diffMins >= -1440) {
                                     userReqs[reqName] = { status: statusCol, code: codeCol };
                                 } else {
                                     delete userReqs[reqName];
@@ -4569,6 +4569,160 @@
                             }
                         }
                         lastCheckedMonitor = e.target;
+                    }
+                });
+
+                // --- EXCEL-LIKE BLOCK SELECTION ---
+                let isSelectingCells = false;
+                let startCellCoords = null;
+                let scrollInterval = null;
+                let currentMousePos = { x: 0, y: 0 };
+                const monScrollArea = document.querySelector('.monitor-scroll-area');
+
+                function getCellCoords(td) {
+                    const tr = td.parentElement;
+                    const tbody = tr.parentElement;
+                    return {
+                        row: Array.from(tbody.children).indexOf(tr),
+                        col: Array.from(tr.children).indexOf(td)
+                    };
+                }
+
+                function updateSelection(td) {
+                    if (!isSelectingCells || !startCellCoords || !td) return;
+                    window.getSelection().removeAllRanges();
+
+                    let currentCell = getCellCoords(td);
+                    let minRow = Math.min(startCellCoords.row, currentCell.row);
+                    let maxRow = Math.max(startCellCoords.row, currentCell.row);
+                    let minCol = Math.min(startCellCoords.col, currentCell.col);
+                    let maxCol = Math.max(startCellCoords.col, currentCell.col);
+
+                    const rows = monitorList.children;
+                    document.querySelectorAll('#monitor-list td.excel-selected').forEach(c => c.classList.remove('excel-selected', 'bg-blue-100', 'outline', 'outline-1', 'outline-blue-400'));
+
+                    for (let r = minRow; r <= maxRow; r++) {
+                        if (!rows[r]) continue;
+                        let cells = rows[r].children;
+                        for (let c = minCol; c <= maxCol; c++) {
+                            if (cells[c]) cells[c].classList.add('excel-selected', 'bg-blue-100', 'outline', 'outline-1', 'outline-blue-400');
+                        }
+                    }
+                }
+
+                document.addEventListener('mousemove', function(e) {
+                    if (isSelectingCells) {
+                        currentMousePos.x = e.clientX;
+                        currentMousePos.y = e.clientY;
+                    }
+                });
+
+                monitorList.addEventListener('mousedown', function(e) {
+                    if (currentUserDept !== "CATALOGUE") return;
+                    // Abaikan jika klik tombol, input, atau link
+                    if (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON' || e.target.closest('button') || e.target.tagName === 'A') return;
+                    if (e.shiftKey) return; // Biarkan shift-click untuk checkbox bekerja
+
+                    let td = e.target.closest('td');
+                    if (!td) return;
+
+                    isSelectingCells = true;
+                    startCellCoords = getCellCoords(td);
+                    currentMousePos.x = e.clientX;
+                    currentMousePos.y = e.clientY;
+                    
+                    // Bersihkan sorotan sebelumnya
+                    document.querySelectorAll('#monitor-list td.excel-selected').forEach(c => c.classList.remove('excel-selected', 'bg-blue-100', 'outline', 'outline-1', 'outline-blue-400'));
+                    
+                    td.classList.add('excel-selected', 'bg-blue-100', 'outline', 'outline-1', 'outline-blue-400');
+                    window.getSelection().removeAllRanges(); // Hapus sorotan teks biru bawaan browser
+
+                    // Auto-scroll loop saat kursor berada di pinggir tabel
+                    if (scrollInterval) clearInterval(scrollInterval);
+                    scrollInterval = setInterval(() => {
+                        if (!isSelectingCells || !monScrollArea) {
+                            clearInterval(scrollInterval);
+                            return;
+                        }
+                        const rect = monScrollArea.getBoundingClientRect();
+                        const threshold = 50; // Jarak sensor kursor ke pinggir layar (piksel)
+                        let dx = 0, dy = 0;
+                        
+                        if (currentMousePos.x > rect.right - threshold) dx = 25;
+                        else if (currentMousePos.x < rect.left + threshold) dx = -25;
+                        
+                        if (currentMousePos.y > rect.bottom - threshold) dy = 25;
+                        else if (currentMousePos.y < rect.top + threshold) dy = -25;
+
+                        if (dx !== 0 || dy !== 0) {
+                            monScrollArea.scrollLeft += dx;
+                            monScrollArea.scrollTop += dy;
+                            
+                            // Update blok biru berdasarkan elemen baru yang terseret di bawah kursor
+                            let el = document.elementFromPoint(currentMousePos.x, currentMousePos.y);
+                            if (el) {
+                                let targetTd = el.closest('td');
+                                if (targetTd && monScrollArea.contains(targetTd)) {
+                                    updateSelection(targetTd);
+                                }
+                            }
+                        }
+                    }, 30); // Kecepatan gulir (ms)
+                });
+
+                monitorList.addEventListener('mouseover', function(e) {
+                    updateSelection(e.target.closest('td'));
+                });
+
+                document.addEventListener('mouseup', function() {
+                    isSelectingCells = false;
+                    if (scrollInterval) clearInterval(scrollInterval);
+                });
+
+                // Hapus blok ketika klik di luar area tabel
+                document.addEventListener('mousedown', function(e) {
+                    if (currentUserDept !== "CATALOGUE") return;
+                    if (monitorList && !monitorList.contains(e.target)) {
+                        document.querySelectorAll('#monitor-list td.excel-selected').forEach(c => c.classList.remove('excel-selected', 'bg-blue-100', 'outline', 'outline-1', 'outline-blue-400'));
+                    }
+                });
+
+                // Mencegah block text bawaan browser saat sedang dragging cell
+                monitorList.addEventListener('selectstart', function(e) {
+                    if (isSelectingCells) e.preventDefault();
+                });
+
+                // Intercept COPY (Ctrl+C) khusus untuk kotak yang disorot
+                document.addEventListener('copy', function(e) {
+                    if (currentUserDept !== "CATALOGUE") return;
+                    const selectedCells = document.querySelectorAll('#monitor-list td.excel-selected');
+                    if (selectedCells.length > 0) {
+                        let minRow = Infinity, maxRow = -Infinity, minCol = Infinity, maxCol = -Infinity;
+                        const cellsData = [];
+                        
+                        selectedCells.forEach(td => {
+                            let coords = getCellCoords(td);
+                            minRow = Math.min(minRow, coords.row);
+                            maxRow = Math.max(maxRow, coords.row);
+                            minCol = Math.min(minCol, coords.col);
+                            maxCol = Math.max(maxCol, coords.col);
+                            cellsData.push({row: coords.row, col: coords.col, text: td.innerText.trim()});
+                        });
+
+                        // Gabungkan menjadi format Tab Separated Values (TSV) agar bisa di-paste ke Excel
+                        let tsv = "";
+                        for (let r = minRow; r <= maxRow; r++) {
+                            let rowData = [];
+                            for (let c = minCol; c <= maxCol; c++) {
+                                let cell = cellsData.find(cd => cd.row === r && cd.col === c);
+                                rowData.push(cell ? cell.text : "");
+                            }
+                            tsv += rowData.join("\t") + "\n";
+                        }
+
+                        e.clipboardData.setData('text/plain', tsv);
+                        e.preventDefault();
+                        window.notify('Copy Berhasil', 'Data yang diblok berhasil disalin.', 'success');
                     }
                 });
             }
