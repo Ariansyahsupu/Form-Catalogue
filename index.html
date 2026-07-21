@@ -724,21 +724,37 @@
                                                         <label class="text-[10px] professional-label tracking-widest">Compartment <span class="text-red-500 font-black">*</span></label>
                                                         <select id="f-compartment-select" required class="input-field border-2 bg-white professional-input" onchange="const manualInput = document.getElementById('f-compartment'); if(this.value === 'LAINNYA') { manualInput.classList.remove('hidden'); manualInput.value = ''; manualInput.required = true; manualInput.focus(); } else { manualInput.classList.add('hidden'); manualInput.required = false; manualInput.value = this.value; const event = new Event('input', { bubbles: true }); manualInput.dispatchEvent(event); }">
                                                             <option value="">-- PILIH COMPARTMENT --</option>
-                                                            <option value="ENGINE SYSTEM">ENGINE SYSTEM</option>
-                                                            <option value="HYDRAULIC SYSTEM">HYDRAULIC SYSTEM</option>
-                                                            <option value="TRANSMISSION / POWERTRAIN">TRANSMISSION / POWERTRAIN</option>
-                                                            <option value="FINAL DRIVE">FINAL DRIVE</option>
-                                                            <option value="AXLE & SUSPENSION">AXLE & SUSPENSION</option>
-                                                            <option value="BRAKE SYSTEM">BRAKE SYSTEM</option>
-                                                            <option value="STEERING SYSTEM">STEERING SYSTEM</option>
-                                                            <option value="UNDERCARRIAGE">UNDERCARRIAGE</option>
-                                                            <option value="ELECTRICAL SYSTEM">ELECTRICAL SYSTEM</option>
-                                                            <option value="CABIN & AC SYSTEM">CABIN & AC SYSTEM</option>
-                                                            <option value="ATTACHMENT / WORKING TOOLS">ATTACHMENT / WORKING TOOLS</option>
-                                                            <option value="FRAME & CHASSIS">FRAME & CHASSIS</option>
-                                                            <option value="PNEUMATIC / AIR SYSTEM">PNEUMATIC / AIR SYSTEM</option>
-                                                            <option value="RNI">RNI (RUNNING MAINTENANCE)</option>
-                                                            <option value="GENERAL / CONSUMABLE">GENERAL / CONSUMABLE</option>
+                                                            <option value="Engine System">Engine System</option>
+                                                            <option value="Fuel System">Fuel System</option>
+                                                            <option value="Air Intake System">Air Intake System</option>
+                                                            <option value="Exhaust System">Exhaust System</option>
+                                                            <option value="Cooling System">Cooling System</option>
+                                                            <option value="Lubrication System">Lubrication System</option>
+                                                            <option value="Hydraulic System">Hydraulic System</option>
+                                                            <option value="Transmission System">Transmission System</option>
+                                                            <option value="Torque Converter System">Torque Converter System</option>
+                                                            <option value="Final Drive System">Final Drive System</option>
+                                                            <option value="Swing System">Swing System</option>
+                                                            <option value="Travel System">Travel System</option>
+                                                            <option value="Undercarriage System">Undercarriage System</option>
+                                                            <option value="Steering System">Steering System</option>
+                                                            <option value="Brake System">Brake System</option>
+                                                            <option value="Electrical System">Electrical System</option>
+                                                            <option value="Electronic Control System">Electronic Control System</option>
+                                                            <option value="Power Train System">Power Train System</option>
+                                                            <option value="Frame &amp; Chassis">Frame & Chassis</option>
+                                                            <option value="Cabin System">Cabin System</option>
+                                                            <option value="Operator Control System">Operator Control System</option>
+                                                            <option value="Attachment System">Attachment System</option>
+                                                            <option value="Ground Engaging Tools (GET)">Ground Engaging Tools (GET)</option>
+                                                            <option value="Central Lubrication System">Central Lubrication System</option>
+                                                            <option value="Fire Suppression System">Fire Suppression System</option>
+                                                            <option value="Air Conditioning (HVAC) System">Air Conditioning (HVAC) System</option>
+                                                            <option value="Monitoring &amp; Instrument System">Monitoring & Instrument System</option>
+                                                            <option value="Lighting System">Lighting System</option>
+                                                            <option value="Safety System">Safety System</option>
+                                                            <option value="Counterweight System">Counterweight System</option>
+                                                            <option value="Access Platform &amp; Guard System">Access Platform & Guard System</option>
                                                         </select>
                                                         <input type="text" name="compartment" id="f-compartment" placeholder="ISI COMPARTMENT MANUAL" class="input-field border-2 professional-input hidden mt-2">
                                                     </div>
