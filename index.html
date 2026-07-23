@@ -2895,7 +2895,7 @@
                     purchEl.value = 'G02';
                     setupVisualSwap('f-purch', [{code:"G02", display:"G02 - CONSUMABLE / GENERAL Supply"}]);
                 } else if (t === 'ASET') { // Rule 6
-                    purchEl.value = 'G16';
+                    purchEl.value = 'G07';
                     setupVisualSwap('f-purch', [{code:"G07", display:"G07 - AST, MDL & UNT"}]);
                 } else if (t === 'SEJA') { // Rule 7
                     purchEl.value = 'G03';
@@ -2919,7 +2919,6 @@
                         {code:"G05",display:"G05 - INFRASTRUKTUR"},
                         {code:"G06",display:"G06 - SARANA"},
                         {code:"G07",display:"G07 - AST, MDL & UNT"}
-                        {code:"G16",display:"G16 - AST"}
                     ]);
                     if (currentPurchVal) purchEl.value = currentPurchVal;
                 }
