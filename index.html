@@ -326,7 +326,7 @@
                     <p class="text-sm text-slate-500 mt-1">Manage and monitor all master data requests</p>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                     <div onclick="showSection('home-section')" class="premium-card p-6 group">
                         <div class="icon-box"><i class="fas fa-folder-open"></i></div>
                         <h3 class="text-lg font-semibold text-slate-800 mb-2">Request Forms</h3>
@@ -350,6 +350,18 @@
                         <h3 class="text-lg font-semibold text-slate-800 mb-2">Master Material</h3>
                         <p class="text-slate-500 text-sm mb-4">View master material records.</p>
                         <div class="mt-auto pt-4 border-t border-slate-100 text-sm font-medium text-blue-600 group-hover:text-blue-700 flex items-center">Open Master Data <i class="fas fa-external-link-alt ml-1 text-xs"></i></div>
+                    </div>
+                    <div onclick="window.notify('Informasi', 'Akses Validation Material segera hadir.', 'success')" class="premium-card p-6 group">
+                        <div class="icon-box"><i class="fas fa-clipboard-check"></i></div>
+                        <h3 class="text-lg font-semibold text-slate-800 mb-2">Validation Material</h3>
+                        <p class="text-slate-500 text-sm mb-4">Validasi material yang diajukan oleh user.</p>
+                        <div class="mt-auto pt-4 border-t border-slate-100 text-sm font-medium text-blue-600 group-hover:text-blue-700 flex items-center">Buka Validasi <i class="fas fa-arrow-right ml-1 text-xs"></i></div>
+                    </div>
+                    <div onclick="window.notify('Informasi', 'Akses Material Completed (LSMW) segera hadir.', 'success')" class="premium-card p-6 group">
+                        <div class="icon-box"><i class="fas fa-file-export"></i></div>
+                        <h3 class="text-lg font-semibold text-slate-800 mb-2">Material Completed</h3>
+                        <p class="text-slate-500 text-sm mb-4">Data material completed untuk proses LSMW.</p>
+                        <div class="mt-auto pt-4 border-t border-slate-100 text-sm font-medium text-blue-600 group-hover:text-blue-700 flex items-center">Buka LSMW <i class="fas fa-arrow-right ml-1 text-xs"></i></div>
                     </div>
                 </div>
             </section>
@@ -860,18 +872,20 @@
                                             <div class="bg-blue-50 border border-blue-100 p-4 rounded-lg">
                                                 <h4 class="font-semibold text-blue-800 text-sm mb-3">Validator PE Assignment</h4>
                                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                                                    <div class="space-y-1.5"><label class="text-sm font-medium text-blue-800">Nama Validator PE <span class="text-red-500">*</span></label><input type="text" id="f-val-pe-name" required placeholder="Nama Lengkap" class="input-field border-blue-200"></div>
-                                                    <div class="space-y-1.5"><label class="text-sm font-medium text-blue-800">NIK Validator PE <span class="text-red-500">*</span></label><input type="text" id="f-val-pe-nik" required placeholder="123456" class="input-field border-blue-200"></div>
+                                                    <div class="space-y-1.5"><label class="text-sm font-medium text-blue-800">Validator PE / Atasan Langsung <span class="text-red-500">*</span></label><input type="text" id="f-val-pe-name" list="validator-name-list" required placeholder="Ketik atau Pilih Nama" class="input-field border-blue-200" autocomplete="off"></div>
+                                                    <div class="space-y-1.5"><label class="text-sm font-medium text-blue-800">NIK Validator PE <span class="text-red-500">*</span></label><input type="password" id="f-val-pe-nik" required placeholder="********" class="input-field border-blue-200"></div>
                                                 </div>
                                             </div>
 
                                             <div class="bg-indigo-50 border border-indigo-100 p-4 rounded-lg mt-4">
                                                 <h4 class="font-semibold text-indigo-800 text-sm mb-3">Validator DC Assignment</h4>
                                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                                                    <div class="space-y-1.5"><label class="text-sm font-medium text-indigo-800">Nama Validator DC <span class="text-red-500">*</span></label><input type="text" id="f-val-dc-name" required placeholder="Nama Lengkap" class="input-field border-indigo-200"></div>
-                                                    <div class="space-y-1.5"><label class="text-sm font-medium text-indigo-800">NIK Validator DC <span class="text-red-500">*</span></label><input type="text" id="f-val-dc-nik" required placeholder="123456" class="input-field border-indigo-200"></div>
+                                                    <div class="space-y-1.5"><label class="text-sm font-medium text-indigo-800">Nama Validator DC <span class="text-red-500">*</span></label><input type="text" id="f-val-dc-name" list="validator-name-list" required placeholder="Ketik atau Pilih Nama" class="input-field border-indigo-200" autocomplete="off"></div>
+                                                    <div class="space-y-1.5"><label class="text-sm font-medium text-indigo-800">NIK Validator DC <span class="text-red-500">*</span></label><input type="password" id="f-val-dc-nik" required placeholder="********" class="input-field border-indigo-200"></div>
                                                 </div>
                                             </div>
+                                            
+                                            <datalist id="validator-name-list"></datalist>
 
                                             <div class="pt-4">
                                                 <button type="button" onclick="handleBatchSubmit()" class="w-full py-3.5 bg-blue-600 text-white font-medium rounded-lg shadow-sm hover:bg-blue-700 transition-colors">Submit Seluruh Pengajuan</button>
@@ -1487,6 +1501,7 @@
         const csvIntransitURL = "https://docs.google.com/spreadsheets/d/1Bu4_lnZJe-NAezO0Jyw2AkqQk0bdVFTU8VrIlSn3eJY/export?format=csv&gid=950997119";
         const csvRoleURL = "https://docs.google.com/spreadsheets/d/1Bu4_lnZJe-NAezO0Jyw2AkqQk0bdVFTU8VrIlSn3eJY/export?format=csv&gid=261859756";
         const csvBlockURL = "https://docs.google.com/spreadsheets/d/1Bu4_lnZJe-NAezO0Jyw2AkqQk0bdVFTU8VrIlSn3eJY/export?format=csv&gid=1096352524";
+        const csvValidatorURL = "https://docs.google.com/spreadsheets/d/1Bu4_lnZJe-NAezO0Jyw2AkqQk0bdVFTU8VrIlSn3eJY/export?format=csv&gid=1177391872";
 
         // Global State & User Config
         let currentUserDept = "";
@@ -3831,6 +3846,54 @@
             return isNaN(d.getTime()) ? new Date(0) : d;
         }
 
+        let VALIDATOR_MAP = {};
+
+        async function loadValidatorList() {
+            try {
+                const response = await fetchWithRetry(csvValidatorURL + '&t=' + new Date().getTime());
+                const csvText = await response.text();
+                const lines = csvText.split(/\r?\n/);
+                let html = '';
+                for (let i = 1; i < lines.length; i++) {
+                    if (!lines[i].trim()) continue;
+                    const cols = parseCSVLine(lines[i]);
+                    const col0 = cols[0] ? cols[0].trim() : "";
+                    const col1 = cols[1] ? cols[1].trim() : "";
+                    let nik = "", name = "";
+                    
+                    // Deteksi otomatis mana NIK dan mana Nama (asumsi NIK adalah angka)
+                    if (/^\d+$/.test(col0)) {
+                        nik = col0; name = col1;
+                    } else {
+                        name = col0; nik = col1;
+                    }
+                    
+                    if (name && nik) {
+                        VALIDATOR_MAP[name.toUpperCase()] = nik;
+                        html += `<option value="${name.toUpperCase()}">`;
+                    }
+                }
+                const datalist = document.getElementById('validator-name-list');
+                if (datalist) datalist.innerHTML = html;
+            } catch(e) {
+                console.error("Gagal memuat list validator", e);
+            }
+        }
+
+        function setupValidatorAutocomplete(nameInputId, nikInputId) {
+            const nameInput = document.getElementById(nameInputId);
+            const nikInput = document.getElementById(nikInputId);
+            if (nameInput && nikInput) {
+                nameInput.addEventListener('input', function() {
+                    const selectedName = this.value.toUpperCase();
+                    if (VALIDATOR_MAP[selectedName]) {
+                        nikInput.value = VALIDATOR_MAP[selectedName];
+                        nikInput.classList.add('field-filled');
+                    }
+                });
+            }
+        }
+
         async function syncZerpdFromSpreadsheet() {
             const stat = document.getElementById('zerpd-status-bar');
             try {
@@ -5378,6 +5441,9 @@
             if (document.getElementById('header-date')) document.getElementById('header-date').innerText = new Date().toLocaleDateString('id-ID', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
             populateSelects(); 
             syncZerpdFromSpreadsheet(); 
+            loadValidatorList();
+            setupValidatorAutocomplete('f-val-pe-name', 'f-val-pe-nik');
+            setupValidatorAutocomplete('f-val-dc-name', 'f-val-dc-nik');
             initFormListeners(); 
             
             // --- BLOCK EXCEL PASTE LOGIC ---
