@@ -351,7 +351,7 @@
                         <p class="text-slate-500 text-sm mb-4">View master material records.</p>
                         <div class="mt-auto pt-4 border-t border-slate-100 text-sm font-medium text-blue-600 group-hover:text-blue-700 flex items-center">Open Master Data <i class="fas fa-external-link-alt ml-1 text-xs"></i></div>
                     </div>
-                    <div onclick="openMonitorView('VALIDATION')" class="premium-card p-6 group">
+                    <div onclick="window.notify('Informasi', 'Akses Validation Material segera hadir.', 'success')" class="premium-card p-6 group">
                         <div class="icon-box"><i class="fas fa-clipboard-check"></i></div>
                         <h3 class="text-lg font-semibold text-slate-800 mb-2">Validation Material</h3>
                         <p class="text-slate-500 text-sm mb-4">Validasi material yang diajukan oleh user.</p>
@@ -518,11 +518,6 @@
                                 <div class="icon-box"><i class="fas fa-ban"></i></div>
                                 <h3 class="font-semibold text-slate-800 text-sm">Block / Open PR</h3>
                             </div>
-                            <!-- Tambahan untuk konsistensi jika user non-catalogue mau lihat Validation juga (optional) -->
-                            <div id="mon-card-validation" onclick="openMonitorView('VALIDATION')" class="premium-card p-5 group hidden">
-                                <div class="icon-box"><i class="fas fa-clipboard-check"></i></div>
-                                <h3 class="font-semibold text-slate-800 text-sm">Validation Material</h3>
-                            </div>
                         </div>
                     </div>
 
@@ -566,13 +561,65 @@
                                 </tbody>
                             </table>
                         </div>
-                        
-                        <!-- Paginasi Khusus Validation -->
-                        <div id="monitor-pagination" class="hidden flex justify-between items-center px-6 py-4 border-t border-slate-200 bg-slate-50">
-                            <span id="pagination-info" class="text-xs font-medium text-slate-500">Menampilkan 0 - 0 dari 0 data</span>
-                            <div class="flex gap-2">
-                                <button onclick="changeValidationPage(-1)" id="btn-prev-page" class="px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-md hover:bg-slate-50 text-xs font-bold disabled:opacity-50 transition-colors shadow-sm">Prev</button>
-                                <button onclick="changeValidationPage(1)" id="btn-next-page" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-xs font-bold disabled:opacity-50 transition-colors shadow-sm">Next</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- MAINTAIN SECTION -->
+            <section id="maintain-section" class="hidden animate-fade">
+                <div>
+                    <button onclick="goToHome()" class="btn-back"><i class="fas fa-arrow-left"></i> Back</button>
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                        <div class="bg-slate-50 px-6 py-4 border-b border-slate-200">
+                            <h2 class="text-lg font-semibold text-slate-800">Maintain / Update Material</h2>
+                        </div>
+                        <div class="p-6 md:p-8 space-y-8">
+                            
+                            <div id="maint-batch-card" class="bg-white border border-slate-200 p-6 md:p-8 rounded-xl space-y-6">
+                                <div class="flex gap-4 items-start">
+                                    <div class="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600 text-lg shrink-0 border border-blue-100"><i class="fas fa-paste"></i></div>
+                                    <div>
+                                        <h4 class="font-semibold text-slate-800 text-base">Input Multiple Material Code</h4>
+                                        <p class="text-sm text-slate-500 mt-1">Paste daftar material yang akan di-maintain</p>
+                                    </div>
+                                </div>
+                                <div class="flex flex-col gap-4">
+                                    <textarea id="m-mat-check" placeholder="Paste Material Code (1 per baris)" class="w-full input-field font-mono h-32 resize-none"></textarea>
+                                    <button id="btn-verify-maint-batch" onclick="handleVerifyMaintBatch()" class="bg-blue-600 text-white px-6 py-2.5 rounded-lg font-medium text-sm hover:bg-blue-700 transition-colors w-full md:w-auto self-end">Verifikasi Data</button>
+                                </div>
+                                <div id="maint-res" class="hidden p-4 rounded-lg border border-slate-200 bg-slate-50 animate-fade"></div>
+                            </div>
+
+                            <div id="maint-full-form" class="hidden animate-fade">
+                                <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+                                    <div class="lg:col-span-1 border-r border-slate-200 pr-4">
+                                        <h4 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Daftar Pengajuan</h4>
+                                        <div id="maint-multi-form-nav" class="space-y-2 max-h-[500px] overflow-y-auto custom-scrollbar"></div>
+                                    </div>
+
+                                    <div class="lg:col-span-3">
+                                        <form id="form-maintain-batch" class="space-y-8">
+                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-5 bg-slate-50 p-5 rounded-lg border border-slate-200">
+                                                <div class="space-y-1.5"><label class="text-sm font-medium text-slate-700">Requester Name <span class="text-red-500">*</span></label><input type="text" id="m-req-name" required class="input-field"></div>
+                                                <div class="space-y-1.5"><label class="text-sm font-medium text-slate-700">Department</label><input type="text" id="m-req-dept" readonly class="input-field input-readonly"></div>
+                                            </div>
+                                            
+                                            <div>
+                                                <h4 class="section-header"><i class="fas fa-layer-group text-slate-400"></i> Detail Update</h4>
+                                                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                                    <div class="space-y-1.5"><label class="text-sm font-medium text-slate-700">Material</label><input type="text" id="m-f-mat" readonly class="input-field input-readonly font-mono text-blue-600 font-semibold"></div>
+                                                    <div class="space-y-1.5"><label class="text-sm font-medium text-slate-700">Target Plant <span class="text-red-500">*</span></label><select id="m-f-plant" required class="input-field"></select></div>
+                                                    <div class="space-y-1.5"><label class="text-sm font-medium text-slate-700">Target SLoc <span class="text-red-500">*</span></label><select id="m-f-sloc" required class="input-field"></select></div>
+                                                    <div class="space-y-1.5"><label class="text-sm font-medium text-slate-700">Storage Bin</label><input type="text" id="m-f-bin" placeholder="Input Rak" class="input-field"></div>
+                                                    <div class="space-y-1.5 md:col-span-2"><label class="text-sm font-medium text-slate-700">Reason/Notif Error <span class="text-red-500">*</span></label><input type="text" id="m-f-remarks" placeholder="Masukkan alasan atau notifikasi error" required class="input-field" autocomplete="off"></div>
+                                                </div>
+                                            </div>
+                                            <div class="pt-4">
+                                                <button type="button" onclick="handleMaintBatchSubmit()" class="w-full py-3 bg-blue-600 text-white font-medium rounded-lg shadow-sm hover:bg-blue-700 transition-colors">Submit Seluruh Pengajuan</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1287,23 +1334,17 @@
             </div>
         </div>
 
-        <!-- Feedback Modal -->
+        <!-- Feedback Modal (Hanya untuk CREATE) -->
         <div id="feedback-modal" class="hidden fixed inset-0 z-[4000] bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4">
             <div class="bg-white rounded-xl p-6 max-w-md w-full shadow-lg border border-slate-100">
                 <h3 class="text-lg font-semibold text-slate-800 mb-1">Update Status Feedback</h3>
                 <p class="text-sm text-slate-500 mb-5">ID / Item: <span id="fb-pn-label" class="font-medium text-slate-800"></span></p>
                 <input type="hidden" id="fb-id">
                 <input type="hidden" id="fb-pn">
-                <input type="hidden" id="fb-desc">
-                <input type="hidden" id="fb-reko">
                 <div class="space-y-4">
                     <div class="space-y-1.5">
                         <label class="text-sm font-medium text-slate-700">Progress / Remarks Baru</label>
                         <textarea id="fb-remarks" class="input-field h-24 resize-none" placeholder="Masukkan status terbaru..."></textarea>
-                        <select id="fb-remarks-select" class="input-field hidden">
-                            <option value="OPEN">OPEN</option>
-                            <option value="CLOSE">CLOSE</option>
-                        </select>
                     </div>
                     <div class="flex gap-3 pt-2">
                         <button onclick="closeFeedback()" class="flex-1 py-2.5 bg-white border border-slate-200 text-slate-600 font-medium rounded-lg hover:bg-slate-50">Batal</button>
@@ -1444,7 +1485,8 @@
             </div>
         </div>
     </section>
-        <script type="module">
+
+    <script type="module">
         const scriptURL = "https://script.google.com/macros/s/AKfycbz3I9M3D2UwSKQySx26_90_tViXrFzrdt7J-WS0WMclIiALU3iEq07VQL_iwO4w5ory/exec";
         const csvPubURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQFR3WLBquvFttCMJlrZQOrK2u8TMm3Dhj2yMukhbakAC5LdUAndnaPn6FesXRWUl5R1IHmAuKDRnER/pub?gid=1089770718&single=true&output=csv";
         const csvAccessURL = "https://docs.google.com/spreadsheets/d/1Bu4_lnZJe-NAezO0Jyw2AkqQk0bdVFTU8VrIlSn3eJY/export?format=csv&gid=242300721";
@@ -1460,7 +1502,6 @@
         const csvRoleURL = "https://docs.google.com/spreadsheets/d/1Bu4_lnZJe-NAezO0Jyw2AkqQk0bdVFTU8VrIlSn3eJY/export?format=csv&gid=261859756";
         const csvBlockURL = "https://docs.google.com/spreadsheets/d/1Bu4_lnZJe-NAezO0Jyw2AkqQk0bdVFTU8VrIlSn3eJY/export?format=csv&gid=1096352524";
         const csvValidatorURL = "https://docs.google.com/spreadsheets/d/1Bu4_lnZJe-NAezO0Jyw2AkqQk0bdVFTU8VrIlSn3eJY/export?format=csv&gid=1177391872";
-        const csvValidationURL = "https://docs.google.com/spreadsheets/d/1f0e_taCohOJn9-ceEp6101ETUPNJwyoDAP0S9x6a8fk/export?format=csv&gid=1041602548";
 
         // Global State & User Config
         let currentUserDept = "";
@@ -2430,17 +2471,6 @@
             if(actMon) actMon.style.display = 'flex';
             const btnBackCat = document.getElementById('btn-back-catalogue-container');
             if(btnBackCat) btnBackCat.classList.add('hidden');
-            
-            // Show Validation Card in Monitor Menu if Catalogue
-            const monCardVal = document.getElementById('mon-card-validation');
-            if(monCardVal) {
-                if(currentUserDept === "CATALOGUE") {
-                    monCardVal.style.display = 'flex';
-                    monCardVal.classList.remove('hidden');
-                } else {
-                    monCardVal.style.display = 'none';
-                }
-            }
 
             if (cardGrid) {
                 // PERBAIKAN: Ubah grid dari 5 kolom ke maksimal 4 kolom dan beri jarak (gap) yang lebih lapang
@@ -4187,15 +4217,10 @@
         
         let currentMonitorMode = 'CREATE';
         let currentFeedbackMode = 'CREATE';
-        
-        // Paginasi Khusus Data Besar Validation
-        let globalValidationData = [];
-        let validationCurrentPage = 1;
-        const validationRowsPerPage = 100;
 
         // Konfigurasi kolom untuk memproses monitoring secara dinamis
         const modeConfig = {
-            'CREATE': { colCount: 14 }, 
+            'CREATE': { colCount: 14 }, // Diperbarui untuk menampung kolom baru
             'MAINTAIN': { colCount: 7 },
             'MIGO': { colCount: 8 },
             'RELPO': { colCount: 7 },
@@ -4203,14 +4228,11 @@
             'ADDSLOC': { colCount: 7 },
             'INTRANSIT': { colCount: 7 },
             'ROLE': { colCount: 7 },
-            'BLOCK': { colCount: 10 },
-            'VALIDATION': { colCount: 8 } // Konfigurasi untuk Validation
+            'BLOCK': { colCount: 10 }
         };
 
         window.openMonitorView = function(mode) {
             currentMonitorMode = mode;
-            document.querySelectorAll('#main-content section').forEach(s => s.classList.add('hidden')); 
-            document.getElementById('monitor-section').classList.remove('hidden');
             document.getElementById('monitor-selection-menu').classList.add('hidden');
             document.getElementById('monitor-data-view').classList.remove('hidden');
 
@@ -4223,8 +4245,7 @@
                 'ADDSLOC': 'Monitor Additional Storage',
                 'INTRANSIT': 'Monitor Setting Intransit PO',
                 'ROLE': 'Monitor User Role Access',
-                'BLOCK': 'Monitor Block / Open PR',
-                'VALIDATION': 'Validation Material'
+                'BLOCK': 'Monitor Block / Open PR'
             };
 
             document.getElementById('monitor-title-label').innerText = titleMap[mode] || 'Monitor Data';
@@ -4236,6 +4257,7 @@
 
             if (mode === 'CREATE') {
                 let ccpTh = (currentUserDept === "CATALOGUE") ? `<th class="min-w-[80px]">CCP/Link</th>` : '';
+                // Menambahkan Waktu Val PE dan Waktu Val DC
                 theadHtml = `<tr>${checkboxTh}<th class="min-w-[90px]">Tanggal</th><th class="min-w-[100px]">Pengaju</th><th class="min-w-[60px]">Dept</th><th class="w-[100px] min-w-[100px] max-w-[100px]">Part Number</th><th class="w-[180px] min-w-[180px] max-w-[180px]">Deskripsi</th>${ccpTh}<th class="min-w-[90px]">Val PE</th><th class="min-w-[90px]">Waktu Val PE</th><th class="min-w-[90px]">Val DC</th><th class="min-w-[90px]">Waktu Val DC</th><th class="min-w-[80px]">Eksekutor</th><th class="min-w-[120px]">Progress/Remarks</th><th class="min-w-[100px]">Waktu Selesai</th><th class="min-w-[100px]">Respon Time</th></tr>`;
             } else if (mode === 'MAINTAIN') {
                 theadHtml = `<tr>${checkboxTh}<th>Tanggal Request</th><th>Pengaju</th><th>Departemen</th><th>Material Code</th><th class="min-w-[200px]">Deskripsi Material</th><th>Target (Plant/SLoc/Bin)</th><th>Progress / Remarks</th><th>Waktu Penyelesaian</th></tr>`;
@@ -4253,18 +4275,9 @@
                 theadHtml = `<tr>${checkboxTh}<th>Tanggal Request</th><th>Pengaju</th><th>Dept</th><th>Plant</th><th>T-code</th><th>Progress / Remarks</th><th>Waktu Penyelesaian</th></tr>`;
             } else if (mode === 'BLOCK') {
                 theadHtml = `<tr>${checkboxTh}<th>Timestamp</th><th>Kode Material</th><th>Part Number</th><th>Qty Kebutuhan</th><th>Uom</th><th>Problem</th><th>Reason Open Block</th><th>Validasi Tim Teknis</th><th>Progress Open Block</th><th>Waktu Penyelesaian</th></tr>`;
-            } else if (mode === 'VALIDATION') {
-                theadHtml = `<tr>${checkboxTh}<th>Material</th><th class="min-w-[200px]">Material Description</th><th class="min-w-[200px]">Rekomendasi Pengecekkan (Temuan)</th><th>Action</th><th class="min-w-[200px]">Hasil Perubahan atau Standarisasi / CCP</th><th>Cheker</th><th>Proggres</th></tr>`;
             }
             
             thead.innerHTML = theadHtml;
-
-            // Tampilkan paginasi hanya untuk Validation
-            const paginationEl = document.getElementById('monitor-pagination');
-            if (paginationEl) {
-                if (mode === 'VALIDATION') paginationEl.classList.remove('hidden');
-                else paginationEl.classList.add('hidden');
-            }
 
             // Atur tombol Bulk Action untuk Catalogue
             const bulkContainer = document.getElementById('bulk-action-container');
@@ -4276,7 +4289,7 @@
                 bulkContainer.classList.remove('hidden');
                 if (btnBulkCopy) btnBulkCopy.classList.remove('hidden');
                 
-                if (mode === 'CREATE' || mode === 'VALIDATION') {
+                if (mode === 'CREATE') {
                     btnBulkUpd.classList.remove('hidden');
                     btnBulkDone.classList.add('hidden');
                 } else {
@@ -4294,12 +4307,8 @@
         };
 
         window.backToMonitorMenu = function() {
-            if (currentMonitorMode === 'VALIDATION' && currentUserDept === "CATALOGUE") {
-                goToHome();
-            } else {
-                document.getElementById('monitor-data-view').classList.add('hidden');
-                document.getElementById('monitor-selection-menu').classList.remove('hidden');
-            }
+            document.getElementById('monitor-data-view').classList.add('hidden');
+            document.getElementById('monitor-selection-menu').classList.remove('hidden');
         };
 
         window.toggleAllMonitorChecks = function(source) {
@@ -4321,66 +4330,26 @@
                 else if (currentMonitorMode === 'INTRANSIT') targetURL = csvIntransitURL;
                 else if (currentMonitorMode === 'ROLE') targetURL = csvRoleURL;
                 else if (currentMonitorMode === 'BLOCK') targetURL = csvBlockURL;
-                else if (currentMonitorMode === 'VALIDATION') targetURL = csvValidationURL;
 
                 const response = await fetchWithRetry(targetURL + '&t=' + new Date().getTime());
                 const csvText = await response.text();
                 const lines = csvText.split(/\r?\n/);
-                
-                // Gunakan array untuk membangun HTML demi performa string yang lebih baik
-                let htmlFragments = [];
+                let html = "";
                 const isCatalogue = currentUserDept === "CATALOGUE";
                 const colCount = modeConfig[currentMonitorMode].colCount + (isCatalogue ? (currentMonitorMode === 'CREATE' ? 2 : 1) : 0);
                 
                 const checkAllBtn = document.getElementById('checkAllMonitor');
                 if (checkAllBtn) checkAllBtn.checked = false;
 
-                // --- KHUSUS VALIDATION MATERIAL (PAGINASI & FORMAT) ---
-                if (currentMonitorMode === 'VALIDATION') {
-                    globalValidationData = [];
-                    // Karena data besar, iterasi dilakukan berurutan
-                    for (let i = 1; i < lines.length; i++) {
-                        if (!lines[i].trim() || lines[i].length < 5) continue;
-                        const cols = parseCSVLine(lines[i]);
-                        
-                        const matCode = cols[0] ? cols[0].trim() : "";
-                        if (!matCode) continue;
-
-                        globalValidationData.push({
-                            material: matCode,
-                            desc: cols[1] || "-",
-                            reko: cols[2] || "-",
-                            action: cols[3] || "-",
-                            hasil: cols[4] || "-",
-                            cheker: cols[5] || "-",
-                            proggres: cols[6] ? cols[6].trim().toUpperCase() : "OPEN"
-                        });
-                    }
-                    // Reset ke halaman 1 setiap data disinkron ulang
-                    validationCurrentPage = 1;
-                    renderValidationPage();
-                    return; // Keluar dari fungsi utama agar tidak memproses render standar yang berat
-                }
-
-                // Batasi pemrosesan hanya pada baris yang memiliki data untuk mencegah lag
-                let processCount = 0;
-                const MAX_PROCESS = 1500; // Batas wajar untuk render browser
-
                 for (let i = lines.length - 1; i >= 1; i--) {
                     if (!lines[i].trim()) continue;
-                    
-                    // Percepat pengecekan baris kosong
-                    if (lines[i].length < 10) continue;
-
                     const cols = parseCSVLine(lines[i]);
+                    
                     if (cols.length < 5) continue;
                     
                     let reqId = cols[0] ? cols[0].trim() : "";
                     if (!reqId.match(/^"?\d/)) continue; // Mengabaikan pecahan baris akibat newline pada header
                     
-                    processCount++;
-                    if(processCount > MAX_PROCESS) break; // Hentikan perulangan jika terlalu banyak data agar tidak crash
-
                     let originalRemarks = "";
                     let originalTime = "";
                     let recordDept = "";
@@ -4474,15 +4443,6 @@
                             reason: cols[10] || "-",
                             validasi: cols[13] || "-"
                         };
-                    } else if (currentMonitorMode === 'VALIDATION') {
-                        // Asumsi struktur Spreadsheet Validation Material:
-                        // 0: Timestamp, 1: Material Code, 2: PN, 3: Deskripsi, 4: Requester, 5: Dept, 6: Remarks/Status, 7: Waktu Penyelesaian
-                        recordDept = (cols[5] || "").toUpperCase().trim();
-                        originalRemarks = cols[6] ? cols[6].trim() : "DALAM PROSES";
-                        originalTime = cols[7] ? cols[7].trim() : "";
-                        materialCode = (cols[1] || "-") + " / " + (cols[2] || "-"); 
-                        reqName = cols[4] || "-";
-                        extraData = { desc: cols[3] || "-" };
                     }
 
                     // --- FILTER DEPT ---
@@ -4545,12 +4505,12 @@
                             // Deteksi jika tombol sedang ditekan namun Spreadsheet belum merespons
                             let isLocallyProcessing = (LOCAL_FEEDBACK.has(reqId) && !originalTime);
 
-                            if (currentMonitorMode === 'CREATE' || currentMonitorMode === 'VALIDATION') {
+                            if (currentMonitorMode === 'CREATE') {
                                 const safeRemarks = encodeURIComponent(remarks);
                                 if (isLocallyProcessing) {
                                      actionHtml += `<div class="ml-3 status-badge bg-orange-50 text-orange-600 border-orange-200 shadow-sm"><i class="fas fa-circle-notch animate-spin mr-1"></i> SINKRON...</div>`;
                                 } else {
-                                     actionHtml += `<button onclick="openFeedback('${safeId}', '${safePn}', '${safeRemarks}', '${currentMonitorMode}')" class="ml-3 bg-slate-900 text-white px-3 py-1.5 rounded-lg text-[9px] font-black uppercase hover:bg-blue-600 transition-colors shadow-sm"><i class="fas fa-edit"></i> Update</button>`;
+                                     actionHtml += `<button onclick="openFeedback('${safeId}', '${safePn}', '${safeRemarks}', 'CREATE')" class="ml-3 bg-slate-900 text-white px-3 py-1.5 rounded-lg text-[9px] font-black uppercase hover:bg-blue-600 transition-colors shadow-sm"><i class="fas fa-edit"></i> Update</button>`;
                                 }
                             } else {
                                 if (isLocallyProcessing) {
@@ -4576,112 +4536,38 @@
                             ccpTd = `<td class="text-[10px] text-blue-600 font-bold max-w-[80px] truncate" title="${ccpData}">${displayCcp}</td>`;
                         }
                         // Memasukkan kolom baru ke dalam render HTML
-                        htmlFragments.push(`<tr class="${trClass}">${checkboxTd}<td class="font-mono text-[9px] whitespace-nowrap">${cols[0]}</td><td class="font-black uppercase whitespace-nowrap text-[9px]">${reqName}</td><td class="font-bold text-[9px]">${recordDept}</td><td class="text-blue-600 font-black whitespace-nowrap text-[10px] w-[100px] max-w-[100px] truncate ${matClass}" title="${materialCode}">${materialCode}</td><td class="text-[9px] w-[180px] max-w-[180px] truncate" title="${cols[2]}">${cols[2]}</td>${ccpTd}<td class="text-[9px] font-bold whitespace-nowrap truncate max-w-[90px]" title="${valPE}">${valPE}</td><td class="text-[9px] font-bold whitespace-nowrap text-slate-500">${waktuValPE}</td><td class="text-[9px] font-bold whitespace-nowrap truncate max-w-[90px]" title="${valDC}">${valDC}</td><td class="text-[9px] font-bold whitespace-nowrap text-slate-500">${waktuValDC}</td><td class="text-[9px] font-bold whitespace-nowrap truncate max-w-[80px]" title="${eksekutor}">${eksekutor}</td><td><div class="flex items-center whitespace-nowrap">${actionHtml}</div></td><td class="font-bold text-[9px] text-slate-600 whitespace-nowrap">${completionTime || "-"}</td><td class="font-bold text-[9px] text-indigo-600 whitespace-nowrap">${responTime}</td></tr>`);
+                        html += `<tr class="${trClass}">${checkboxTd}<td class="font-mono text-[9px] whitespace-nowrap">${cols[0]}</td><td class="font-black uppercase whitespace-nowrap text-[9px]">${reqName}</td><td class="font-bold text-[9px]">${recordDept}</td><td class="text-blue-600 font-black whitespace-nowrap text-[10px] w-[100px] max-w-[100px] truncate ${matClass}" title="${materialCode}">${materialCode}</td><td class="text-[9px] w-[180px] max-w-[180px] truncate" title="${cols[2]}">${cols[2]}</td>${ccpTd}<td class="text-[9px] font-bold whitespace-nowrap truncate max-w-[90px]" title="${valPE}">${valPE}</td><td class="text-[9px] font-bold whitespace-nowrap text-slate-500">${waktuValPE}</td><td class="text-[9px] font-bold whitespace-nowrap truncate max-w-[90px]" title="${valDC}">${valDC}</td><td class="text-[9px] font-bold whitespace-nowrap text-slate-500">${waktuValDC}</td><td class="text-[9px] font-bold whitespace-nowrap truncate max-w-[80px]" title="${eksekutor}">${eksekutor}</td><td><div class="flex items-center whitespace-nowrap">${actionHtml}</div></td><td class="font-bold text-[9px] text-slate-600 whitespace-nowrap">${completionTime || "-"}</td><td class="font-bold text-[9px] text-indigo-600 whitespace-nowrap">${responTime}</td></tr>`;
                     } else if (currentMonitorMode === 'MAINTAIN') {
                         const targetLoc = `${cols[2] || "-"} / ${cols[3] || "-"} / ${cols[4] || "-"}`;
-                        htmlFragments.push(`<tr class="${trClass}">${checkboxTd}<td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${reqName}</td><td class="font-bold">${recordDept}</td><td class="text-blue-600 font-black ${matClass}">${materialCode}</td><td class="text-[10px] font-bold">${targetLoc}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`);
+                        html += `<tr class="${trClass}">${checkboxTd}<td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${reqName}</td><td class="font-bold">${recordDept}</td><td class="text-blue-600 font-black ${matClass}">${materialCode}</td><td class="text-[10px] font-bold">${targetLoc}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`;
                     } else if (currentMonitorMode === 'MIGO') {
                         const subTrx = cols[15] || "-";
                         let detail = `MAT: ${materialCode} | QTY: ${cols[2]||'-'} | DOC: ${cols[14]||cols[13]||'-'}`;
                         let noDocFeedback = cols[22] || "-";
-                        htmlFragments.push(`<tr class="${trClass}">${checkboxTd}<td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${reqName}</td><td class="font-bold">${recordDept}</td><td class="font-bold text-indigo-600">${subTrx}</td><td class="text-[10px] font-bold ${matClass}">${detail}</td><td class="text-[10px] font-bold text-blue-600">${noDocFeedback}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`);
+                        html += `<tr class="${trClass}">${checkboxTd}<td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${reqName}</td><td class="font-bold">${recordDept}</td><td class="font-bold text-indigo-600">${subTrx}</td><td class="text-[10px] font-bold ${matClass}">${detail}</td><td class="text-[10px] font-bold text-blue-600">${noDocFeedback}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`;
                     } else if (currentMonitorMode === 'RELPO') {
                         const metadata = cols[2] || "-";
-                        htmlFragments.push(`<tr class="${trClass}">${checkboxTd}<td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${reqName}</td><td class="font-bold">${recordDept}</td><td class="font-bold text-violet-600 ${matClass}">${materialCode}</td><td class="text-[10px] font-bold">${metadata}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`);
+                        html += `<tr class="${trClass}">${checkboxTd}<td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${reqName}</td><td class="font-bold">${recordDept}</td><td class="font-bold text-violet-600 ${matClass}">${materialCode}</td><td class="text-[10px] font-bold">${metadata}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`;
                     } else if (currentMonitorMode === 'PR') {
                         const detail = `${materialCode} (${cols[2]||'-'})`;
-                        htmlFragments.push(`<tr class="${trClass}">${checkboxTd}<td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${reqName}</td><td class="font-bold">${recordDept}</td><td class="font-bold text-cyan-600">${plantVal}</td><td class="text-[10px] font-bold ${matClass}">${detail}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`);
+                        html += `<tr class="${trClass}">${checkboxTd}<td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${reqName}</td><td class="font-bold">${recordDept}</td><td class="font-bold text-cyan-600">${plantVal}</td><td class="text-[10px] font-bold ${matClass}">${detail}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`;
                     } else if (currentMonitorMode === 'ADDSLOC') {
-                        htmlFragments.push(`<tr class="${trClass}">${checkboxTd}<td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${reqName}</td><td class="font-bold">${recordDept}</td><td class="font-bold text-teal-600">${plantVal}</td><td class="text-[10px] font-bold ${matClass}">${materialCode}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`);
+                        html += `<tr class="${trClass}">${checkboxTd}<td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${reqName}</td><td class="font-bold">${recordDept}</td><td class="font-bold text-teal-600">${plantVal}</td><td class="text-[10px] font-bold ${matClass}">${materialCode}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`;
                     } else if (currentMonitorMode === 'INTRANSIT') {
                         const setting = cols[2] || "-";
-                        htmlFragments.push(`<tr class="${trClass}">${checkboxTd}<td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${reqName}</td><td class="font-bold">${recordDept}</td><td class="font-bold text-emerald-600 ${matClass}">${materialCode}</td><td class="text-[10px] font-bold">${setting}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`);
+                        html += `<tr class="${trClass}">${checkboxTd}<td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${reqName}</td><td class="font-bold">${recordDept}</td><td class="font-bold text-emerald-600 ${matClass}">${materialCode}</td><td class="text-[10px] font-bold">${setting}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`;
                     } else if (currentMonitorMode === 'ROLE') {
-                        htmlFragments.push(`<tr class="${trClass}">${checkboxTd}<td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${reqName}</td><td class="font-bold">${recordDept}</td><td class="font-bold text-slate-600">${plantVal}</td><td class="text-[10px] font-bold ${matClass}">${materialCode}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`);
+                        html += `<tr class="${trClass}">${checkboxTd}<td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${reqName}</td><td class="font-bold">${recordDept}</td><td class="font-bold text-slate-600">${plantVal}</td><td class="text-[10px] font-bold ${matClass}">${materialCode}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`;
                     } else if (currentMonitorMode === 'BLOCK') {
-                        htmlFragments.push(`<tr class="${trClass}">${checkboxTd}<td class="font-mono text-[10px]">${cols[0]}</td><td class="font-bold text-blue-600 ${matClass}">${materialCode}</td><td class="font-bold text-rose-600">${extraData.pn}</td><td class="font-bold text-center">${extraData.qty}</td><td class="font-bold text-center">${extraData.uom}</td><td class="text-[10px]">${extraData.prob}</td><td class="text-[10px]">${extraData.reason}</td><td class="text-[10px] font-bold text-indigo-600">${extraData.validasi}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`);
-                    } else if (currentMonitorMode === 'VALIDATION') {
-                        htmlFragments.push(`<tr class="${trClass}">${checkboxTd}<td class="font-mono text-[10px]">${cols[0]}</td><td class="font-bold text-blue-600 ${matClass}">${materialCode}</td><td class="text-[10px]">${extraData.desc}</td><td class="font-black uppercase">${reqName}</td><td class="font-bold">${recordDept}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`);
+                        html += `<tr class="${trClass}">${checkboxTd}<td class="font-mono text-[10px]">${cols[0]}</td><td class="font-bold text-blue-600 ${matClass}">${materialCode}</td><td class="font-bold text-rose-600">${extraData.pn}</td><td class="font-bold text-center">${extraData.qty}</td><td class="font-bold text-center">${extraData.uom}</td><td class="text-[10px]">${extraData.prob}</td><td class="text-[10px]">${extraData.reason}</td><td class="text-[10px] font-bold text-indigo-600">${extraData.validasi}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`;
                     }
                 }
-                const resultHtml = htmlFragments.join('');
-                monitorList.innerHTML = resultHtml || `<tr><td colspan="${colCount}" class="py-10 text-center text-slate-400">Belum ada aktivitas untuk ${isCatalogue ? 'semua departemen' : 'Dept ' + currentUserDept}</td></tr>`;
+                monitorList.innerHTML = html || `<tr><td colspan="${colCount}" class="py-10 text-center text-slate-400">Belum ada aktivitas untuk ${isCatalogue ? 'semua departemen' : 'Dept ' + currentUserDept}</td></tr>`;
             } catch (e) {
                 const colCount = modeConfig[currentMonitorMode].colCount;
                 monitorList.innerHTML = `<tr><td colspan="${colCount}" class="py-10 text-center text-red-500 font-bold">Gagal memuat data monitoring. Pastikan link CSV dapat diakses.</td></tr>`;
             }
         }
-
-        window.renderValidationPage = function() {
-            const monitorList = document.getElementById('monitor-list');
-            const isCatalogue = currentUserDept === "CATALOGUE";
-            const colCount = modeConfig['VALIDATION'].colCount + (isCatalogue ? 1 : 0);
-            
-            // Hapus centang "Check All" jika berganti halaman
-            const checkAllBtn = document.getElementById('checkAllMonitor');
-            if (checkAllBtn) checkAllBtn.checked = false;
-            
-            let htmlFragments = [];
-            const startIndex = (validationCurrentPage - 1) * validationRowsPerPage;
-            const endIndex = Math.min(startIndex + validationRowsPerPage, globalValidationData.length);
-            
-            for (let i = startIndex; i < endIndex; i++) {
-                const data = globalValidationData[i];
-                const reqId = data.material;
-                const originalRemarks = data.proggres;
-                
-                // Jika sedang diproses lokal, ambil dari LOCAL_FEEDBACK
-                const remarks = LOCAL_FEEDBACK.has(reqId) ? LOCAL_FEEDBACK.get(reqId) : originalRemarks;
-                const isLocallyProcessing = LOCAL_FEEDBACK.has(reqId) && originalRemarks !== LOCAL_FEEDBACK.get(reqId);
-                
-                let actionHtml = `<div class="status-badge ${remarks.includes('CLOSE') || remarks.includes('DONE') ? 'bg-emerald-50 text-emerald-600' : 'bg-blue-50 text-blue-600'}">${remarks}</div>`;
-                
-                let checkboxTd = '';
-                if (isCatalogue) {
-                    const safeId = encodeURIComponent(reqId);
-                    const safeDesc = encodeURIComponent(data.desc);
-                    const safeReko = encodeURIComponent(data.reko);
-                    
-                    checkboxTd = `<td class="text-center"><input type="checkbox" class="mon-chk cursor-pointer w-4 h-4" data-id="${safeId}" data-pn="${safeId}" data-desc="${safeDesc}" data-reko="${safeReko}" data-mode="VALIDATION"></td>`;
-                    
-                    const safeRemarks = encodeURIComponent(remarks);
-                    if (isLocallyProcessing) {
-                        actionHtml += `<div class="ml-3 status-badge bg-orange-50 text-orange-600 border-orange-200 shadow-sm"><i class="fas fa-circle-notch animate-spin mr-1"></i> SINKRON...</div>`;
-                    } else {
-                        actionHtml += `<button onclick="openFeedback('${safeId}', '${safeId}', '${safeRemarks}', 'VALIDATION', '${safeDesc}', '${safeReko}')" class="ml-3 bg-slate-900 text-white px-3 py-1.5 rounded-lg text-[9px] font-black uppercase hover:bg-blue-600 transition-colors shadow-sm"><i class="fas fa-edit"></i> Update</button>`;
-                    }
-                }
-
-                htmlFragments.push(`<tr class="hover:bg-slate-50 transition-colors">
-                    ${checkboxTd}
-                    <td class="font-black text-blue-600 text-[10px] whitespace-nowrap">${data.material}</td>
-                    <td class="text-[10px] max-w-[200px] truncate" title="${data.desc}">${data.desc}</td>
-                    <td class="text-[10px] max-w-[200px] truncate" title="${data.reko}">${data.reko}</td>
-                    <td class="text-[10px]">${data.action}</td>
-                    <td class="text-[10px] max-w-[200px] truncate" title="${data.hasil}">${data.hasil}</td>
-                    <td class="text-[10px] font-bold">${data.cheker}</td>
-                    <td><div class="flex items-center">${actionHtml}</div></td>
-                </tr>`);
-            }
-            
-            if (htmlFragments.length > 0) {
-                monitorList.innerHTML = htmlFragments.join('');
-            } else {
-                monitorList.innerHTML = `<tr><td colspan="${colCount}" class="py-10 text-center text-slate-400 font-bold">Tidak ada data validasi.</td></tr>`;
-            }
-            
-            document.getElementById('pagination-info').innerText = `Menampilkan ${globalValidationData.length > 0 ? startIndex + 1 : 0} - ${endIndex} dari ${globalValidationData.length} data`;
-            document.getElementById('btn-prev-page').disabled = validationCurrentPage === 1;
-            document.getElementById('btn-next-page').disabled = endIndex >= globalValidationData.length;
-        };
-
-        window.changeValidationPage = function(dir) {
-            validationCurrentPage += dir;
-            renderValidationPage();
-            // Scroll ke atas tabel agar nyaman dilihat setelah berpindah halaman
-            const scrollArea = document.querySelector('.monitor-scroll-area');
-            if(scrollArea) scrollArea.scrollTop = 0;
-        };
 
         // FUNGSI BARU: Langsung update status ke DONE khusus Maintain
         window.directDoneUpdate = async function(id, pn, modeOverride) {
@@ -4770,8 +4656,6 @@
                         const id = decodeURIComponent(cb.getAttribute('data-id'));
                         const pn = decodeURIComponent(cb.getAttribute('data-pn'));
                         const mode = cb.getAttribute('data-mode');
-                        const desc = cb.hasAttribute('data-desc') ? decodeURIComponent(cb.getAttribute('data-desc')) : "";
-                        const reko = cb.hasAttribute('data-reko') ? decodeURIComponent(cb.getAttribute('data-reko')) : "";
                         
                         // PERBAIKAN: Menghapus deklarasi headers
                         await fetchWithRetry(scriptURL, {
@@ -4782,8 +4666,6 @@
                                 timestamp: id,
                                 material: pn,
                                 mfg_part: pn, // backup key
-                                description: desc,
-                                rekomendasi: reko,
                                 remarks: "DONE",
                                 completion_time: timeString,
                                 department: currentUserDept
@@ -4819,35 +4701,19 @@
             const checkboxes = document.querySelectorAll('.mon-chk:checked');
             if (checkboxes.length === 0) return window.notify('Error', 'Pilih minimal satu item untuk Update Feedback.', 'error');
             
-            currentFeedbackMode = currentMonitorMode; // Menyesuaikan dengan mode saat ini
+            currentFeedbackMode = 'CREATE';
             
             const ids = [];
             const pns = [];
-            const descs = [];
-            const rekos = [];
-            
             checkboxes.forEach(cb => {
                 ids.push(decodeURIComponent(cb.getAttribute('data-id')));
                 pns.push(decodeURIComponent(cb.getAttribute('data-pn')));
-                descs.push(cb.hasAttribute('data-desc') ? decodeURIComponent(cb.getAttribute('data-desc')) : "");
-                rekos.push(cb.hasAttribute('data-reko') ? decodeURIComponent(cb.getAttribute('data-reko')) : "");
             });
             
             document.getElementById('fb-id').value = JSON.stringify(ids); 
             document.getElementById('fb-pn').value = "BULK UPDATE";
-            document.getElementById('fb-desc').value = JSON.stringify(descs);
-            document.getElementById('fb-reko').value = JSON.stringify(rekos);
             document.getElementById('fb-pn-label').innerText = `${ids.length} Item Terpilih (Bulk Update)`;
-            
-            if (currentFeedbackMode === 'VALIDATION') {
-                document.getElementById('fb-remarks').classList.add('hidden');
-                document.getElementById('fb-remarks-select').classList.remove('hidden');
-                document.getElementById('fb-remarks-select').value = "OPEN";
-            } else {
-                document.getElementById('fb-remarks-select').classList.add('hidden');
-                document.getElementById('fb-remarks').classList.remove('hidden');
-                document.getElementById('fb-remarks').value = "";
-            }
+            document.getElementById('fb-remarks').value = "";
             
             document.getElementById('feedback-modal').classList.remove('hidden');
         };
@@ -4941,24 +4807,14 @@
             });
         }
 
-        window.openFeedback = function(id, pn, remarks, mode, desc, reko) {
+        window.openFeedback = function(id, pn, remarks, mode) {
             currentFeedbackMode = mode || 'CREATE';
             document.getElementById('fb-id').value = decodeURIComponent(id);
             document.getElementById('fb-pn').value = decodeURIComponent(pn);
-            document.getElementById('fb-desc').value = desc ? decodeURIComponent(desc) : "";
-            document.getElementById('fb-reko').value = reko ? decodeURIComponent(reko) : "";
             document.getElementById('fb-pn-label').innerText = decodeURIComponent(pn) || '-';
             
-            if (currentFeedbackMode === 'VALIDATION') {
-                document.getElementById('fb-remarks').classList.add('hidden');
-                document.getElementById('fb-remarks-select').classList.remove('hidden');
-                document.getElementById('fb-remarks-select').value = decodeURIComponent(remarks).toUpperCase() === "CLOSE" ? "CLOSE" : "OPEN";
-            } else {
-                document.getElementById('fb-remarks-select').classList.add('hidden');
-                document.getElementById('fb-remarks').classList.remove('hidden');
-                document.getElementById('fb-remarks').value = decodeURIComponent(remarks);
-            }
-
+            // Hanya CREATE yang menggunakan modal ini
+            document.getElementById('fb-remarks').value = decodeURIComponent(remarks);
             document.getElementById('feedback-modal').classList.remove('hidden');
         };
 
@@ -4969,15 +4825,7 @@
         window.submitFeedback = async function() {
             const idVal = document.getElementById('fb-id').value;
             const pn = document.getElementById('fb-pn').value;
-            const descVal = document.getElementById('fb-desc').value;
-            const rekoVal = document.getElementById('fb-reko').value;
-            
-            let remarks = "";
-            if (currentFeedbackMode === 'VALIDATION') {
-                remarks = document.getElementById('fb-remarks-select').value;
-            } else {
-                remarks = document.getElementById('fb-remarks').value.toUpperCase();
-            }
+            const remarks = document.getElementById('fb-remarks').value.toUpperCase();
 
             if (!remarks) return window.notify('Error', 'Remarks tidak boleh kosong.', 'error');
 
@@ -4993,21 +4841,20 @@
                 const min = String(now.getMinutes()).padStart(2, '0');
                 const timeString = `${dd}/${mm}/${yyyy} ${hh}:${min}`;
                 
-                let ids = []; let descs = []; let rekos = [];
-                try { ids = JSON.parse(idVal); if (!Array.isArray(ids)) ids = [idVal]; } catch(e) { ids = [idVal]; }
-                try { descs = JSON.parse(descVal); if (!Array.isArray(descs)) descs = [descVal]; } catch(e) { descs = [descVal]; }
-                try { rekos = JSON.parse(rekoVal); if (!Array.isArray(rekos)) rekos = [rekoVal]; } catch(e) { rekos = [rekoVal]; }
+                let ids = [];
+                try {
+                    ids = JSON.parse(idVal);
+                    if (!Array.isArray(ids)) ids = [idVal]; 
+                } catch(e) {
+                    ids = [idVal]; 
+                }
 
                 let completed = 0;
                 const CHUNK_SIZE = 20; // Implementasi Chunk Batching paralel agar cepat
                 
                 for (let i = 0; i < ids.length; i += CHUNK_SIZE) {
                     const chunk = ids.slice(i, i + CHUNK_SIZE);
-                    const promises = chunk.map(async (id, idx) => {
-                        const globalIndex = i + idx;
-                        const currentDesc = descs[globalIndex] !== undefined ? descs[globalIndex] : (descs[0] || "");
-                        const currentReko = rekos[globalIndex] !== undefined ? rekos[globalIndex] : (rekos[0] || "");
-
+                    const promises = chunk.map(async (id) => {
                         // PERBAIKAN: Menghapus deklarasi headers
                         await fetchWithRetry(scriptURL, {
                             method: 'POST',
@@ -5016,8 +4863,6 @@
                                 mode: currentFeedbackMode,
                                 timestamp: id,
                                 mfg_part: pn === "BULK UPDATE" ? "" : pn, 
-                                description: currentDesc,
-                                rekomendasi: currentReko,
                                 remarks: remarks,
                                 completion_time: timeString,
                                 department: currentUserDept
