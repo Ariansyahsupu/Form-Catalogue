@@ -4262,9 +4262,9 @@
             let checkboxTh = (currentUserDept === "CATALOGUE") ? `<th class="w-10 text-center"><input type="checkbox" id="checkAllMonitor" class="cursor-pointer w-4 h-4" onclick="toggleAllMonitorChecks(this)"></th>` : '';
 
             if (mode === 'CREATE') {
-                let ccpTh = (currentUserDept === "CATALOGUE") ? `<th class="min-w-[80px]">CCP/Link</th>` : '';
-                // Menambahkan Waktu Val PE dan Waktu Val DC
-                theadHtml = `<tr>${checkboxTh}<th class="min-w-[90px]">Tanggal</th><th class="min-w-[100px]">Pengaju</th><th class="min-w-[60px]">Dept</th><th class="w-[100px] min-w-[100px] max-w-[100px]">Part Number</th><th class="w-[180px] min-w-[180px] max-w-[180px]">Deskripsi</th>${ccpTh}<th class="min-w-[90px]">Val PE</th><th class="min-w-[90px]">Waktu Val PE</th><th class="min-w-[90px]">Val DC</th><th class="min-w-[90px]">Waktu Val DC</th><th class="min-w-[80px]">Eksekutor</th><th class="min-w-[120px]">Progress/Remarks</th><th class="min-w-[100px]">Waktu Selesai</th><th class="min-w-[100px]">Respon Time</th></tr>`;
+                let ccpTh = (currentUserDept === "CATALOGUE") ? `<th class="!p-1 !text-[8px] w-12 text-center">CCP</th>` : '';
+                // Menambahkan Waktu Val PE dan Waktu Val DC dengan format ringkas agar muat 1 layar
+                theadHtml = `<tr>${checkboxTh}<th class="!p-1 !text-[8px] w-16">Tanggal</th><th class="!p-1 !text-[8px] w-16">Pengaju</th><th class="!p-1 !text-[8px] w-10">Dept</th><th class="!p-1 !text-[8px] w-20">Part Number</th><th class="!p-1 !text-[8px] min-w-[80px]">Deskripsi</th>${ccpTh}<th class="!p-1 !text-[8px] w-14">Val PE</th><th class="!p-1 !text-[8px] w-14">Waktu PE</th><th class="!p-1 !text-[8px] w-14">Val DC</th><th class="!p-1 !text-[8px] w-14">Waktu DC</th><th class="!p-1 !text-[8px] w-12">Eksekutor</th><th class="!p-1 !text-[8px] w-24">Progress/Remarks</th><th class="!p-1 !text-[8px] w-14">Selesai</th><th class="!p-1 !text-[8px] w-12">Respon</th></tr>`;
             } else if (mode === 'MAINTAIN') {
                 theadHtml = `<tr>${checkboxTh}<th>Tanggal Request</th><th>Pengaju</th><th>Departemen</th><th>Material Code</th><th class="min-w-[200px]">Deskripsi Material</th><th>Target (Plant/SLoc/Bin)</th><th>Progress / Remarks</th><th>Waktu Penyelesaian</th></tr>`;
             } else if (mode === 'MIGO') {
@@ -4538,11 +4538,30 @@
                         let ccpTd = '';
                         if (isCatalogue) {
                             let isUrl = ccpData.startsWith('http');
-                            let displayCcp = isUrl ? `<a href="${ccpData}" target="_blank" class="underline hover:text-blue-800 whitespace-nowrap"><i class="fas fa-link mr-1"></i>Link</a>` : ccpData;
-                            ccpTd = `<td class="text-[10px] text-blue-600 font-bold max-w-[80px] truncate" title="${ccpData}">${displayCcp}</td>`;
+                            let displayCcp = isUrl ? `<a href="${ccpData}" target="_blank" class="underline hover:text-blue-800"><i class="fas fa-link"></i></a>` : ccpData;
+                            ccpTd = `<td class="!p-1 !text-[8px] text-center text-blue-600 font-bold truncate max-w-[40px]" title="${ccpData}">${displayCcp}</td>`;
                         }
-                        // Memasukkan kolom baru ke dalam render HTML
-                        html += `<tr class="${trClass}">${checkboxTd}<td class="font-mono text-[9px] whitespace-nowrap">${cols[0]}</td><td class="font-black uppercase whitespace-nowrap text-[9px]">${reqName}</td><td class="font-bold text-[9px]">${recordDept}</td><td class="text-blue-600 font-black whitespace-nowrap text-[10px] w-[100px] max-w-[100px] truncate ${matClass}" title="${materialCode}">${materialCode}</td><td class="text-[9px] w-[180px] max-w-[180px] truncate" title="${cols[2]}">${cols[2]}</td>${ccpTd}<td class="text-[9px] font-bold whitespace-nowrap truncate max-w-[90px]" title="${valPE}">${valPE}</td><td class="text-[9px] font-bold whitespace-nowrap text-slate-500">${waktuValPE}</td><td class="text-[9px] font-bold whitespace-nowrap truncate max-w-[90px]" title="${valDC}">${valDC}</td><td class="text-[9px] font-bold whitespace-nowrap text-slate-500">${waktuValDC}</td><td class="text-[9px] font-bold whitespace-nowrap truncate max-w-[80px]" title="${eksekutor}">${eksekutor}</td><td><div class="flex items-center whitespace-nowrap">${actionHtml}</div></td><td class="font-bold text-[9px] text-slate-600 whitespace-nowrap">${completionTime || "-"}</td><td class="font-bold text-[9px] text-indigo-600 whitespace-nowrap">${responTime}</td></tr>`;
+                        
+                        let smallActionHtml = actionHtml.replace('status-badge', 'status-badge !text-[7px] !px-1.5 !py-0.5').replace('text-[9px]', 'text-[7px]').replace('px-3', 'px-1.5').replace('py-1.5', 'py-1');
+                        
+                        // Memasukkan kolom baru ke dalam render HTML dengan layout super padat (1 layar)
+                        html += `<tr class="${trClass}">
+                            ${checkboxTd.replace('<td', '<td class="!p-1"')}
+                            <td class="!p-1 font-mono !text-[8px] truncate max-w-[50px]" title="${cols[0]}">${cols[0]}</td>
+                            <td class="!p-1 font-black uppercase !text-[8px] truncate max-w-[50px]" title="${reqName}">${reqName}</td>
+                            <td class="!p-1 font-bold !text-[8px]">${recordDept}</td>
+                            <td class="!p-1 text-blue-600 font-black !text-[8px] truncate max-w-[70px]" title="${materialCode}">${materialCode}</td>
+                            <td class="!p-1 !text-[8px] truncate max-w-[100px]" title="${cols[2]}">${cols[2]}</td>
+                            ${ccpTd}
+                            <td class="!p-1 !text-[8px] font-bold truncate max-w-[50px]" title="${valPE}">${valPE}</td>
+                            <td class="!p-1 !text-[8px] font-bold text-slate-500 truncate max-w-[50px]" title="${waktuValPE}">${waktuValPE}</td>
+                            <td class="!p-1 !text-[8px] font-bold truncate max-w-[50px]" title="${valDC}">${valDC}</td>
+                            <td class="!p-1 !text-[8px] font-bold text-slate-500 truncate max-w-[50px]" title="${waktuValDC}">${waktuValDC}</td>
+                            <td class="!p-1 !text-[8px] font-bold truncate max-w-[40px]" title="${eksekutor}">${eksekutor}</td>
+                            <td class="!p-1"><div class="flex items-center text-[7px] w-full truncate max-w-[100px]">${smallActionHtml}</div></td>
+                            <td class="!p-1 font-bold !text-[8px] text-slate-600 truncate max-w-[50px]" title="${completionTime || "-"}">${completionTime || "-"}</td>
+                            <td class="!p-1 font-bold !text-[8px] text-indigo-600 truncate max-w-[40px]" title="${responTime}">${responTime}</td>
+                        </tr>`;
                     } else if (currentMonitorMode === 'MAINTAIN') {
                         const targetLoc = `${cols[2] || "-"} / ${cols[3] || "-"} / ${cols[4] || "-"}`;
                         html += `<tr class="${trClass}">${checkboxTd}<td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${reqName}</td><td class="font-bold">${recordDept}</td><td class="text-blue-600 font-black ${matClass}">${materialCode}</td><td class="text-[10px] font-bold">${targetLoc}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`;
