@@ -453,7 +453,7 @@
                         <div class="mt-auto pt-3 border-t border-slate-100 text-xs font-medium text-blue-600 group-hover:text-blue-700 flex items-center">Buka Modul <i class="fas fa-arrow-right ml-1 text-[10px]"></i></div>
                     </div>
 
-                    <div onclick="window.notify('Informasi', 'Modul TRANSFER KNOWLEDGE sedang dalam pengembangan.', 'success')" class="premium-card p-5 group">
+                    <div onclick="requestProtectedLink('https://juklak-app-catalogue.vercel.app/')" class="premium-card p-5 group">
                         <div class="icon-box"><i class="fas fa-chalkboard-user"></i></div>
                         <h3 class="font-semibold text-slate-800 mb-1 text-sm">Transfer Knowledge</h3>
                         <p class="text-slate-500 text-xs mb-4">Materi pelatihan dan dokumentasi sistem.</p>
@@ -3426,8 +3426,8 @@
                     purchEl.value = 'G02';
                     setupVisualSwap('f-purch', [{code:"G02", display:"G02 - CONSUMABLE / GENERAL Supply"}]);
                 } else if (t === 'ASET') { // Rule 6
-                    purchEl.value = 'G07';
-                    setupVisualSwap('f-purch', [{code:"G07", display:"G07 - AST, MDL & UNT"}]);
+                    purchEl.value = 'G16';
+                    setupVisualSwap('f-purch', [{code:"G16", display:"G16 - AST, MDL & UNT"}]);
                 } else if (t === 'SEJA') { // Rule 7
                     purchEl.value = 'G03';
                     setupVisualSwap('f-purch', [{code:"G03", display:"G03 - SERVICE / JASA"}]);
@@ -3436,9 +3436,9 @@
                     purchEl.classList.remove('input-readonly');
                     setupVisualSwap('f-purch', [
                         {code:"G01", display:"G01-SPAREPART"},
-                        {code:"G07", display:"G07-AST,MDL&UNT"}
+                        {code:"G16", display:"G16-AST,MDL&UNT"}
                     ]);
-                    if (currentPurchVal === 'G01' || currentPurchVal === 'G07') purchEl.value = currentPurchVal;
+                    if (currentPurchVal === 'G01' || currentPurchVal === 'G16') purchEl.value = currentPurchVal;
                 } else {
                     purchEl.disabled = false;
                     purchEl.classList.remove('input-readonly');
@@ -3449,7 +3449,7 @@
                         {code:"G04",display:"G04 - FUEL"},
                         {code:"G05",display:"G05 - INFRASTRUKTUR"},
                         {code:"G06",display:"G06 - SARANA"},
-                        {code:"G07",display:"G07 - AST, MDL & UNT"}
+                        {code:"G16",display:"G16 - AST, MDL & UNT"}
                     ]);
                     if (currentPurchVal) purchEl.value = currentPurchVal;
                 }
@@ -4303,9 +4303,9 @@
             let checkboxTh = (currentUserDept === "CATALOGUE") ? `<th class="w-10 text-center"><input type="checkbox" id="checkAllMonitor" class="cursor-pointer w-4 h-4" onclick="toggleAllMonitorChecks(this)"></th>` : '';
 
             if (mode === 'CREATE') {
-                let ccpTh = (currentUserDept === "CATALOGUE") ? `<th class="!p-1 !text-[8px] w-12 text-center">CCP</th>` : '';
-                // Menambahkan Waktu Val PE dan Waktu Val DC dengan format ringkas agar muat 1 layar
-                theadHtml = `<tr>${checkboxTh}<th class="!p-1 !text-[8px] w-16">Tanggal</th><th class="!p-1 !text-[8px] w-16">Pengaju</th><th class="!p-1 !text-[8px] w-10">Dept</th><th class="!p-1 !text-[8px] w-20">Part Number</th><th class="!p-1 !text-[8px] min-w-[80px]">Deskripsi</th>${ccpTh}<th class="!p-1 !text-[8px] w-14">Val PE</th><th class="!p-1 !text-[8px] w-14">Waktu PE</th><th class="!p-1 !text-[8px] w-14">Val DC</th><th class="!p-1 !text-[8px] w-14">Waktu DC</th><th class="!p-1 !text-[8px] w-12">Eksekutor</th><th class="!p-1 !text-[8px] w-24">Progress/Remarks</th><th class="!p-1 !text-[8px] w-14">Selesai</th><th class="!p-1 !text-[8px] w-12">Respon</th></tr>`;
+                let ccpTh = (currentUserDept === "CATALOGUE") ? `<th class="min-w-[100px]">CCP/Link</th>` : '';
+                // Menambahkan Waktu Val PE dan Waktu Val DC
+                theadHtml = `<tr>${checkboxTh}<th class="min-w-[110px]">Tanggal</th><th class="min-w-[130px]">Pengaju</th><th class="min-w-[80px]">Dept</th><th class="min-w-[130px]">Part Number</th><th class="min-w-[250px]">Deskripsi</th>${ccpTh}<th class="min-w-[120px]">Val PE</th><th class="min-w-[110px]">Waktu Val PE</th><th class="min-w-[120px]">Val DC</th><th class="min-w-[110px]">Waktu Val DC</th><th class="min-w-[100px]">Eksekutor</th><th class="min-w-[150px]">Progress/Remarks</th><th class="min-w-[120px]">Waktu Selesai</th><th class="min-w-[100px]">Respon Time</th></tr>`;
             } else if (mode === 'MAINTAIN') {
                 theadHtml = `<tr>${checkboxTh}<th>Tanggal Request</th><th>Pengaju</th><th>Departemen</th><th>Material Code</th><th class="min-w-[200px]">Deskripsi Material</th><th>Target (Plant/SLoc/Bin)</th><th>Progress / Remarks</th><th>Waktu Penyelesaian</th></tr>`;
             } else if (mode === 'MIGO') {
@@ -4594,30 +4594,11 @@
                         let ccpTd = '';
                         if (isCatalogue) {
                             let isUrl = ccpData.startsWith('http');
-                            let displayCcp = isUrl ? `<a href="${ccpData}" target="_blank" class="underline hover:text-blue-800"><i class="fas fa-link"></i></a>` : ccpData;
-                            ccpTd = `<td class="!p-1 !text-[8px] text-center text-blue-600 font-bold truncate max-w-[40px]" title="${ccpData}">${displayCcp}</td>`;
+                            let displayCcp = isUrl ? `<a href="${ccpData}" target="_blank" class="underline hover:text-blue-800 whitespace-nowrap"><i class="fas fa-link mr-1"></i>Link</a>` : ccpData;
+                            ccpTd = `<td class="text-[10px] text-blue-600 font-bold max-w-[120px] truncate" title="${ccpData}">${displayCcp}</td>`;
                         }
-                        
-                        let smallActionHtml = actionHtml.replace('status-badge', 'status-badge !text-[7px] !px-1.5 !py-0.5').replace('text-[9px]', 'text-[7px]').replace('px-3', 'px-1.5').replace('py-1.5', 'py-1');
-                        
-                        // Memasukkan kolom baru ke dalam render HTML dengan layout super padat (1 layar)
-                        html += `<tr class="${trClass}">
-                            ${checkboxTd.replace('<td', '<td class="!p-1"')}
-                            <td class="!p-1 font-mono !text-[8px] truncate max-w-[50px]" title="${cols[0]}">${cols[0]}</td>
-                            <td class="!p-1 font-black uppercase !text-[8px] truncate max-w-[50px]" title="${reqName}">${reqName}</td>
-                            <td class="!p-1 font-bold !text-[8px]">${recordDept}</td>
-                            <td class="!p-1 text-blue-600 font-black !text-[8px] truncate max-w-[70px]" title="${materialCode}">${materialCode}</td>
-                            <td class="!p-1 !text-[8px] truncate max-w-[100px]" title="${cols[2]}">${cols[2]}</td>
-                            ${ccpTd}
-                            <td class="!p-1 !text-[8px] font-bold truncate max-w-[50px]" title="${valPE}">${valPE}</td>
-                            <td class="!p-1 !text-[8px] font-bold text-slate-500 truncate max-w-[50px]" title="${waktuValPE}">${waktuValPE}</td>
-                            <td class="!p-1 !text-[8px] font-bold truncate max-w-[50px]" title="${valDC}">${valDC}</td>
-                            <td class="!p-1 !text-[8px] font-bold text-slate-500 truncate max-w-[50px]" title="${waktuValDC}">${waktuValDC}</td>
-                            <td class="!p-1 !text-[8px] font-bold truncate max-w-[40px]" title="${eksekutor}">${eksekutor}</td>
-                            <td class="!p-1"><div class="flex items-center text-[7px] w-full truncate max-w-[100px]">${smallActionHtml}</div></td>
-                            <td class="!p-1 font-bold !text-[8px] text-slate-600 truncate max-w-[50px]" title="${completionTime || "-"}">${completionTime || "-"}</td>
-                            <td class="!p-1 font-bold !text-[8px] text-indigo-600 truncate max-w-[40px]" title="${responTime}">${responTime}</td>
-                        </tr>`;
+                        // Memasukkan kolom baru ke dalam render HTML
+                        html += `<tr class="${trClass}">${checkboxTd}<td class="font-mono text-[10px] whitespace-nowrap">${cols[0]}</td><td class="font-black uppercase whitespace-nowrap text-[10px]">${reqName}</td><td class="font-bold text-[10px]">${recordDept}</td><td class="text-blue-600 font-black whitespace-nowrap text-[11px] min-w-[130px] ${matClass}" title="${materialCode}">${materialCode}</td><td class="text-[10px] min-w-[250px] leading-tight text-slate-700" title="${cols[2]}">${cols[2]}</td>${ccpTd}<td class="text-[10px] font-bold whitespace-nowrap" title="${valPE}">${valPE}</td><td class="text-[10px] font-bold whitespace-nowrap text-slate-500">${waktuValPE}</td><td class="text-[10px] font-bold whitespace-nowrap" title="${valDC}">${valDC}</td><td class="text-[10px] font-bold whitespace-nowrap text-slate-500">${waktuValDC}</td><td class="text-[10px] font-bold whitespace-nowrap" title="${eksekutor}">${eksekutor}</td><td><div class="flex items-center whitespace-nowrap">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600 whitespace-nowrap">${completionTime || "-"}</td><td class="font-bold text-[10px] text-indigo-600 whitespace-nowrap">${responTime}</td></tr>`;
                     } else if (currentMonitorMode === 'MAINTAIN') {
                         const targetLoc = `${cols[2] || "-"} / ${cols[3] || "-"} / ${cols[4] || "-"}`;
                         html += `<tr class="${trClass}">${checkboxTd}<td class="font-mono text-[10px]">${cols[0]}</td><td class="font-black uppercase">${reqName}</td><td class="font-bold">${recordDept}</td><td class="text-blue-600 font-black ${matClass}">${materialCode}</td><td class="text-[10px] font-bold">${targetLoc}</td><td><div class="flex items-center">${actionHtml}</div></td><td class="font-bold text-[10px] text-slate-600">${completionTime || "-"}</td></tr>`;
@@ -4866,7 +4847,7 @@
             setupVisualSwap('block-uom', [{code:"EA",display:"EA - EACH"},{code:"PC",display:"PC - PIECE"},{code:"SET",display:"SET - SET"},{code:"UNT",display:"UNT - UNIT"},{code:"ROL",display:"ROL - ROLL"},{code:"M",display:"M - METER"},{code:"KG",display:"KG - KILOGRAM"},{code:"L",display:"L - LITER"},{code:"CAN",display:"CAN - CANISTER"},{code:"DR",display:"DR - DRUM"},{code:"PL",display:"PL - PAIL"}]);
             setupVisualSwap('f-type', [{code:"SPRT",display:"SPRT - Sparepart"},{code:"FOGC",display:"FOGC - FOGC"},{code:"TYRE",display:"TYRE - Tyre"},{code:"CONS",display:"CONS - Consumable"},{code:"GENS",display:"GENS - General Supply"},{code:"ASET",display:"ASET - Asset"},{code:"SEJA",display:"SEJA - Service & Jasa"},{code:"MDLE",display:"MDLE - Module"},{code:"BOMM",display:"BOMM - Bom Material"},{code:"FFF",display:"FFF - FFF Class"}]);
             setupVisualSwap('f-group', [{code:"S001",display:"S001 - SPAREPART"},{code:"S002",display:"S002 - ELECTRICAL"},{code:"T001",display:"T001 - TYRE"},{code:"M001",display:"M001 - MODULE"}]);
-            setupVisualSwap('f-purch', [{code:"G01",display:"G01 - SPAREPART"},{code:"G02",display:"G02 - CONSUMABLE / GENERAL Supply"},{code:"G03",display:"G03 - SERVICE / JASA"},{code:"G04",display:"G04 - FUEL"},{code:"G05",display:"G05 - INFRASTRUKTUR"},{code:"G06",display:"G06 - SARANA"},{code:"G07",display:"G07 - AST, MDL & UNT"}]);
+            setupVisualSwap('f-purch', [{code:"G01",display:"G01 - SPAREPART"},{code:"G02",display:"G02 - CONSUMABLE / GENERAL Supply"},{code:"G03",display:"G03 - SERVICE / JASA"},{code:"G04",display:"G04 - FUEL"},{code:"G05",display:"G05 - INFRASTRUKTUR"},{code:"G06",display:"G06 - SARANA"},{code:"G16",display:"G16 - AST, MDL & UNT"}]);
 
             setupVisualSwap('f-serial', [
                 {code: "NON SN", display: "NON SN - Tanpa Serial Number"},
