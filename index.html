@@ -534,7 +534,12 @@
                                 <button onclick="backToMonitorMenu()" class="w-8 h-8 rounded-md bg-slate-100 text-slate-600 flex items-center justify-center hover:bg-slate-200 transition-colors"><i class="fas fa-arrow-left"></i></button>
                                 <div>
                                     <h3 id="monitor-title-label" class="font-semibold text-slate-800 text-lg">Activity Monitor</h3>
-                                    <p class="text-slate-500 text-xs font-medium">Bulan: <span id="monitor-month-label" class="text-slate-700"></span></p>
+                                    <div class="flex items-center gap-2 mt-1">
+                                        <p class="text-slate-500 text-xs font-medium">Filter Bulan:</p>
+                                        <select id="monitor-month-filter" class="input-field py-1 px-2 text-xs !w-auto bg-slate-50 border-slate-200 h-7" onchange="syncMonitoringData()">
+                                            <!-- Pilihan bulan akan di-generate via JavaScript -->
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                             <div class="flex items-center gap-3">
@@ -4224,6 +4229,36 @@
         let currentMonitorMode = 'CREATE';
         let currentFeedbackMode = 'CREATE';
 
+        // Fungsi untuk men-generate pilihan bulan (12 bulan ke belakang dari saat ini)
+        function generateMonthOptions() {
+            const selectEl = document.getElementById('monitor-month-filter');
+            if (!selectEl) return;
+            selectEl.innerHTML = ''; // Kosongkan dulu
+            
+            const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+            const now = new Date();
+            
+            // Tambahkan opsi "Semua Bulan"
+            const optAll = document.createElement('option');
+            optAll.value = "ALL";
+            optAll.text = "Tampilkan Semua";
+            selectEl.appendChild(optAll);
+
+            for (let i = 0; i < 12; i++) {
+                const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+                const val = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`; // Format: YYYY-MM
+                const text = `${monthNames[d.getMonth()]} ${d.getFullYear()}`;
+                
+                const opt = document.createElement('option');
+                opt.value = val;
+                opt.text = text;
+                
+                if (i === 0) opt.selected = true; // Default ke bulan berjalan
+                
+                selectEl.appendChild(opt);
+            }
+        }
+
         // Konfigurasi kolom untuk memproses monitoring secara dinamis
         const modeConfig = {
             'CREATE': { colCount: 14 }, // Diperbarui untuk menampung kolom baru
@@ -4255,6 +4290,12 @@
             };
 
             document.getElementById('monitor-title-label').innerText = titleMap[mode] || 'Monitor Data';
+            
+            // Panggil fungsi generate dropdown setiap kali monitor dibuka jika belum ada isinya
+            const monthSelect = document.getElementById('monitor-month-filter');
+            if (monthSelect && monthSelect.options.length <= 1) {
+                 generateMonthOptions();
+            }
 
             const thead = document.getElementById('monitor-table-head');
             let theadHtml = '';
@@ -4322,6 +4363,7 @@
             checkboxes.forEach(cb => cb.checked = source.checked);
         };
 
+        window.syncMonitoringData = syncMonitoringData;
         async function syncMonitoringData() {
             if (!currentUserDept) return; 
             const monitorList = document.getElementById('monitor-list');
@@ -4370,6 +4412,9 @@
                     let waktuValDC = "";
                     let eksekutor = "";
                     let responTime = "";
+
+                    // AMBIL FILTER BULAN YANG DIPILIH
+                    const selectedMonthVal = document.getElementById('monitor-month-filter') ? document.getElementById('monitor-month-filter').value : "ALL";
 
                     if (currentMonitorMode === 'CREATE') {
                         recordDept = (cols[33] || "").toUpperCase().trim();
@@ -4477,24 +4522,35 @@
                     // --- FILTER BULAN PENDING ---
                     const isPending = !completionTime || !displayRemarks.toUpperCase().includes('DONE');
                     let isCurrentMonth = true;
-                    if (reqId) {
-                        const now = new Date();
-                        let reqM = -1, reqY = -1;
-                        const match = reqId.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/);
-                        if (match) {
-                            let p1 = parseInt(match[1]), p2 = parseInt(match[2]), p3 = parseInt(match[3]);
-                            reqY = p3;
-                            // PERBAIKAN 1: Logika penanggalan yang benar untuk membaca Bulan pada format DD/MM/YYYY
-                            reqM = (p2 > 12) ? p1 - 1 : p2 - 1; 
+                    
+                    if (selectedMonthVal !== "ALL") {
+                        if (reqId) {
+                            let reqM = -1, reqY = -1;
+                            const match = reqId.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/);
+                            if (match) {
+                                let p1 = parseInt(match[1]), p2 = parseInt(match[2]), p3 = parseInt(match[3]);
+                                reqY = p3;
+                                // Logika penanggalan yang benar untuk membaca Bulan pada format DD/MM/YYYY
+                                reqM = (p2 > 12) ? p1 : p2; 
+                            } else {
+                                const d = new Date(reqId);
+                                if (!isNaN(d.getTime())) { reqM = d.getMonth() + 1; reqY = d.getFullYear(); }
+                            }
+                            
+                            if (reqY !== -1 && reqM !== -1) {
+                                const targetVal = `${reqY}-${String(reqM).padStart(2, '0')}`;
+                                isCurrentMonth = (targetVal === selectedMonthVal);
+                            } else {
+                                isCurrentMonth = false; // Jika format tanggal aneh, tidak akan muncul di filter bulan spesifik, kecuali "ALL"
+                            }
                         } else {
-                            const d = new Date(reqId);
-                            if (!isNaN(d.getTime())) { reqM = d.getMonth(); reqY = d.getFullYear(); }
+                            isCurrentMonth = false;
                         }
-                        if (reqY !== -1 && reqM !== -1) {
-                            isCurrentMonth = (reqM === now.getMonth() && reqY === now.getFullYear());
-                        }
+                        
+                        // Jika bukan bulan yang dipilih DAN bukan pending (khusus untuk mode tertentu jika ingin tetap menampilkan pending), maka lewati.
+                        // Berdasarkan instruksi: "sehingga apa bila user ingin melihat permintaan maintaind dan creat material di bulan bulan sebelumnya mereka tingga memilih bulan" -> Artinya hanya filter mutlak berdasarkan bulan.
+                        if (!isCurrentMonth) continue;
                     }
-                    if (!isCurrentMonth && !isPending) continue;
 
                     // --- HTML STATUS BADGE ---
                     let actionHtml = `<div class="status-badge ${displayRemarks.toUpperCase().includes('REJECT') ? 'bg-red-50 text-red-600' : (displayRemarks.toUpperCase().includes('DONE') ? 'bg-emerald-50 text-emerald-600' : 'bg-blue-50 text-blue-600')}">${displayRemarks}</div>`;
